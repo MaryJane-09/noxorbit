@@ -2,7 +2,7 @@ package validate
 
 import (
 	"errors"
-	"github.com/MaryJane-09/nexus/backend/internal/user"
+	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"net/mail"
 	"unicode"
 )

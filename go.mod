@@ -1,4 +1,4 @@
-module github.com/MaryJane-09/nexus
+module github.com/MaryJane-09/noxorbit
 
 go 1.25.0
 

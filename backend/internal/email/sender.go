@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/MaryJane-09/nexus/backend/internal/otp"
+	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 )
 
 type EmailSender struct {

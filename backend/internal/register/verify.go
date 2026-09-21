@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/MaryJane-09/nexus/backend/internal/otp"
-	"github.com/MaryJane-09/nexus/backend/internal/pending"
-	"github.com/MaryJane-09/nexus/backend/internal/user"
+	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
+	"github.com/MaryJane-09/noxorbit/backend/internal/pending"
+	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 )
 
 type OTPVerification struct {

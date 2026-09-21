@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/MaryJane-09/nexus/backend/config"
+	"github.com/MaryJane-09/noxorbit/backend/config"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

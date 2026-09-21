@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/MaryJane-09/nexus/backend/config"
-	"github.com/MaryJane-09/nexus/backend/internal/db"
-	"github.com/MaryJane-09/nexus/backend/internal/router"
+	"github.com/MaryJane-09/noxorbit/backend/config"
+	"github.com/MaryJane-09/noxorbit/backend/internal/db"
+	"github.com/MaryJane-09/noxorbit/backend/internal/router"
 )
 
 func main() {
