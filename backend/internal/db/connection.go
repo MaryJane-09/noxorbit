@@ -13,5 +13,9 @@ func Connect() (*pgxpool.Pool, error){
 	if err != nil{
 		return nil, err
 	}
+	err = pool.Ping(ctx)
+	if err != nil{
+		return nil, err
+	}
 	return pool, nil
 }

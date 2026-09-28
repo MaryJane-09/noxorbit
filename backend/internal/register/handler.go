@@ -86,6 +86,7 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 
 		err = sender.SendVerification(info.Name, info.Email, code)
 		if err != nil {
+			sendErr := err
 			err = otpRepo.Delete(info.Email)
 			if err != nil {
 				w.WriteHeader(http.StatusConflict)
@@ -99,7 +100,7 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 				return
 			}
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: err.Error()})
+			json.NewEncoder(w).Encode(ErrorResponse{Error: sendErr.Error()})
 			return
 		}
 		w.WriteHeader(http.StatusOK)

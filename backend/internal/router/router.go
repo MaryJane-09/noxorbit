@@ -13,7 +13,21 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func New(pool *pgxpool.Pool) *http.ServeMux {
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == "OPTIONS" {
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func New(pool *pgxpool.Pool) http.Handler {
 
 	sender := email.EmailSender{
 		GmailAddress:     config.AppConfig.GmailAddress,
@@ -29,5 +43,5 @@ func New(pool *pgxpool.Pool) *http.ServeMux {
 	mux.HandleFunc("/register", register.RegisterHandler(repo, otpRepo, pendingRepo, &sender))
 	mux.HandleFunc("/users", user.UsersHandler(repo))
 	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo, pendingRepo))
-	return mux
+	return corsMiddleware(mux)
 }
