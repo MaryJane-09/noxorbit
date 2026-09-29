@@ -1,32 +1,34 @@
+// src/components/CinematicIntro.jsx
 import React, { useState, useEffect } from 'react';
 import './Intro.css';
+import logoAsset from '../assets/logo.png'; 
 
-
-export default function CinematicIntro({ onAnimationComplete }) {
-    const [isSettled, setIsSettled] = useState(false);
+export default function Intro() {
+    const [startAnimation, setStartAnimation] = useState(false);
 
     useEffect(() => {
+        // Triggers the animation sequence a split-second after mounting
         const timer = setTimeout(() => {
-            setIsSettled(true);
-            if (onAnimationComplete) onAnimationComplete();
-        }, 3800); 
+            setStartAnimation(true);
+        }, 100);
         return () => clearTimeout(timer);
-    }, [onAnimationComplete]);
+    }, []);
 
     return (
-        <div className={`intro-overlay ${isSettled ? 'intro-minimized' : ''}`}>
-            {}
-            <div className="brand-assembly">
+        <div className="intro-container">
+            {/* The main assembly block that coordinates scaling and moving */}
+            <div className={`brand-assembly ${startAnimation ? 'is-moving' : ''}`}>
 
-                {}
-                <div className="logo-container">
-                    <svg className="orbital-ring" viewBox="0 0 100 100">
-                        <ellipse cx="50" cy="50" rx="45" ry="15" />
-                    </svg>
-                    <div className="brand-letter">N</div>
+                {/* Logo Aspect wrapping your actual graphic asset */}
+                <div className="logo-graphic-box">
+                    {/* Layer 1: The core glowing icon structure */}
+                    <img src={logoAsset} className="main-logo-asset" alt="Noxorbit Logo" />
+
+                    {/* Layer 2: A mirrored light flare layer that spins fast during building stage */}
+                    <div className="cosmic-orbital-spinner"></div>
                 </div>
 
-                {}
+                {/* The Text Layout reveal track */}
                 <div className="brand-text-block">
                     <span className="brand-name">NOXORBIT</span>
                     <span className="brand-tagline">CONNECT • COLLABORATE • ACHIEVE</span>
@@ -36,4 +38,3 @@ export default function CinematicIntro({ onAnimationComplete }) {
         </div>
     );
 }
-
