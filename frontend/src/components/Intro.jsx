@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './intro.css';
+import './Intro.css';
 
 
 export default function CinematicIntro({ onAnimationComplete }) {
