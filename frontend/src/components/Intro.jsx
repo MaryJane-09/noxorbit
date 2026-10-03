@@ -21,13 +21,14 @@ export default function Intro() {
 
                 {/* Logo Aspect wrapping your actual graphic asset */}
                 <div className="logo-graphic-box">
-                    {/* Layer 1: The core glowing icon structure */}
+                    <svg className="orbit-rings" viewBox="0 0 200 200">
+                        <ellipse className="ring ring-1" cx="100" cy="100" rx="90" ry="40" />
+                        <ellipse className="ring ring-2" cx="100" cy="100" rx="90" ry="40" />
+                        <ellipse className="ring ring-3" cx="100" cy="100" rx="90" ry="40" />
+                    </svg>
                     <img src={logoAsset} className="main-logo-asset" alt="Noxorbit Logo" />
-
-                    {/* Layer 2: A mirrored light flare layer that spins fast during building stage */}
-                    <div className="cosmic-orbital-spinner"></div>
                 </div>
-
+                
                 {/* The Text Layout reveal track */}
                 <div className="brand-text-block">
                     <span className="brand-name">NOXORBIT</span>

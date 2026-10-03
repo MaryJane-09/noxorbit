@@ -53,78 +53,78 @@
 }
 
 /* Layer 2: A duplicate light flare effect tracking around the graphic */
-.cosmic-orbital-spinner {
+.orbit-rings {
     position: absolute;
-    inset: -10px;
-    border-radius: 50%;
-    border: 2px dashed rgba(56, 189, 248, 0.4);
-    filter: blur(2px) drop-shadow(0 0 8px #38bdf8);
+    inset: -20px;
+    width: calc(100% + 40px);
+    height: calc(100% + 40px);
+}
+
+.ring {
+    fill: none;
+    stroke: #38bdf8;
+    stroke-width: 2;
     opacity: 0;
-    /* Step 2: High velocity ring orbit track simulation */
-    animation: initialOrbitSpin 2.2s ease-out forwards 0.5s;
+    filter: drop-shadow(0 0 4px #38bdf8);
+    transform-origin: 100px 100px;
 }
 
-/* --- TELEPRINTER HEADLINES TRACK --- */
-.brand-text-block {
-    display: flex;
-    flex-direction: column;
-    opacity: 0;
-    transform: translateX(-25px);
-    /* Step 3: Text slides out seamlessly once spin resolves */
-    animation: textReveal 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 2.2s;
+.ring-1 {
+    animation: orbitSpin1 1.8s ease-out forwards 0.3s;
 }
 
-.brand-name {
-    font-size: 38px;
-    font-weight: 900;
-    letter-spacing: 6px;
-    color: #ffffff;
-    line-height: 1;
+.ring-2 {
+    animation: orbitSpin2 1.8s ease-out forwards 0.3s;
 }
 
-.brand-tagline {
-    font-size: 10px;
-    font-weight: 600;
-    color: #64748b;
-    letter-spacing: 3px;
-    margin-top: 8px;
+.ring-3 {
+    animation: orbitSpin3 1.8s ease-out forwards 0.3s;
 }
 
-/* ========================================================================== PRODUCTION SEQUENCING KEYFRAMES ========================================================================== */
-/* Core graphic burst and initial roll tracking entrance */
-@keyframes logoRevealBurst {
+@keyframes orbitSpin1 {
     0% {
         opacity: 0;
-        transform: scale(0.4) rotate(-45deg);
+        transform: rotate(0deg) scale(0.6);
     }
 
-    100% {
+    15% {
         opacity: 1;
-        transform: scale(1) rotate(0deg);
-    }
-}
-
-/* Fast-paced initial spiral swirl that simulates traveling light node rings */
-@keyframes initialOrbitSpin {
-    0% {
-        opacity: 1;
-        transform: rotate(0deg) scale(0.8);
-    }
-
-    50% {
-        opacity: 0.8;
-        transform: rotate(720deg) scale(1.1);
     }
 
     100% {
         opacity: 0;
-        transform: rotate(1080deg) scale(0.9);
+        transform: rotate(540deg) scale(1.1);
     }
 }
 
-@keyframes textReveal {
-    100% {
+@keyframes orbitSpin2 {
+    0% {
+        opacity: 0;
+        transform: rotate(60deg) scale(0.6);
+    }
+
+    15% {
         opacity: 1;
-        transform: translateX(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(-480deg) scale(1.1);
+    }
+}
+
+@keyframes orbitSpin3 {
+    0% {
+        opacity: 0;
+        transform: rotate(-60deg) scale(0.6);
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: rotate(600deg) scale(1.1);
     }
 }
