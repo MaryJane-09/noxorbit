@@ -1,0 +1,102 @@
+.cinematic-intro {
+    width: 100vw;
+    height: 100vh;
+
+    background: #09080c;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-composition {
+    position: relative;
+
+    width: 300px;
+    height: 300px;
+}
+
+/* -------------------------
+   ORBITAL SYSTEM
+------------------------- */
+
+.orbit-entrance {
+    position: absolute;
+    inset: 0;
+
+    animation: orbit-enter 1.2s ease-out forwards;
+}
+
+.orbit-back,
+.orbit-front {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    animation: orbit-spin 6s linear infinite;
+}
+
+.orbit-back {
+    z-index: 1;
+}
+
+.orbit-front {
+    z-index: 3;
+    opacity: 0.8;
+}
+
+/* -------------------------
+   N LOGO
+------------------------- */
+
+.logo-composition .N-logo {
+    position: absolute;
+
+    width: 200px;
+    height: 200px;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 2;
+}
+
+/* -------------------------
+   ORBIT GLOW
+------------------------- */
+
+.orbit-rings {
+    filter: drop-shadow(0 0 6px rgba(229, 204, 153, 0.35));
+}
+
+/* -------------------------
+   ORBIT ENTRANCE
+------------------------- */
+
+@keyframes orbit-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.4);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+}
+
+@keyframes orbit-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
