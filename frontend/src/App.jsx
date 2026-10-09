@@ -10,7 +10,6 @@ function App() {
     <div className="app-shell">
       <div className="app-background" />
       <Intro onComplete={() => setIntroDone(true)} />
-      {introDone && <Register />}
       <div className="app-content">
         {introDone && <Register />}
       </div>
