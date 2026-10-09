@@ -52,18 +52,13 @@
 
 body {
   margin: 0;
+  background: #09080c;
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
 }
 
 h1,
@@ -108,4 +103,13 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+:root {
+  --obsidian: #09080c;
+  --plum: #17111f;
+  --gold: #c8a96b;
+  --gold-soft: #e5cc91;
+  --ivory: #f4f1ea;
+  --muted: rgba(244, 241, 234, 0.68);
 }

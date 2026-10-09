@@ -11,6 +11,9 @@ function App() {
       <div className="app-background" />
       <Intro onComplete={() => setIntroDone(true)} />
       {introDone && <Register />}
+      <div className="app-content">
+        {introDone && <Register />}
+      </div>
     </div>
   );
 }

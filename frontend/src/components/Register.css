@@ -1,0 +1,279 @@
+.register-page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    color: var(--ivory);
+    text-align: left;
+}
+
+.register-page h1,
+.register-page h2 {
+    color: var(--ivory);
+    font-weight: 600;
+    text-align: left;
+}
+
+.register-page .accent {
+    color: var(--gold);
+}
+
+/* top-right "Already have an account?" */
+.register-topbar {
+    position: absolute;
+    top: 28px;
+    right: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.btn-outline {
+    padding: 10px 22px;
+    border: 1px solid var(--gold);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--gold-soft);
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-outline:hover {
+    background: rgba(200, 169, 107, 0.12);
+}
+
+/* two columns: hero on the left, card on the right */
+.register-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    min-height: 100vh;
+    padding: 140px 6vw 56px;
+    box-sizing: border-box;
+}
+
+.register-hero {
+    display: flex;
+    flex-direction: column;
+}
+
+.register-hero h1 {
+    margin: 0 0 20px;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.hero-sub {
+    max-width: 440px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.feature-list {
+    list-style: none;
+    margin: 40px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 22px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.feature-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(200, 169, 107, 0.45);
+    border-radius: 50%;
+    color: var(--gold-soft);
+}
+
+.feature-title,
+.feature-text {
+    display: block;
+}
+
+.feature-title {
+    font-weight: 600;
+}
+
+.feature-text {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.hero-footer {
+    margin-top: auto;
+    padding-top: 48px;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.hero-footer::after {
+    content: "";
+    display: block;
+    width: 36px;
+    height: 2px;
+    margin-top: 14px;
+    background: var(--gold);
+}
+
+/* the glass card */
+.register-card {
+    justify-self: end;
+    align-self: center;
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+    padding: 44px 48px;
+    border: 1px solid rgba(200, 169, 107, 0.25);
+    border-radius: 24px;
+    background: rgba(23, 17, 31, 0.62);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.card-eyebrow {
+    margin: 0 0 14px;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    color: var(--muted);
+}
+
+.register-card .card-title {
+    margin: 0;
+    font-size: 34px;
+    line-height: 1.15;
+}
+
+.card-subtitle {
+    margin: 8px 0 28px;
+    font-size: 19px;
+    color: var(--muted);
+}
+
+.form-message {
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    border: 1px solid rgba(232, 123, 123, 0.45);
+    border-radius: 12px;
+    background: rgba(232, 123, 123, 0.12);
+    color: #f3b4b4;
+    font-size: 14px;
+}
+
+/* form fields */
+.register-form {
+    display: grid;
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 56px;
+    padding: 0 16px;
+    border: 1px solid rgba(200, 169, 107, 0.28);
+    border-radius: 14px;
+    background: rgba(9, 8, 12, 0.55);
+    color: var(--muted);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.field:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(200, 169, 107, 0.18);
+}
+
+.field input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--ivory);
+    font: inherit;
+    font-size: 16px;
+}
+
+.field input::placeholder {
+    color: var(--muted);
+}
+
+.field-toggle {
+    display: grid;
+    place-items: center;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+.field-toggle:hover {
+    color: var(--gold-soft);
+}
+
+.btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 56px;
+    margin-top: 8px;
+    border: 0;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+    color: var(--obsidian);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 30px rgba(200, 169, 107, 0.3);
+}
+
+.card-terms {
+    margin-top: 22px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* narrow screens: form only */
+@media (max-width: 900px) {
+    .register-layout {
+        grid-template-columns: 1fr;
+        padding-top: 120px;
+    }
+
+    .register-hero {
+        display: none;
+    }
+
+    .register-card {
+        justify-self: center;
+        padding: 32px 24px;
+    }
+
+    .register-topbar {
+        right: 20px;
+    }
+}

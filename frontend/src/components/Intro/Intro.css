@@ -1,25 +1,28 @@
 .cinematic-intro {
-    width: 100vw;
-    height: 100vh;
-    background: #09080c;
-    position: relative;
+    position: fixed;
+    inset: 0;
+    background: transparent;
     overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
 }
 
 .brand-assembly {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: max-content;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 14px;
+    gap: 28px;
     transform: translate(-50%, -50%);
+    transform-origin: top left;
 }
 
 .brand-assembly.is-settled {
-    top: 20px;
-    left: 30px;
+    top: 24px;
+    left: 32px;
     transform: translate(0, 0) scale(0.5);
     transition: top 1.2s cubic-bezier(0.76, 0, 0.24, 1),
         left 1.2s cubic-bezier(0.76, 0, 0.24, 1),
@@ -27,43 +30,39 @@
 }
 
 .main-logo {
-    width: 220px;
+    width: 160px;
+    flex-shrink: 0;
     opacity: 0;
     transform: scale(0.85);
     animation: logo-enter 1s ease-out forwards;
 }
 
-.brand-name {
-    width: 260px;
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 360px;
+}
+
+.brand-name,
+.brand-tagline {
+    width: 100%;
     opacity: 0;
-    transform: translateY(-8px);
     transition: opacity 0.7s ease-out, transform 0.7s ease-out;
 }
 
-.brand-name.is-visible {
-    opacity: 1;
-    transform: translateY(0);
+.brand-name {
+    transform: translateX(-14px);
 }
 
 .brand-tagline {
-    width: 240px;
-    opacity: 0;
-    transform: translateY(-6px);
-    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    transform: translateY(6px);
 }
 
+.brand-name.is-visible,
 .brand-tagline.is-visible {
     opacity: 1;
-    transform: translateY(0);
-}
-
-.cinematic-intro {
-    position: fixed;
-    inset: 0;
-    background: transparent;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 10;
+    transform: translate(0, 0);
 }
 
 @keyframes logo-enter {
