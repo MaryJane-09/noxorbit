@@ -57,6 +57,15 @@
     transform: translateY(0);
 }
 
+.cinematic-intro {
+    position: fixed;
+    inset: 0;
+    background: transparent;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+
 @keyframes logo-enter {
     to {
         opacity: 1;

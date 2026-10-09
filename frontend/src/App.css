@@ -27,6 +27,19 @@
     margin: 0 auto;
   }
 
+.app-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.app-background {
+  position: fixed;
+  inset: 0;
+  background: url('/register-background.png') center / cover no-repeat;
+  z-index: 0;
+}
+
   .base {
     width: 170px;
     position: relative;

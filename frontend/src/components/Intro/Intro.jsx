@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./Intro.css";
 
-function Intro() {
+function Intro({ onComplete }) {
     const [showName, setShowName] = useState(false);
     const [showTagline, setShowTagline] = useState(false);
     const [settled, setSettled] = useState(false);
@@ -10,12 +10,18 @@ function Intro() {
         const nameTimer = setTimeout(() => setShowName(true), 800);
         const taglineTimer = setTimeout(() => setShowTagline(true), 1400);
         const settleTimer = setTimeout(() => setSettled(true), 3200);
+        const doneTimer = setTimeout(() => onComplete?.(), 4600);
         return () => {
             clearTimeout(nameTimer);
             clearTimeout(taglineTimer);
             clearTimeout(settleTimer);
+            clearTimeout(doneTimer);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    // ...the return (JSX) stays exactly as it is
+
+    
 
     return (
         <div className="cinematic-intro">
