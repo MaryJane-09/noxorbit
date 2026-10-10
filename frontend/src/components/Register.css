@@ -176,6 +176,7 @@
 /* form fields */
 .register-form {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
 }
 
@@ -276,4 +277,145 @@
     .register-topbar {
         right: 20px;
     }
+}
+
+@media (max-width: 600px) {
+    .register-layout {
+        padding: 96px 16px 32px;
+    }
+
+    .register-topbar {
+        top: 22px;
+        right: 16px;
+    }
+
+    .register-topbar span {
+        display: none;
+    }
+
+    .btn-outline {
+        padding: 8px 18px;
+    }
+
+    .register-card {
+        padding: 28px 20px;
+        border-radius: 20px;
+    }
+
+    .register-card .card-title {
+        font-size: 28px;
+    }
+
+    .card-subtitle {
+        font-size: 17px;
+    }
+}
+
+.register-card .card-subtitle strong {
+    color: var(--ivory);
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.form-notice {
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    border: 1px solid rgba(200, 169, 107, 0.4);
+    border-radius: 12px;
+    background: rgba(200, 169, 107, 0.1);
+    color: var(--gold-soft);
+    font-size: 14px;
+}
+
+.otp-input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 68px;
+    padding: 0 16px;
+    border: 1px solid rgba(200, 169, 107, 0.28);
+    border-radius: 14px;
+    background: rgba(9, 8, 12, 0.55);
+    color: var(--ivory);
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 28px;
+    letter-spacing: 0.35em;
+    text-indent: 0.35em;
+    text-align: center;
+    outline: 0;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.otp-input::placeholder {
+    color: var(--muted);
+}
+
+.otp-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(200, 169, 107, 0.18);
+}
+
+.otp-timer {
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.otp-timer.is-expired {
+    color: #f3b4b4;
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.otp-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    border: 0;
+    background: transparent;
+    color: var(--gold-soft);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.link-btn:hover:not(:disabled) {
+    color: var(--ivory);
+}
+
+.link-btn:disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
+.success-state {
+    text-align: center;
+}
+
+.success-icon {
+    display: inline-grid;
+    place-items: center;
+    margin-bottom: 18px;
+    color: var(--gold);
+}
+
+.success-state .card-title {
+    text-align: center;
+}
+
+.success-state .card-subtitle {
+    margin-bottom: 28px;
 }

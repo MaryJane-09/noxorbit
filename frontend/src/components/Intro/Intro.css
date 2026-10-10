@@ -74,3 +74,24 @@
         transform: scale(1);
     }
 }
+
+@media (max-width: 600px) {
+    .brand-assembly {
+        gap: 14px;
+    }
+
+    .main-logo {
+        width: 96px;
+    }
+
+    .brand-text {
+        width: 220px;
+        gap: 8px;
+    }
+
+    .brand-assembly.is-settled {
+        top: 18px;
+        left: 20px;
+        transform: translate(0, 0) scale(0.6);
+    }
+}
