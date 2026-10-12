@@ -7,6 +7,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/jackc/pgx/v5"
 )
 
 type UserRepository struct {
@@ -68,7 +69,10 @@ func (r *UserRepository) FindByEmail(email string) (User, error) {
 	var u User
 	err := row.Scan(&u.Id, &u.Name, &u.Email, &u.Password)
 	if err != nil {
-		return User{}, errors.New("User not found")
+		return User{}, ErrEmailExists
+	}
+	if errors.Is(err, pgx.ErrNoRows){
+		return  User{}, err
 	}
 	return u, nil
 
