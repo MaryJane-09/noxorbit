@@ -48,3 +48,13 @@ func (r *SessionRepository) FindUserID(tokenHash string) (uuid.UUID, error) {
 
 	return userID, nil
 }
+
+func (r *SessionRepository) Delete(tokenHash string) error {
+	ctx := context.Background()
+
+	_, err := r.pool.Exec(ctx, `DELETE FROM sessions WHERE token_hash  = $1`, tokenHash)
+	if err != nil {
+		return err
+	}
+	return nil
+}
