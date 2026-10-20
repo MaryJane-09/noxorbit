@@ -20,6 +20,7 @@ func NewRepository(pool *pgxpool.Pool) *UserRepository {
 	}
 }
 var ErrEmailExists = errors.New("this email already exists")
+var ErrUserNotFound = errors.New("User not found")
 
 
 func (r *UserRepository) Create(user User) error {
@@ -57,7 +58,10 @@ func (r *UserRepository) FindByID(id uuid.UUID) (User, error) {
 	var u User
 	err := row.Scan(&u.Id, &u.Name, &u.Email, &u.Password)
 	if err != nil {
-		return User{}, errors.New("User not found")
+		if errors.Is(err, pgx.ErrNoRows) {
+			return User{}, ErrUserNotFound
+		}
+		return User{}, err
 	}
 	return u, nil
 }
@@ -69,10 +73,10 @@ func (r *UserRepository) FindByEmail(email string) (User, error) {
 	var u User
 	err := row.Scan(&u.Id, &u.Name, &u.Email, &u.Password)
 	if err != nil {
-		return User{}, ErrEmailExists
-	}
-	if errors.Is(err, pgx.ErrNoRows){
-		return  User{}, err
+		if errors.Is(err, pgx.ErrNoRows) {
+			return User{}, ErrUserNotFound
+		}
+		return User{}, err
 	}
 	return u, nil
 
