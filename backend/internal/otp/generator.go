@@ -7,7 +7,7 @@ import (
 
 func Generate(length int) (string, error) {
 
-	const charset = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjklmnpqrstuvwxyz23456789"
+	const charset = "abcdefghjklmnpqrstuvwxyz23456789"
 
 	otp := make([]byte, length)
 	charsetLen := big.NewInt(int64(len(charset)))

@@ -4,17 +4,16 @@ import (
 	"context"
 	"errors"
 	"time"
-
 	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+var ErrNotFound = errors.New("session not found")
+
 type SessionRepository struct {
 	pool *pgxpool.Pool
 }
-
-var ErrNotFound = errors.New("session not found")
 
 func NewRepository(pool *pgxpool.Pool) *SessionRepository {
 	return &SessionRepository{
@@ -26,7 +25,7 @@ func (r *SessionRepository) Create(userID uuid.UUID, tokenHash string, expiresAt
 	ctx := context.Background()
 
 	_, err := r.pool.Exec(ctx, `INSERT INTO sessions (token_hash, user_id, expires_at)
-	VALUES ($1, $2, $3)`, userID, tokenHash, expiresAt)
+	VALUES ($1, $2, $3)`, tokenHash, userID, expiresAt)
 	if err != nil {
 		return err
 	}
@@ -38,7 +37,6 @@ func (r *SessionRepository) FindUserID(tokenHash string) (uuid.UUID, error) {
 	var userID uuid.UUID
 
 	err := r.pool.QueryRow(ctx, `SELECT user_id FROM sessions WHERE token_hash = $1 AND expires_at > now()`, tokenHash).Scan(&userID)
-
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return uuid.Nil, ErrNotFound
@@ -52,7 +50,7 @@ func (r *SessionRepository) FindUserID(tokenHash string) (uuid.UUID, error) {
 func (r *SessionRepository) Delete(tokenHash string) error {
 	ctx := context.Background()
 
-	_, err := r.pool.Exec(ctx, `DELETE FROM sessions WHERE token_hash  = $1`, tokenHash)
+	_, err := r.pool.Exec(ctx, `DELETE FROM sessions WHERE token_hash = $1`, tokenHash)
 	if err != nil {
 		return err
 	}
