@@ -86,7 +86,7 @@ func LoginHandler(users *user.UserRepository, sessions *session.SessionRepositor
 			Expires:  expiresAt,
 			HttpOnly: true,
 			SameSite: http.SameSiteLaxMode,
-			Secure:   false, 
+			Secure:   false,
 		})
 		writeJSON(w, http.StatusOK, map[string]string{"message": "Login successful"})
 	}

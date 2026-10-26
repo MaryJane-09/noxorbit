@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
@@ -36,7 +37,8 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to decode request body"})
 			return
 		}
-
+		
+		info.Email = strings.ToLower(strings.TrimSpace(info.Email))
 		err = validate.ValidateRegister(info)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)

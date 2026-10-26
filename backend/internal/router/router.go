@@ -4,11 +4,13 @@ import (
 	"net/http"
 
 	"github.com/MaryJane-09/noxorbit/backend/config"
+	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/pending"
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
+	"github.com/MaryJane-09/noxorbit/backend/internal/session"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -18,6 +20,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 		if r.Method == "OPTIONS" {
 			return
@@ -38,10 +41,12 @@ func New(pool *pgxpool.Pool) http.Handler {
 	repo := user.NewRepository(pool)
 	otpRepo := otp.NewRepository(pool)
 	pendingRepo := pending.NewRepository(pool)
+	sessionRepo := session.NewRepository(pool)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	mux.HandleFunc("/register", register.RegisterHandler(repo, otpRepo, pendingRepo, &sender))
 	mux.HandleFunc("/users", user.UsersHandler(repo))
 	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo, pendingRepo))
+	mux.HandleFunc("/login", auth.LoginHandler(repo, sessionRepo))
 	return corsMiddleware(mux)
 }

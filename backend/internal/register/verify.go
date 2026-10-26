@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
@@ -35,6 +36,7 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to decode request body"})
 			return
 		}
+		info.Email = strings.ToLower(strings.TrimSpace(info.Email))
 		storedOTP, err := otpRepo.FindByEmail(info.Email)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
@@ -64,11 +66,11 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 			return
 		}
 		err = repo.Create(pendingUser)
-		if err != nil{
-			if errors.Is(err, user.ErrEmailExists){
+		if err != nil {
+			if errors.Is(err, user.ErrEmailExists) {
 				w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: user.ErrEmailExists.Error()})
-			return
+				json.NewEncoder(w).Encode(ErrorResponse{Error: user.ErrEmailExists.Error()})
+				return
 			}
 			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to create user"})
