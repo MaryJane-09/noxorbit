@@ -419,3 +419,15 @@
 .success-state .card-subtitle {
     margin-bottom: 28px;
 }
+
+.home-wrap {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.home-wrap .register-card {
+    justify-self: center;
+}

@@ -4,6 +4,7 @@ import {
     Users, SquareCheck, Zap,
 } from 'lucide-react'
 import './Register.css'
+import AuthShell from './AuthShell'
 
 const OTP_LENGTH = 8
 const OTP_LIFETIME = 300 // seconds — keep in sync with the 5-minute expiry in the Go otp package
@@ -137,164 +138,131 @@ export default function Register({ onLogin }) {
     }
 
     return (
-        <div className="register-page">
-            <div className="register-topbar">
-                <span>Already have an account?</span>
-                <button type="button" className="btn-outline" onClick={() => onLogin?.()}>Login</button>
-            </div>
+        <AuthShell topbarText="Already have an account?" topbarLabel="Login" onTopbar={onLogin}>
+            {step === "register" && (
+                <>
+                    <p className="card-eyebrow">CREATE YOUR ACCOUNT</p>
+                    <h2 className="card-title">Join <span className="accent">Noxorbit</span></h2>
+                    <p className="card-subtitle">Start your journey today.</p>
 
-            <div className="register-layout">
-                <section className="register-hero">
-                    <h1>
-                        Everything you need,<br />
-                        <span className="accent">in one place.</span>
-                    </h1>
-                    <p className="hero-sub">
-                        Noxorbit brings people, teams, projects and ideas together — one central workspace.
+                    {message && <p className="form-message" role="alert">{message}</p>}
+
+                    <form className="register-form" onSubmit={handleSubmit}>
+                        <label className="field">
+                            <User size={18} />
+                            <input type="text" name="name" placeholder="Full Name" aria-label="Full name"
+                                autoComplete="name" value={form.name} onChange={handleChange} required />
+                        </label>
+
+                        <label className="field">
+                            <Mail size={18} />
+                            <input type="email" name="email" placeholder="Email Address" aria-label="Email address"
+                                autoComplete="email" value={form.email} onChange={handleChange} required />
+                        </label>
+
+                        <label className="field">
+                            <Lock size={18} />
+                            <input type={showPassword ? "text" : "password"} name="password" placeholder="Password"
+                                aria-label="Password" autoComplete="new-password"
+                                value={form.password} onChange={handleChange} required />
+                            <button type="button" className="field-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? "Hide password" : "Show password"}>
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </label>
+
+                        <label className="field">
+                            <Lock size={18} />
+                            <input type={showConfirm ? "text" : "password"} name="confirmPassword" placeholder="Confirm Password"
+                                aria-label="Confirm password" autoComplete="new-password"
+                                value={form.confirmPassword} onChange={handleChange} required />
+                            <button type="button" className="field-toggle"
+                                onClick={() => setShowConfirm(!showConfirm)}
+                                aria-label={showConfirm ? "Hide password" : "Show password"}>
+                                {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </label>
+
+                        <button type="submit" className="btn-primary" disabled={loading}>
+                            Create Account <ArrowRight size={18} />
+                        </button>
+                    </form>
+
+                    <p className="card-terms">
+                        By creating an account, you agree to our{" "}
+                        <span className="accent">Terms of Service</span> and{" "}
+                        <span className="accent">Privacy Policy</span>.
+                    </p>
+                </>
+            )}
+
+            {step === "verify" && (
+                <>
+                    <p className="card-eyebrow">VERIFY YOUR EMAIL</p>
+                    <h2 className="card-title">Check your <span className="accent">inbox</span></h2>
+                    <p className="card-subtitle">
+                        We sent a {OTP_LENGTH}-character code to <strong>{form.email}</strong>.
                     </p>
 
-                    <ul className="feature-list">
-                        {FEATURES.map((f) => (
-                            <li className="feature" key={f.title}>
-                                <span className="feature-icon">{f.icon}</span>
-                                <div>
-                                    <span className="feature-title">{f.title}</span>
-                                    <span className="feature-text">{f.text}</span>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                    {message && <p className="form-message" role="alert">{message}</p>}
+                    {notice && <p className="form-notice" role="status">{notice}</p>}
 
-                    <p className="hero-footer">Better teams. Bigger dreams.</p>
-                </section>
+                    <form className="register-form" onSubmit={handleVerify}>
+                        <input
+                            className="otp-input"
+                            type="text"
+                            name="otp"
+                            placeholder="········"
+                            aria-label="Verification code"
+                            autoComplete="one-time-code"
+                            autoCapitalize="off"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            maxLength={OTP_LENGTH}
+                            value={otpCode}
+                            onChange={(e) => setOtpCode(e.target.value)}
+                            required
+                        />
 
-                <section className="register-card">
-                    {step === "register" && (
-                        <>
-                            <p className="card-eyebrow">CREATE YOUR ACCOUNT</p>
-                            <h2 className="card-title">Join <span className="accent">Noxorbit</span></h2>
-                            <p className="card-subtitle">Start your journey today.</p>
+                        <p className={`otp-timer ${expired ? "is-expired" : ""}`}>
+                            {expired
+                                ? "This code has expired. Request a new one."
+                                : `Code expires in ${formatTime(secondsLeft)}`}
+                        </p>
 
-                            {message && <p className="form-message" role="alert">{message}</p>}
+                        <button
+                            type="submit"
+                            className="btn-primary"
+                            disabled={loading || expired || otpCode.trim().length !== OTP_LENGTH}
+                        >
+                            Verify <ArrowRight size={18} />
+                        </button>
+                    </form>
 
-                            <form className="register-form" onSubmit={handleSubmit}>
-                                <label className="field">
-                                    <User size={18} />
-                                    <input type="text" name="name" placeholder="Full Name" aria-label="Full name"
-                                        autoComplete="name" value={form.name} onChange={handleChange} required />
-                                </label>
+                    <div className="otp-actions">
+                        <button type="button" className="link-btn" onClick={handleChangeEmail}>
+                            <ArrowLeft size={16} /> Change email
+                        </button>
+                        <button type="button" className="link-btn" onClick={handleResend}
+                            disabled={loading || resendWait > 0}>
+                            {resendWait > 0 ? `Resend in ${resendWait}s` : "Resend code"}
+                        </button>
+                    </div>
+                </>
+            )}
 
-                                <label className="field">
-                                    <Mail size={18} />
-                                    <input type="email" name="email" placeholder="Email Address" aria-label="Email address"
-                                        autoComplete="email" value={form.email} onChange={handleChange} required />
-                                </label>
-
-                                <label className="field">
-                                    <Lock size={18} />
-                                    <input type={showPassword ? "text" : "password"} name="password" placeholder="Password"
-                                        aria-label="Password" autoComplete="new-password"
-                                        value={form.password} onChange={handleChange} required />
-                                    <button type="button" className="field-toggle"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        aria-label={showPassword ? "Hide password" : "Show password"}>
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </label>
-
-                                <label className="field">
-                                    <Lock size={18} />
-                                    <input type={showConfirm ? "text" : "password"} name="confirmPassword" placeholder="Confirm Password"
-                                        aria-label="Confirm password" autoComplete="new-password"
-                                        value={form.confirmPassword} onChange={handleChange} required />
-                                    <button type="button" className="field-toggle"
-                                        onClick={() => setShowConfirm(!showConfirm)}
-                                        aria-label={showConfirm ? "Hide password" : "Show password"}>
-                                        {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </label>
-
-                                <button type="submit" className="btn-primary" disabled={loading}>
-                                    Create Account <ArrowRight size={18} />
-                                </button>
-                            </form>
-
-                            <p className="card-terms">
-                                By creating an account, you agree to our{" "}
-                                <span className="accent">Terms of Service</span> and{" "}
-                                <span className="accent">Privacy Policy</span>.
-                            </p>
-                        </>
-                    )}
-
-                    {step === "verify" && (
-                        <>
-                            <p className="card-eyebrow">VERIFY YOUR EMAIL</p>
-                            <h2 className="card-title">Check your <span className="accent">inbox</span></h2>
-                            <p className="card-subtitle">
-                                We sent a {OTP_LENGTH}-character code to <strong>{form.email}</strong>.
-                            </p>
-
-                            {message && <p className="form-message" role="alert">{message}</p>}
-                            {notice && <p className="form-notice" role="status">{notice}</p>}
-
-                            <form className="register-form" onSubmit={handleVerify}>
-                                <input
-                                    className="otp-input"
-                                    type="text"
-                                    name="otp"
-                                    placeholder="········"
-                                    aria-label="Verification code"
-                                    autoComplete="one-time-code"
-                                    autoCapitalize="off"
-                                    autoCorrect="off"
-                                    spellCheck={false}
-                                    maxLength={OTP_LENGTH}
-                                    value={otpCode}
-                                    onChange={(e) => setOtpCode(e.target.value)}
-                                    required
-                                />
-
-                                <p className={`otp-timer ${expired ? "is-expired" : ""}`}>
-                                    {expired
-                                        ? "This code has expired. Request a new one."
-                                        : `Code expires in ${formatTime(secondsLeft)}`}
-                                </p>
-
-                                <button
-                                    type="submit"
-                                    className="btn-primary"
-                                    disabled={loading || expired || otpCode.trim().length !== OTP_LENGTH}
-                                >
-                                    Verify <ArrowRight size={18} />
-                                </button>
-                            </form>
-
-                            <div className="otp-actions">
-                                <button type="button" className="link-btn" onClick={handleChangeEmail}>
-                                    <ArrowLeft size={16} /> Change email
-                                </button>
-                                <button type="button" className="link-btn" onClick={handleResend}
-                                    disabled={loading || resendWait > 0}>
-                                    {resendWait > 0 ? `Resend in ${resendWait}s` : "Resend code"}
-                                </button>
-                            </div>
-                        </>
-                    )}
-
-                    {step === "completed" && (
-                        <div className="success-state">
-                            <span className="success-icon"><CircleCheck size={48} /></span>
-                            <p className="card-eyebrow">EMAIL VERIFIED</p>
-                            <h2 className="card-title">Welcome to <span className="accent">Noxorbit</span></h2>
-                            <p className="card-subtitle">Your account is ready.</p>
-                            <button type="button" className="btn-primary" onClick={() => onLogin?.()}>
-                                Continue to login <ArrowRight size={18} />
-                            </button>
-                        </div>
-                    )}
-                </section>
-            </div>
-        </div>
+            {step === "completed" && (
+                <div className="success-state">
+                    <span className="success-icon"><CircleCheck size={48} /></span>
+                    <p className="card-eyebrow">EMAIL VERIFIED</p>
+                    <h2 className="card-title">Welcome to <span className="accent">Noxorbit</span></h2>
+                    <p className="card-subtitle">Your account is ready.</p>
+                    <button type="button" className="btn-primary" onClick={() => onLogin?.()}>
+                        Continue to login <ArrowRight size={18} />
+                    </button>
+                </div>
+            )}
+        </AuthShell>
     )
 }
