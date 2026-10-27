@@ -431,3 +431,54 @@
 .home-wrap .register-card {
     justify-self: center;
 }
+
+.btn-secondary {
+    height: 48px;
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--gold-soft);
+    font: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(200, 169, 107, 0.12);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-secondary.is-sent {
+    border-color: rgba(159, 217, 168, 0.6);
+    color: #9fd9a8;
+    opacity: 1;
+}
+
+.field.is-disabled {
+    opacity: 0.45;
+}
+
+.field input:disabled {
+    cursor: not-allowed;
+    color: var(--muted);
+}
+
+.sent-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: -14px 0 18px;
+    color: #9fd9a8;
+    font-size: 14px;
+}
+
+.forgot-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -6px;
+}

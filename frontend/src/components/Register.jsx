@@ -6,7 +6,7 @@ import {
 import './Register.css'
 import AuthShell from './AuthShell'
 
-const OTP_LENGTH = 8
+const OTP_LENGTH = 6
 const OTP_LIFETIME = 300 // seconds — keep in sync with the 5-minute expiry in the Go otp package
 const RESEND_AFTER = 30  // seconds before "Resend code" unlocks
 
@@ -42,7 +42,6 @@ export default function Register({ onLogin }) {
         return () => clearInterval(id)
     }, [step])
 
-    // Derived values: computed from state on every render, so they need no state of their own.
     const expired = secondsLeft === 0
     const resendWait = Math.max(RESEND_AFTER - (OTP_LIFETIME - secondsLeft), 0)
 
@@ -204,6 +203,7 @@ export default function Register({ onLogin }) {
                     <p className="card-subtitle">
                         We sent a {OTP_LENGTH}-character code to <strong>{form.email}</strong>.
                     </p>
+                    <p className="sent-badge"><CircleCheck size={16} /> Code sent</p>
 
                     {message && <p className="form-message" role="alert">{message}</p>}
                     {notice && <p className="form-notice" role="status">{notice}</p>}

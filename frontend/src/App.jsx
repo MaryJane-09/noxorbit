@@ -3,12 +3,13 @@ import Intro from "./components/Intro/Intro";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Home from "./components/Home";
+import ForgotPassword from "./components/ForgotPassword";
 import { fetchMe } from "./api";
 import "./App.css";
 
 function App() {
   const [introDone, setIntroDone] = useState(false);
-  const [view, setView] = useState("register"); 
+  const [view, setView] = useState("register");
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
 
@@ -27,8 +28,10 @@ function App() {
   if (introDone && !checking) {
     if (user) {
       screen = <Home user={user} onLogout={() => { setUser(null); setView("login"); }} />;
+    } else if (view === "forgot") {
+      screen = <ForgotPassword onLogin={() => setView("login")} />;
     } else if (view === "login") {
-      screen = <Login onSuccess={handleLoginSuccess} onRegister={() => setView("register")} />;
+      screen = <Login onSuccess={handleLoginSuccess} onRegister={() => setView("register")} onForgot={() => setView("forgot")} />;
     } else {
       screen = <Register onLogin={() => setView("login")} />;
     }

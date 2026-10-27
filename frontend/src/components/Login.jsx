@@ -3,7 +3,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import AuthShell from './AuthShell'
 import { API } from '../api'
 
-export default function Login({ onSuccess, onRegister }) {
+export default function Login({ onSuccess, onRegister, onForgot }) {
     const [form, setForm] = useState({ email: "", password: "" })
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
@@ -63,6 +63,9 @@ export default function Login({ onSuccess, onRegister }) {
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 </label>
+                <div className="forgot-row">
+                    <button type="button" className="link-btn" onClick={() => onForgot?.()}>Forgot password?</button>
+                </div>
 
                 <button type="submit" className="btn-primary" disabled={loading}>
                     {loading ? "Logging in…" : "Log in"} <ArrowRight size={18} />
