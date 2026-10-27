@@ -101,3 +101,19 @@ func (r *UserRepository) GetAllUsers() []UserResponse {
 	}
 	return users
 }
+
+func (r *UserRepository) UpdatePassword(id uuid.UUID, newPassword string) error {
+	ctx := context.Background()
+	hashed, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	tag, err := r.pool.Exec(ctx, `UPDATE users SET password = $1 WHERE id = $2`, string(hashed), id)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrNotFound
+	}
+	return nil
+}

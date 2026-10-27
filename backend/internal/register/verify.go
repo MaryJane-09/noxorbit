@@ -37,7 +37,7 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 			return
 		}
 		info.Email = strings.ToLower(strings.TrimSpace(info.Email))
-		storedOTP, err := otpRepo.FindByEmail(info.Email)
+		storedOTP, err := otpRepo.FindByEmail(info.Email, otp.PurposeRegister)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "No OTP was found for this email."})
@@ -46,7 +46,7 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 		if time.Now().After(storedOTP.ExpiresAt) {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
-			err = otpRepo.Delete(info.Email)
+			err = otpRepo.Delete(info.Email, otp.PurposeReset)
 			if err != nil {
 				w.WriteHeader(http.StatusConflict)
 				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
@@ -77,7 +77,7 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 			return
 		}
 
-		err = otpRepo.Delete(info.Email)
+		err = otpRepo.Delete(info.Email, otp.PurposeReset)
 		if err != nil {
 			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})

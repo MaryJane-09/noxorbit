@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="supported-color-schemes" content="dark light">
+<title>{{.Heading}}</title>
+</head>
+<body style="margin:0;padding:0;background-color:#09080c;">
+
+<!-- Preview text shown next to the subject in the inbox list. The code is deliberately not in it. -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#09080c;">{{.Preheader}}</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#09080c" style="background-color:#09080c;">
+  <tr>
+    <td align="center" style="padding:40px 16px;">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px;">
+
+        <tr>
+          <td align="center" style="padding-bottom:28px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+            <div style="font-size:26px;font-weight:300;letter-spacing:10px;color:#e5cc91;">NOXORBIT</div>
+            <div style="padding-top:8px;font-size:10px;letter-spacing:4px;color:#8a6d2f;">CONNECT &bull; COLLABORATE &bull; ACHIEVE</div>
+          </td>
+        </tr>
+
+        <tr>
+          <td bgcolor="#17111f" style="background-color:#17111f;border:1px solid #43372f;border-radius:18px;padding:40px 36px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#f4f1ea;">
+            <p style="margin:0 0 14px;font-size:12px;letter-spacing:4px;color:#b3ada3;">{{.Eyebrow}}</p>
+            <h1 style="margin:0 0 20px;font-size:26px;line-height:1.25;font-weight:600;color:#f4f1ea;">{{.Heading}}</h1>
+            <p style="margin:0 0 8px;font-size:16px;line-height:1.6;color:#f4f1ea;">Hello {{.Name}},</p>
+            <p style="margin:0 0 28px;font-size:16px;line-height:1.6;color:#b3ada3;">{{.Intro}}</p>
+
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td align="center" bgcolor="#09080c" style="background-color:#09080c;border:1px solid #c8a96b;border-radius:14px;padding:22px 12px;">
+                  <span style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:34px;font-weight:700;letter-spacing:8px;padding-left:8px;color:#e5cc91;">{{.Code}}</span>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:24px 0 0;font-size:14px;line-height:1.6;text-align:center;color:#b3ada3;">
+              Expires in {{.Minutes}} minutes. Enter it exactly as shown, it is case-sensitive.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center" style="padding:28px 8px 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.7;color:#8c877d;">
+            Never share this code with anyone. Noxorbit will never ask you for it.<br>
+            {{.Footer}}
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -56,3 +56,9 @@ func (r *SessionRepository) Delete(tokenHash string) error {
 	}
 	return nil
 }
+
+func (r *SessionRepository) DeleteAllForUser(userID uuid.UUID) error {
+	ctx := context.Background()
+	_, err := r.pool.Exec(ctx, `DELETE FROM sessions WHERE user_id = $1`, userID)
+	return err
+}

@@ -53,7 +53,7 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 			json.NewEncoder(w).Encode(map[string]string{"error": "Pending user not saved"})
 			return
 		}
-		code, err := otp.Generate(8)
+		code, err := otp.Generate(6)
 		if err != nil {
 			err = pendingRepo.Delete(info.Email)
 			if err != nil {
@@ -89,7 +89,7 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 		err = sender.SendVerification(info.Name, info.Email, code)
 		if err != nil {
 			sendErr := err
-			err = otpRepo.Delete(info.Email)
+			err = otpRepo.Delete(info.Email, otp.PurposeReset)
 			if err != nil {
 				w.WriteHeader(http.StatusConflict)
 				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
