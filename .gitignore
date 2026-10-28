@@ -31,4 +31,4 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
-*preview.html
+preview.html
