@@ -14,7 +14,7 @@
     left: 50%;
     display: flex;
     align-items: center;
-    gap: clamp(14px, 1.7vw, 22px);
+    gap: clamp(4px, 0.6vw, 8px);
     width: max-content;
     max-width: calc(100vw - 40px);
     transform: translate(-50%, -50%);
@@ -33,7 +33,7 @@
 
 .main-logo {
     display: block;
-    width: 140px;
+    width: 148px;
     height: auto;
     flex: 0 0 auto;
     opacity: 0;
@@ -44,9 +44,9 @@
 .brand-text {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    width: 390px;
-    flex: 0 1 390px;
+    gap: 5px;
+    width: 380px;
+    flex: 0 1 380px;
 }
 
 .brand-name,
@@ -83,12 +83,12 @@
 
 @media (max-width: 700px) {
     .brand-assembly {
-        gap: 14px;
+        gap: 4px;
         max-width: calc(100vw - 32px);
     }
 
     .main-logo {
-        width: clamp(68px, 17vw, 100px);
+        width: clamp(72px, 18vw, 108px);
     }
 
     .brand-text {
