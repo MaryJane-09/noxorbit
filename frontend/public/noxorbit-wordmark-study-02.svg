@@ -1,22 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 148" role="img" aria-labelledby="title desc">
-  <title id="title">NOXORBIT</title>
-  <desc id="desc">NoxOrbit custom geometric champagne-gold wordmark.</desc>
-  <defs>
-    <linearGradient id="wordmark-gold" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#D6AD59"/>
-      <stop offset=".36" stop-color="#F1D68F"/>
-      <stop offset=".72" stop-color="#DAB567"/>
-      <stop offset="1" stop-color="#C59643"/>
-    </linearGradient>
-  </defs>
-  <g fill="none" stroke="url(#wordmark-gold)" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter">
-    <path d="M22 116 V28 L94 116 V28"/>
-    <path d="M149 28 H196 Q211 28 211 43 V101 Q211 116 196 116 H149 Q134 116 134 101 V43 Q134 28 149 28 Z"/>
-    <path d="M248 28 L324 116 M324 28 L248 116"/>
-    <path d="M378 28 H425 Q440 28 440 43 V101 Q440 116 425 116 H378 Q363 116 363 101 V43 Q363 28 378 28 Z"/>
-    <path d="M479 116 V28 H526 Q553 28 553 53 Q553 78 526 78 H479 M519 78 L559 116"/>
-    <path d="M599 116 V28 H644 Q671 28 671 50 Q671 72 644 72 H599 M644 72 Q677 72 677 94 Q677 116 644 116 H599"/>
-    <path d="M716 28 V116"/>
-    <path d="M757 28 H846 M802 28 V116"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 144" role="img" aria-labelledby="title desc">
+<title id="title">NOXORBIT</title>
+<desc id="desc">NoxOrbit geometric champagne-gold wordmark with a clearly defined I.</desc>
+<defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D6AD59"/><stop offset=".36" stop-color="#F1D68F"/><stop offset=".72" stop-color="#DAB567"/><stop offset="1" stop-color="#C59643"/></linearGradient></defs>
+<g fill="none" stroke="url(#gold)" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter">
+<path d="M20 112 V30 L85 112 V30"/>
+<rect x="124" y="30" width="72" height="82" rx="12"/>
+<path d="M234 30 L301 112 M301 30 L234 112"/>
+<rect x="339" y="30" width="72" height="82" rx="12"/>
+<path d="M449 112 V30 H490 Q516 30 516 53 Q516 76 490 76 H449 M487 76 L520 112"/>
+<path d="M559 112 V30 H598 Q622 30 622 51 Q622 71 598 71 H559 M598 71 Q628 71 628 92 Q628 112 598 112 H559"/>
+<path d="M656 30 H698 M677 30 V112 M656 112 H698"/>
+<path d="M724 30 H805 M764 30 V112"/>
+</g>
 </svg>
