@@ -14,7 +14,7 @@
     left: 50%;
     display: flex;
     align-items: center;
-    gap: clamp(18px, 2.2vw, 28px);
+    gap: clamp(14px, 1.7vw, 22px);
     width: max-content;
     max-width: calc(100vw - 40px);
     transform: translate(-50%, -50%);
@@ -33,7 +33,7 @@
 
 .main-logo {
     display: block;
-    width: 160px;
+    width: 140px;
     height: auto;
     flex: 0 0 auto;
     opacity: 0;
@@ -44,9 +44,9 @@
 .brand-text {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    width: 360px;
-    flex: 0 1 360px;
+    gap: 8px;
+    width: 390px;
+    flex: 0 1 390px;
 }
 
 .brand-name,
@@ -88,12 +88,12 @@
     }
 
     .main-logo {
-        width: clamp(76px, 18vw, 112px);
+        width: clamp(68px, 17vw, 100px);
     }
 
     .brand-text {
-        width: clamp(190px, 52vw, 260px);
-        flex-basis: clamp(190px, 52vw, 260px);
+        width: clamp(184px, 55vw, 260px);
+        flex-basis: clamp(184px, 55vw, 260px);
         gap: 8px;
     }
 
