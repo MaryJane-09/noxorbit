@@ -6,6 +6,27 @@
     text-align: left;
 }
 
+.auth-page {
+    isolation: isolate;
+    background:
+        radial-gradient(ellipse 55% 65% at 8% 44%, rgba(84, 44, 111, 0.22), transparent 75%),
+        radial-gradient(ellipse 45% 55% at 100% 6%, rgba(58, 32, 80, 0.17), transparent 78%),
+        linear-gradient(120deg, #100d17 0%, #09080c 65%, #100c16 100%);
+}
+
+.auth-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(200, 169, 107, 0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(200, 169, 107, 0.025) 1px, transparent 1px);
+    background-size: 110px 110px;
+    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.45), transparent 75%);
+}
+
 .register-page h1,
 .register-page h2 {
     color: var(--ivory);
@@ -20,8 +41,9 @@
 /* top-right "Already have an account?" */
 .register-topbar {
     position: absolute;
-    top: 28px;
-    right: 48px;
+    top: 32px;
+    right: 6vw;
+    z-index: 2;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -48,21 +70,25 @@
 .register-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    gap: clamp(40px, 6vw, 110px);
     min-height: 100vh;
-    padding: 140px 6vw 56px;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 132px 7vw 64px;
     box-sizing: border-box;
 }
 
 .register-hero {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    padding-bottom: 28px;
 }
 
 .register-hero h1 {
     margin: 0 0 20px;
-    font-size: clamp(36px, 4vw, 56px);
-    line-height: 1.1;
+    font-size: clamp(38px, 4.1vw, 62px);
+    line-height: 1.08;
     letter-spacing: -0.02em;
 }
 
@@ -75,7 +101,7 @@
 
 .feature-list {
     list-style: none;
-    margin: 40px 0 0;
+    margin: 48px 0 0;
     padding: 0;
     display: grid;
     gap: 22px;
@@ -93,8 +119,9 @@
     flex-shrink: 0;
     width: 44px;
     height: 44px;
-    border: 1px solid rgba(200, 169, 107, 0.45);
-    border-radius: 50%;
+    border: 1px solid rgba(200, 169, 107, 0.25);
+    border-radius: 14px;
+    background: rgba(200, 169, 107, 0.055);
     color: var(--gold-soft);
 }
 
@@ -133,22 +160,20 @@
     justify-self: end;
     align-self: center;
     width: 100%;
-    max-width: 520px;
+    max-width: 500px;
     box-sizing: border-box;
-    padding: 44px 48px;
-    border: 1px solid rgba(200, 169, 107, 0.25);
-    border-radius: 24px;
-    background: rgba(23, 17, 31, 0.62);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    padding: 46px 44px;
+    border: 1px solid rgba(200, 169, 107, 0.19);
+    border-radius: 20px;
+    background: linear-gradient(150deg, rgba(35, 26, 45, 0.94), rgba(16, 13, 22, 0.97));
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(244, 241, 234, 0.045);
 }
 
 .card-eyebrow {
     margin: 0 0 14px;
     font-size: 12px;
-    letter-spacing: 0.28em;
-    color: var(--muted);
+    letter-spacing: 0.22em;
+    color: var(--gold-soft);
 }
 
 .register-card .card-title {
@@ -186,9 +211,9 @@
     gap: 12px;
     height: 56px;
     padding: 0 16px;
-    border: 1px solid rgba(200, 169, 107, 0.28);
-    border-radius: 14px;
-    background: rgba(9, 8, 12, 0.55);
+    border: 1px solid rgba(200, 169, 107, 0.2);
+    border-radius: 12px;
+    background: rgba(9, 8, 12, 0.62);
     color: var(--muted);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -236,8 +261,8 @@
     height: 56px;
     margin-top: 8px;
     border: 0;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+    border-radius: 12px;
+    background: linear-gradient(120deg, #efd18a, #c8a96b);
     color: var(--obsidian);
     font: inherit;
     font-size: 16px;
@@ -263,6 +288,7 @@
     .register-layout {
         grid-template-columns: 1fr;
         padding-top: 120px;
+        gap: 0;
     }
 
     .register-hero {
