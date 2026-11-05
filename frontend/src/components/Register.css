@@ -35,7 +35,7 @@
 }
 
 .register-page .accent {
-    color: var(--gold);
+    color: #e0bd77;
 }
 
 /* top-right "Already have an account?" */
@@ -96,7 +96,7 @@
     max-width: 440px;
     font-size: 17px;
     line-height: 1.6;
-    color: var(--muted);
+    color: #c8becd;
 }
 
 .feature-list {
@@ -136,7 +136,7 @@
 
 .feature-text {
     font-size: 14px;
-    color: var(--muted);
+    color: #bcb1c3;
 }
 
 .hero-footer {
@@ -163,9 +163,9 @@
     max-width: 500px;
     box-sizing: border-box;
     padding: 46px 44px;
-    border: 1px solid rgba(200, 169, 107, 0.19);
+    border: 1px solid rgba(218, 181, 103, 0.34);
     border-radius: 20px;
-    background: linear-gradient(150deg, rgba(35, 26, 45, 0.94), rgba(16, 13, 22, 0.97));
+    background: linear-gradient(150deg, rgba(44, 33, 55, 0.97), rgba(23, 17, 31, 0.98));
     box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(244, 241, 234, 0.045);
 }
 
@@ -185,7 +185,7 @@
 .card-subtitle {
     margin: 8px 0 28px;
     font-size: 19px;
-    color: var(--muted);
+    color: #c8becd;
 }
 
 .form-message {
@@ -211,7 +211,7 @@
     gap: 12px;
     height: 56px;
     padding: 0 16px;
-    border: 1px solid rgba(200, 169, 107, 0.2);
+    border: 1px solid rgba(200, 169, 107, 0.31);
     border-radius: 12px;
     background: rgba(9, 8, 12, 0.62);
     color: var(--muted);
@@ -236,7 +236,7 @@
 }
 
 .field input::placeholder {
-    color: var(--muted);
+    color: #bdb2c4;
 }
 
 .field-toggle {
