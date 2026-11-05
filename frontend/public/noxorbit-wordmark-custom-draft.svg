@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1030 170" role="img" aria-labelledby="title desc">
+  <title id="title">NOXORBIT custom geometric wordmark — draft 2</title>
+  <desc id="desc">A custom-drawn uppercase geometric wordmark with angular construction, balanced spacing and champagne-gold strokes.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C99632"/>
+      <stop offset="0.34" stop-color="#F2D477"/>
+      <stop offset="0.62" stop-color="#FFE8A0"/>
+      <stop offset="1" stop-color="#C18E32"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
+    <!-- N -->
+    <path d="M30 126 V30 L100 126 V30"/>
+    <!-- O: clipped corners and a restrained upper-right precision break -->
+    <path d="M153 47 L170 30 H214 L231 47 V109 L214 126 H170 L153 109 Z"/>
+    <path d="M214 30 L225 41" stroke="#09080C" stroke-width="11"/>
+    <!-- X -->
+    <path d="M274 30 L352 126 M352 30 L274 126"/>
+    <!-- O -->
+    <path d="M397 47 L414 30 H458 L475 47 V109 L458 126 H414 L397 109 Z"/>
+    <!-- R -->
+    <path d="M520 126 V30 H570 L589 48 V69 L570 87 H520 M565 87 L592 126"/>
+    <!-- B -->
+    <path d="M635 30 V126 H685 L704 108 V91 L685 78 H635 M685 78 L704 62 V48 L685 30 Z"/>
+    <!-- I -->
+    <path d="M750 30 V126"/>
+    <!-- T -->
+    <path d="M797 30 H883 M840 30 V126"/>
+  </g>
+</svg>
