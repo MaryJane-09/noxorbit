@@ -8,10 +8,11 @@
 
 .auth-page {
     isolation: isolate;
+    overflow: hidden;
     background:
-        radial-gradient(ellipse 58% 65% at 3% 72%, rgba(107, 42, 131, 0.27), transparent 76%),
-        radial-gradient(ellipse 45% 55% at 100% 6%, rgba(83, 32, 106, 0.21), transparent 78%),
-        linear-gradient(120deg, #100d17 0%, #09080c 65%, #100c16 100%);
+        linear-gradient(90deg, rgba(12, 7, 19, 0.06), rgba(9, 5, 16, 0.18) 70%),
+        url('/auth-atmosphere.svg') center bottom / cover no-repeat,
+        #100918;
 }
 
 .auth-page::before {
@@ -20,11 +21,7 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background:
-        linear-gradient(90deg, rgba(200, 169, 107, 0.035) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(200, 169, 107, 0.025) 1px, transparent 1px);
-    background-size: 110px 110px;
-    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent 75%);
+    background: radial-gradient(ellipse at 52% 50%, transparent 30%, rgba(8, 5, 14, 0.12) 100%);
 }
 
 .register-page h1,
@@ -85,44 +82,12 @@
     flex-direction: column;
     justify-content: center;
     padding-bottom: 28px;
-}
-
-/* Quiet orbital signature: drawn in CSS so no duplicate image assets are needed. */
-.register-hero::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
-    width: clamp(360px, 43vw, 720px);
-    height: clamp(220px, 25vw, 380px);
-    top: 24%;
-    left: 45%;
-    border: 1px solid rgba(195, 106, 220, 0.18);
-    border-top-color: rgba(226, 176, 123, 0.55);
-    border-left-color: rgba(195, 106, 220, 0.3);
-    border-radius: 50%;
-    transform: rotate(-31deg);
-    box-shadow: 0 -2px 18px rgba(160, 72, 193, 0.08);
-}
-
-.register-hero::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
-    width: min(65vw, 720px);
-    height: 170px;
-    left: -9vw;
-    bottom: -64px;
-    border-radius: 50% 50% 0 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(221, 139, 238, 0.32), rgba(95, 40, 115, 0.14) 35%, transparent 72%);
-    border-top: 1px solid rgba(236, 163, 239, 0.4);
-    filter: blur(0.5px);
+    z-index: 1;
 }
 
 .register-hero h1 {
     margin: 0 0 20px;
-    font-size: clamp(38px, 4.1vw, 62px);
+    font-size: clamp(40px, 4.25vw, 64px);
     line-height: 1.08;
     letter-spacing: -0.02em;
 }
@@ -136,10 +101,10 @@
 
 .feature-list {
     list-style: none;
-    margin: 48px 0 0;
+    margin: 36px 0 0;
     padding: 0;
     display: grid;
-    gap: 22px;
+    gap: 18px;
 }
 
 .feature {
@@ -156,7 +121,7 @@
     height: 44px;
     border: 1px solid rgba(200, 169, 107, 0.25);
     border-radius: 14px;
-    background: rgba(200, 169, 107, 0.055);
+    background: linear-gradient(140deg, rgba(135, 65, 157, 0.24), rgba(200, 169, 107, 0.07));
     color: var(--gold-soft);
 }
 
@@ -195,19 +160,20 @@
     justify-self: end;
     align-self: center;
     width: 100%;
-    max-width: 500px;
+    max-width: 540px;
     box-sizing: border-box;
-    padding: 46px 44px;
+    padding: 44px 44px;
     position: relative;
-    border: 1px solid rgba(226, 182, 112, 0.48);
-    border-radius: 24px;
+    border: 1px solid rgba(234, 179, 105, 0.72);
+    border-radius: 30px;
     background:
-        radial-gradient(ellipse at 100% 0%, rgba(117, 41, 133, 0.25), transparent 52%),
-        linear-gradient(150deg, rgba(43, 25, 54, 0.98), rgba(20, 12, 29, 0.99));
+        radial-gradient(ellipse at 100% 0%, rgba(153, 53, 182, 0.33), transparent 52%),
+        radial-gradient(ellipse at 100% 100%, rgba(116, 32, 139, 0.22), transparent 45%),
+        linear-gradient(150deg, rgba(44, 20, 57, 0.98), rgba(18, 9, 28, 0.99));
     box-shadow:
-        0 28px 90px rgba(0, 0, 0, 0.4),
-        0 0 32px rgba(141, 58, 173, 0.1),
-        inset 0 1px 0 rgba(244, 241, 234, 0.08);
+        0 30px 100px rgba(0, 0, 0, 0.56),
+        0 0 44px rgba(163, 55, 192, 0.2),
+        inset 0 1px 0 rgba(255, 226, 170, 0.14);
 }
 
 /* A fine highlight gives the card a crafted edge, not a neon outline. */
@@ -216,11 +182,11 @@
     position: absolute;
     pointer-events: none;
     top: -1px;
-    right: 12%;
-    width: 32%;
+    right: 9%;
+    width: 48%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #e5cc91, transparent);
-    box-shadow: 0 0 12px rgba(229, 204, 145, 0.45);
+    background: linear-gradient(90deg, transparent, #ffe5ad, #e5a1f5, transparent);
+    box-shadow: 0 0 16px rgba(229, 160, 245, 0.65);
 }
 
 .card-eyebrow {
@@ -232,7 +198,7 @@
 
 .register-card .card-title {
     margin: 0;
-    font-size: 34px;
+    font-size: clamp(32px, 2.7vw, 40px);
     line-height: 1.15;
 }
 
@@ -267,7 +233,7 @@
     padding: 0 16px;
     border: 1px solid rgba(176, 101, 191, 0.38);
     border-radius: 14px;
-    background: rgba(9, 8, 12, 0.62);
+    background: rgba(13, 7, 21, 0.83);
     color: var(--muted);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -322,7 +288,7 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 20px rgba(200, 169, 107, 0.15);
+    box-shadow: 0 5px 24px rgba(219, 159, 76, 0.28);
     transition: transform 0.15s, box-shadow 0.2s;
 }
 
@@ -352,9 +318,6 @@
 
     .register-card {
         max-width: 520px;
-    }
-
-    .register-card {
         justify-self: center;
         padding: 32px 24px;
     }
@@ -385,6 +348,10 @@
     .register-card {
         padding: 28px 20px;
         border-radius: 20px;
+    }
+
+    .auth-page {
+        background-position: 36% bottom;
     }
 
     .register-card .card-title {
