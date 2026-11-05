@@ -1,31 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 170" role="img" aria-labelledby="title desc">
-  <title id="title">NOXORBIT wordmark — letterform study</title>
-  <desc id="desc">A custom geometric uppercase wordmark in warm champagne gold, with precise open geometry and a subtle cut in the first O.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 870 148" role="img" aria-labelledby="title desc">
+  <title id="title">NOXORBIT</title>
+  <desc id="desc">NoxOrbit custom geometric champagne-gold wordmark.</desc>
   <defs>
-    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#D3A64D"/>
-      <stop offset=".48" stop-color="#F1D487"/>
-      <stop offset="1" stop-color="#BD8B37"/>
+    <linearGradient id="wordmark-gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#D6AD59"/>
+      <stop offset=".36" stop-color="#F1D68F"/>
+      <stop offset=".72" stop-color="#DAB567"/>
+      <stop offset="1" stop-color="#C59643"/>
     </linearGradient>
   </defs>
-  <g fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
-    <!-- N -->
-    <path d="M32 126 V42 L100 126 V42"/>
-    <!-- O: squared oval with a restrained upper-right break -->
-    <path d="M151 126 H205 Q218 126 218 113 V55 Q218 42 205 42 H164 Q151 42 151 55 V113 Q151 126 164 126"/>
-    <!-- X -->
-    <path d="M260 42 L332 126 M332 42 L260 126"/>
-    <!-- O -->
-    <path d="M376 126 H430 Q443 126 443 113 V55 Q443 42 430 42 H389 Q376 42 376 55 V113 Q376 126 389 126"/>
-    <!-- R -->
-    <path d="M485 126 V42 H532 Q558 42 558 66 Q558 89 532 89 H485 M523 89 L562 126"/>
-    <!-- B -->
-    <path d="M604 126 V42 H649 Q675 42 675 64 Q675 84 649 84 H604 M649 84 Q681 84 681 105 Q681 126 649 126 H604"/>
-    <!-- I -->
-    <path d="M724 42 V126"/>
-    <!-- T -->
-    <path d="M770 42 H858 M814 42 V126"/>
+  <g fill="none" stroke="url(#wordmark-gold)" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M22 116 V28 L94 116 V28"/>
+    <path d="M149 28 H196 Q211 28 211 43 V101 Q211 116 196 116 H149 Q134 116 134 101 V43 Q134 28 149 28 Z"/>
+    <path d="M248 28 L324 116 M324 28 L248 116"/>
+    <path d="M378 28 H425 Q440 28 440 43 V101 Q440 116 425 116 H378 Q363 116 363 101 V43 Q363 28 378 28 Z"/>
+    <path d="M479 116 V28 H526 Q553 28 553 53 Q553 78 526 78 H479 M519 78 L559 116"/>
+    <path d="M599 116 V28 H644 Q671 28 671 50 Q671 72 644 72 H599 M644 72 Q677 72 677 94 Q677 116 644 116 H599"/>
+    <path d="M716 28 V116"/>
+    <path d="M757 28 H846 M802 28 V116"/>
   </g>
-  <!-- Small signature notch in the first O; deliberately subtle. -->
-  <path d="M208 39 L220 39 L211 49" fill="none" stroke="#09080C" stroke-width="8" stroke-linecap="square"/>
 </svg>
