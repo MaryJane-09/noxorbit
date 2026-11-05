@@ -32,20 +32,6 @@
 }
 
 .main-logo {
-    width: 104px;
-}
-
-.brand-assembly.is-settled .brand-text {
-    width: 268px;
-    flex-basis: 268px;
-    gap: 5px;
-}
-
-.brand-assembly.is-settled .brand-tagline {
-    filter: brightness(1.22);
-}
-
-.main-logo {
     display: block;
     width: 148px;
     height: auto;
