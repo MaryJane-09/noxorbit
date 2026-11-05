@@ -9,7 +9,7 @@ const FEATURES = [
 
 export default function AuthShell({ topbarText, topbarLabel, onTopbar, children }) {
     return (
-        <div className="register-page">
+        <div className="register-page auth-page">
             <div className="register-topbar">
                 <span>{topbarText}</span>
                 <button type="button" className="btn-outline" onClick={() => onTopbar?.()}>
