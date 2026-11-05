@@ -19,14 +19,11 @@ function Intro({ onComplete }) {
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    // ...the return (JSX) stays exactly as it is
-
-    
 
     return (
         <div className="cinematic-intro">
             <div className={`brand-assembly ${settled ? "is-settled" : ""}`}>
-                <img src="/logo.png" className="main-logo" alt="" />
+                <img src="/noxorbit-mark.svg" className="main-logo" alt="" />
                 <div className="brand-text">
                     <img src="/brand-name.png" className={`brand-name ${showName ? "is-visible" : ""}`} alt="Noxorbit" />
                     <img src="/brand-tagline.png" className={`brand-tagline ${showTagline ? "is-visible" : ""}`} alt="Connect, Collaborate, Achieve" />
