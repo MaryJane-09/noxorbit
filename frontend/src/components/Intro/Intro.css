@@ -1,10 +1,8 @@
 .cinematic-intro {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
-    height: 100vh;
-    background: transparent;
+    min-height: 100vh;
     overflow: hidden;
     pointer-events: none;
     z-index: 10;
@@ -14,30 +12,33 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: max-content;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    gap: 28px;
+    gap: clamp(18px, 2.2vw, 28px);
+    width: max-content;
+    max-width: calc(100vw - 40px);
     transform: translate(-50%, -50%);
     transform-origin: top left;
+    transition:
+        top 1.2s cubic-bezier(0.76, 0, 0.24, 1),
+        left 1.2s cubic-bezier(0.76, 0, 0.24, 1),
+        transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .brand-assembly.is-settled {
     top: 24px;
     left: 32px;
     transform: translate(0, 0) scale(0.5);
-    transition: top 1.2s cubic-bezier(0.76, 0, 0.24, 1),
-        left 1.2s cubic-bezier(0.76, 0, 0.24, 1),
-        transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .main-logo {
+    display: block;
     width: 160px;
-    flex-shrink: 0;
+    height: auto;
+    flex: 0 0 auto;
     opacity: 0;
-    transform: scale(0.85);
-    animation: logo-enter 1s ease-out forwards;
+    transform: scale(0.88);
+    animation: logo-enter 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
 }
 
 .brand-text {
@@ -45,21 +46,26 @@
     flex-direction: column;
     gap: 12px;
     width: 360px;
+    flex: 0 1 360px;
 }
 
 .brand-name,
 .brand-tagline {
+    display: block;
     width: 100%;
+    height: auto;
     opacity: 0;
-    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s ease;
 }
 
 .brand-name {
-    transform: translateX(-14px);
+    transform: translateX(-12px);
 }
 
 .brand-tagline {
-    transform: translateY(6px);
+    transform: translateY(5px);
 }
 
 .brand-name.is-visible,
@@ -75,17 +81,19 @@
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .brand-assembly {
         gap: 14px;
+        max-width: calc(100vw - 32px);
     }
 
     .main-logo {
-        width: 96px;
+        width: clamp(76px, 18vw, 112px);
     }
 
     .brand-text {
-        width: 220px;
+        width: clamp(190px, 52vw, 260px);
+        flex-basis: clamp(190px, 52vw, 260px);
         gap: 8px;
     }
 
@@ -93,5 +101,17 @@
         top: 18px;
         left: 20px;
         transform: translate(0, 0) scale(0.6);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .brand-assembly,
+    .brand-name,
+    .brand-tagline {
+        transition-duration: 0.01ms;
+    }
+
+    .main-logo {
+        animation-duration: 0.01ms;
     }
 }
