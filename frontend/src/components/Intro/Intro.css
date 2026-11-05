@@ -28,11 +28,10 @@
 .brand-assembly.is-settled {
     top: 24px;
     left: 32px;
-    gap: 7px;
-    transform: translate(0, 0);
+    transform: translate(0, 0) scale(0.58);
 }
 
-.brand-assembly.is-settled .main-logo {
+.main-logo {
     width: 104px;
 }
 
@@ -115,18 +114,7 @@
     .brand-assembly.is-settled {
         top: 18px;
         left: 16px;
-        gap: 4px;
-        transform: translate(0, 0);
-    }
-
-    .brand-assembly.is-settled .main-logo {
-        width: 66px;
-    }
-
-    .brand-assembly.is-settled .brand-text {
-        width: clamp(172px, 48vw, 218px);
-        flex-basis: clamp(172px, 48vw, 218px);
-        gap: 3px;
+        transform: translate(0, 0) scale(0.7);
     }
 }
 
