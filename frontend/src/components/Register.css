@@ -9,8 +9,8 @@
 .auth-page {
     isolation: isolate;
     background:
-        radial-gradient(ellipse 55% 65% at 8% 44%, rgba(84, 44, 111, 0.22), transparent 75%),
-        radial-gradient(ellipse 45% 55% at 100% 6%, rgba(58, 32, 80, 0.17), transparent 78%),
+        radial-gradient(ellipse 58% 65% at 3% 72%, rgba(107, 42, 131, 0.27), transparent 76%),
+        radial-gradient(ellipse 45% 55% at 100% 6%, rgba(83, 32, 106, 0.21), transparent 78%),
         linear-gradient(120deg, #100d17 0%, #09080c 65%, #100c16 100%);
 }
 
@@ -24,7 +24,7 @@
         linear-gradient(90deg, rgba(200, 169, 107, 0.035) 1px, transparent 1px),
         linear-gradient(0deg, rgba(200, 169, 107, 0.025) 1px, transparent 1px);
     background-size: 110px 110px;
-    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.45), transparent 75%);
+    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent 75%);
 }
 
 .register-page h1,
@@ -79,10 +79,45 @@
 }
 
 .register-hero {
+    position: relative;
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding-bottom: 28px;
+}
+
+/* Quiet orbital signature: drawn in CSS so no duplicate image assets are needed. */
+.register-hero::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    width: clamp(360px, 43vw, 720px);
+    height: clamp(220px, 25vw, 380px);
+    top: 24%;
+    left: 45%;
+    border: 1px solid rgba(195, 106, 220, 0.18);
+    border-top-color: rgba(226, 176, 123, 0.55);
+    border-left-color: rgba(195, 106, 220, 0.3);
+    border-radius: 50%;
+    transform: rotate(-31deg);
+    box-shadow: 0 -2px 18px rgba(160, 72, 193, 0.08);
+}
+
+.register-hero::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    width: min(65vw, 720px);
+    height: 170px;
+    left: -9vw;
+    bottom: -64px;
+    border-radius: 50% 50% 0 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(221, 139, 238, 0.32), rgba(95, 40, 115, 0.14) 35%, transparent 72%);
+    border-top: 1px solid rgba(236, 163, 239, 0.4);
+    filter: blur(0.5px);
 }
 
 .register-hero h1 {
@@ -163,10 +198,29 @@
     max-width: 500px;
     box-sizing: border-box;
     padding: 46px 44px;
-    border: 1px solid rgba(218, 181, 103, 0.34);
-    border-radius: 20px;
-    background: linear-gradient(150deg, rgba(44, 33, 55, 0.97), rgba(23, 17, 31, 0.98));
-    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(244, 241, 234, 0.045);
+    position: relative;
+    border: 1px solid rgba(226, 182, 112, 0.48);
+    border-radius: 24px;
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(117, 41, 133, 0.25), transparent 52%),
+        linear-gradient(150deg, rgba(43, 25, 54, 0.98), rgba(20, 12, 29, 0.99));
+    box-shadow:
+        0 28px 90px rgba(0, 0, 0, 0.4),
+        0 0 32px rgba(141, 58, 173, 0.1),
+        inset 0 1px 0 rgba(244, 241, 234, 0.08);
+}
+
+/* A fine highlight gives the card a crafted edge, not a neon outline. */
+.register-card::before {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    top: -1px;
+    right: 12%;
+    width: 32%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e5cc91, transparent);
+    box-shadow: 0 0 12px rgba(229, 204, 145, 0.45);
 }
 
 .card-eyebrow {
@@ -211,8 +265,8 @@
     gap: 12px;
     height: 56px;
     padding: 0 16px;
-    border: 1px solid rgba(200, 169, 107, 0.31);
-    border-radius: 12px;
+    border: 1px solid rgba(176, 101, 191, 0.38);
+    border-radius: 14px;
     background: rgba(9, 8, 12, 0.62);
     color: var(--muted);
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -262,12 +316,13 @@
     margin-top: 8px;
     border: 0;
     border-radius: 12px;
-    background: linear-gradient(120deg, #efd18a, #c8a96b);
+    background: linear-gradient(120deg, #f2d58f, #c99b50);
     color: var(--obsidian);
     font: inherit;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    box-shadow: 0 4px 20px rgba(200, 169, 107, 0.15);
     transition: transform 0.15s, box-shadow 0.2s;
 }
 
@@ -293,6 +348,10 @@
 
     .register-hero {
         display: none;
+    }
+
+    .register-card {
+        max-width: 520px;
     }
 
     .register-card {
