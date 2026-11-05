@@ -65,7 +65,12 @@
 }
 
 .brand-tagline {
+    width: 108%;
+    max-width: none;
     transform: translateY(5px);
+    transform-origin: left center;
+    filter: brightness(1.45) contrast(1.15);
+    /* Keep the lettering clear against the starfield. */
 }
 
 .brand-name.is-visible,
@@ -95,6 +100,10 @@
         width: clamp(184px, 55vw, 260px);
         flex-basis: clamp(184px, 55vw, 260px);
         gap: 8px;
+    }
+
+    .brand-tagline {
+        width: 105%;
     }
 
     .brand-assembly.is-settled {
