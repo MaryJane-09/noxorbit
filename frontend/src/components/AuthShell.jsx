@@ -1,5 +1,6 @@
 import { Users, SquareCheck, ChartNoAxesColumnIncreasing } from 'lucide-react'
 import './Register.css'
+import AuthCosmos from './AuthCosmos'
 
 const FEATURES = [
     { icon: <Users size={20} />, title: 'Work together', text: 'Keep your team in sync' },
@@ -7,9 +8,10 @@ const FEATURES = [
     { icon: <ChartNoAxesColumnIncreasing size={20} />, title: 'Achieve more', text: 'Turn ideas into real progress' },
 ]
 
-export default function AuthShell({ topbarText, topbarLabel, onTopbar, visualMode, children }) {
+export default function AuthShell({ topbarText, topbarLabel, onTopbar, children }) {
     return (
-        <div className={`register-page auth-page ${visualMode === "reference" ? "auth-reference" : ""}`}>
+        <div className="register-page auth-page">
+            <AuthCosmos />
             <div className="register-topbar">
                 <span>{topbarText}</span>
                 <button type="button" className="btn-outline" onClick={() => onTopbar?.()}>
