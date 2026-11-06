@@ -26,8 +26,8 @@
 }
 
 .brand-assembly.is-settled {
-    top: 24px;
-    left: 32px;
+    top: 8px;
+    left: clamp(36px, 6.2vw, 112px);
     transform: translate(0, 0) scale(0.58);
 }
 
@@ -46,8 +46,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    width: 380px;
-    flex: 0 1 380px;
+    width: 400px;
+    flex: 0 1 400px;
 }
 
 .brand-name,
@@ -73,10 +73,10 @@
     width: 100%;
     transform: translateY(5px);
     color: #f6e6c3;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 700;
     line-height: 1.3;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.115em;
     white-space: nowrap;
     text-shadow:
         0 1px 3px rgba(0, 0, 0, 0.9),
