@@ -13,9 +13,10 @@ const STARS = Array.from({ length: 64 }, (_, i) => ({
     opacity: 0.1 + noise(i + 351) * 0.27,
 }));
 
-// Both ends disappear behind the form: the orbit never stops in open space.
+// One continuous orbital sweep. Both endpoints sit behind the form,
+// leaving the illuminated curve visible without an abrupt cut in open space.
 const ORBIT =
-    "M 990 284 C 837 313 708 399 632 513 C 569 612 646 623 765 563 C 869 521 955 494 1054 485";
+    "M 1040 274 C 862 301 724 378 638 493 C 566 592 604 626 732 574 C 863 520 962 488 1084 475";
 
 export default function AuthCosmos() {
     return (
@@ -33,23 +34,29 @@ export default function AuthCosmos() {
                         <stop offset="1" stopColor="#f0a5e8" stopOpacity="0" />
                     </radialGradient>
                     <linearGradient id="nox-orbit-color" gradientUnits="userSpaceOnUse"
-                        x1="628" y1="526" x2="900" y2="285">
-                        <stop stopColor="#a64aab" stopOpacity=".1" />
-                        <stop offset=".28" stopColor="#b65bba" stopOpacity=".38" />
-                        <stop offset=".59" stopColor="#efb8ae" stopOpacity=".8" />
-                        <stop offset=".76" stopColor="#f4d49e" stopOpacity=".63" />
-                        <stop offset="1" stopColor="#94519a" stopOpacity=".04" />
+                        x1="605" y1="562" x2="857" y2="300">
+                        <stop stopColor="#a450b5" stopOpacity=".28" />
+                        <stop offset=".23" stopColor="#c37bbb" stopOpacity=".62" />
+                        <stop offset=".48" stopColor="#eab49e" stopOpacity=".91" />
+                        <stop offset=".62" stopColor="#ffe3b6" stopOpacity=".98" />
+                        <stop offset=".79" stopColor="#c58cbb" stopOpacity=".67" />
+                        <stop offset="1" stopColor="#a251af" stopOpacity=".16" />
                     </linearGradient>
-                    <radialGradient id="nox-moon-disc" cx="35%" cy="27%" r="82%">
-                        <stop stopColor="#27132f" />
-                        <stop offset=".58" stopColor="#140b20" />
-                        <stop offset="1" stopColor="#0b0715" />
+                    <radialGradient id="nox-moon-disc" cx="26%" cy="38%" r="90%">
+                        <stop stopColor="#4b2858" />
+                        <stop offset=".26" stopColor="#2b1737" />
+                        <stop offset=".68" stopColor="#140b22" />
+                        <stop offset="1" stopColor="#090713" />
                     </radialGradient>
-                    <linearGradient id="nox-moon-crescent" x1="0" y1="1" x2="1" y2="0">
-                        <stop stopColor="#ad5baf" stopOpacity=".35" />
-                        <stop offset=".5" stopColor="#f4a5d2" />
-                        <stop offset="1" stopColor="#e6b3d7" stopOpacity=".65" />
+                    <linearGradient id="nox-moon-crescent" gradientUnits="userSpaceOnUse"
+                        x1="735" y1="211" x2="763" y2="185">
+                        <stop stopColor="#ad5baf" stopOpacity=".46" />
+                        <stop offset=".48" stopColor="#f4a5d2" />
+                        <stop offset="1" stopColor="#f2d3df" stopOpacity=".68" />
                     </linearGradient>
+                    <clipPath id="nox-moon-clip">
+                        <circle cx="764" cy="207" r="31" />
+                    </clipPath>
                     <filter id="nox-soft-glow" x="-100%" y="-100%" width="300%" height="300%">
                         <feGaussianBlur stdDeviation="5" />
                     </filter>
@@ -72,26 +79,45 @@ export default function AuthCosmos() {
                     ))}
                 </g>
 
-                {/* Independent animated orbital light; never part of a static screenshot. */}
+                {/* A continuous, low-contrast orbit with one travelling warm reflection. */}
                 <g className="auth-orbital-art">
-                    <path d={ORBIT} fill="none" stroke="#a44b9f"
-                        strokeWidth="12" opacity=".09" filter="url(#nox-soft-glow)" />
+                    <path d={ORBIT} fill="none" stroke="#ae5bba"
+                        strokeWidth="12" opacity=".16" filter="url(#nox-soft-glow)" />
+                    <path d={ORBIT} fill="none" stroke="#a85fb2"
+                        strokeWidth="1.25" opacity=".38" strokeLinecap="round" />
                     <path d={ORBIT} fill="none" stroke="url(#nox-orbit-color)"
-                        strokeWidth="2.4" strokeLinecap="round" />
-                    <path d={ORBIT} className="auth-orbit-sheen" fill="none"
-                        stroke="#ffdaa8" strokeWidth="2.3" strokeLinecap="round"
-                        pathLength="1000" strokeDasharray="24 976" />
+                        strokeWidth="2.65" strokeLinecap="round" />
+                    <path d={ORBIT} className="auth-orbit-sheen auth-orbit-aura"
+                        fill="none" stroke="#ffd7a3" strokeWidth="8"
+                        strokeLinecap="round" filter="url(#nox-soft-glow)"
+                        pathLength="1000" strokeDasharray="52 948" />
+                    <path d={ORBIT} className="auth-orbit-sheen"
+                        fill="none" stroke="#fff0c7" strokeWidth="2.5"
+                        strokeLinecap="round" pathLength="1000"
+                        strokeDasharray="52 948" />
                 </g>
 
                 <g className="auth-distant-moon">
-                    <circle cx="764" cy="207" r="40" fill="#a84aab"
-                        opacity=".12" filter="url(#nox-atmosphere-glow)" />
-                    <circle cx="764" cy="207" r="31" fill="url(#nox-moon-disc)" />
-                    <path d="M 760 177 C 737 183 726 214 749 236" fill="none"
-                        stroke="#ad5baf" strokeWidth="7" opacity=".27"
-                        filter="url(#nox-soft-glow)" />
-                    <path d="M 760 177 C 737 183 726 214 749 236" fill="none"
-                        stroke="url(#nox-moon-crescent)" strokeWidth="2" strokeLinecap="round" />
+                    <circle className="auth-moon-halo" cx="764" cy="207" r="43"
+                        fill="#b763bf" opacity=".19" filter="url(#nox-atmosphere-glow)" />
+                    <g clipPath="url(#nox-moon-clip)">
+                        <circle cx="764" cy="207" r="31" fill="url(#nox-moon-disc)" />
+                        <path d="M 756 179 C 735 192 730 216 751 235
+                                 C 739 218 742 193 756 179 Z"
+                            fill="url(#nox-moon-crescent)" opacity=".58" />
+                        <ellipse cx="757" cy="201" rx="8" ry="3" fill="#865d89"
+                            opacity=".12" transform="rotate(-24 757 201)" />
+                        <ellipse cx="770" cy="220" rx="11" ry="4" fill="#76547d"
+                            opacity=".1" transform="rotate(18 770 220)" />
+                        <path d="M 744 220 Q 753 211 762 215" fill="none"
+                            stroke="#a277a7" strokeWidth=".7" opacity=".18" />
+                    </g>
+                    <path d="M 758 177 C 735 185 729 215 750 237" fill="none"
+                        stroke="#c96bca" strokeWidth="7" opacity=".25"
+                        filter="url(#nox-soft-glow)" strokeLinecap="round" />
+                    <path d="M 758 177 C 735 185 729 215 750 237" fill="none"
+                        stroke="url(#nox-moon-crescent)" strokeWidth="1.8"
+                        strokeLinecap="round" />
                 </g>
 
                 {/* The planet is a standalone illustration, not a crop of the reference UI. */}
