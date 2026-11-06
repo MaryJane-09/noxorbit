@@ -39,8 +39,6 @@ export default function AuthShell({ topbarText, topbarLabel, onTopbar, children 
                             </li>
                         ))}
                     </ul>
-
-                    <p className="hero-footer">Better teams. Bigger dreams.</p>
                 </section>
 
                 <section className="register-card">{children}</section>
