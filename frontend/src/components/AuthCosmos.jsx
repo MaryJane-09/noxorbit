@@ -34,6 +34,14 @@ export default function AuthCosmos() {
                         <stop offset=".68" stopColor="#f6b878" />
                         <stop offset="1" stopColor="#9541a0" stopOpacity=".05" />
                     </linearGradient>
+                    <linearGradient id="nox-orbit-highlight" gradientUnits="userSpaceOnUse"
+                        x1="616" y1="520" x2="850" y2="275">
+                        <stop stopColor="#a13d9f" stopOpacity=".14" />
+                        <stop offset=".34" stopColor="#e79db9" stopOpacity=".8" />
+                        <stop offset=".59" stopColor="#ffe2ac" />
+                        <stop offset=".79" stopColor="#f8bd75" stopOpacity=".85" />
+                        <stop offset="1" stopColor="#bd68a9" stopOpacity="0" />
+                    </linearGradient>
                     <radialGradient id="nox-twilight">
                         <stop stopColor="#f4a1f0" stopOpacity=".3" />
                         <stop offset="1" stopColor="#f4a1f0" stopOpacity="0" />
@@ -62,6 +70,9 @@ export default function AuthCosmos() {
                         strokeWidth="9" opacity=".27" />
                     <path d={ORBIT} fill="none" stroke="url(#nox-orbit-gold)"
                         strokeWidth="3.3" strokeLinecap="round" />
+                    <path d="M 845 286 C 730 345 652 422 618 510"
+                        fill="none" stroke="url(#nox-orbit-highlight)"
+                        strokeWidth="3.1" strokeLinecap="round" />
                     <path d={ORBIT} className="auth-orbit-sheen" fill="none"
                         stroke="#f7ceaa" strokeWidth="3.1"
                         strokeDasharray="12 1250" strokeLinecap="round" />
