@@ -67,11 +67,11 @@
 .register-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(40px, 6vw, 110px);
+    gap: clamp(48px, 6vw, 110px);
     min-height: 100vh;
     max-width: 1600px;
     margin: 0 auto;
-    padding: 132px 7vw 64px;
+    padding: 120px 7vw 48px;
     box-sizing: border-box;
 }
 
@@ -81,13 +81,13 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-bottom: 28px;
+    padding-bottom: 8px;
     z-index: 1;
 }
 
 .register-hero h1 {
     margin: 0 0 20px;
-    font-size: clamp(40px, 4.25vw, 64px);
+    font-size: clamp(38px, 4vw, 60px);
     line-height: 1.08;
     letter-spacing: -0.02em;
 }
@@ -101,10 +101,10 @@
 
 .feature-list {
     list-style: none;
-    margin: 36px 0 0;
+    margin: 28px 0 0;
     padding: 0;
     display: grid;
-    gap: 18px;
+    gap: 14px;
 }
 
 .feature {
@@ -140,8 +140,8 @@
 }
 
 .hero-footer {
-    margin-top: auto;
-    padding-top: 48px;
+    margin-top: 22px;
+    padding-top: 0;
     font-size: 15px;
     color: var(--muted);
 }
@@ -162,18 +162,18 @@
     width: 100%;
     max-width: 540px;
     box-sizing: border-box;
-    padding: 44px 44px;
+    padding: 38px 42px;
     position: relative;
-    border: 1px solid rgba(234, 179, 105, 0.72);
+    border: 1px solid rgba(234, 179, 105, 0.6);
     border-radius: 30px;
     background:
-        radial-gradient(ellipse at 100% 0%, rgba(153, 53, 182, 0.33), transparent 52%),
-        radial-gradient(ellipse at 100% 100%, rgba(116, 32, 139, 0.22), transparent 45%),
+        radial-gradient(ellipse at 100% 0%, rgba(153, 53, 182, 0.24), transparent 52%),
+        radial-gradient(ellipse at 100% 100%, rgba(116, 32, 139, 0.17), transparent 45%),
         linear-gradient(150deg, rgba(44, 20, 57, 0.98), rgba(18, 9, 28, 0.99));
     box-shadow:
         0 30px 100px rgba(0, 0, 0, 0.56),
-        0 0 44px rgba(163, 55, 192, 0.2),
-        inset 0 1px 0 rgba(255, 226, 170, 0.14);
+        0 0 28px rgba(163, 55, 192, 0.13),
+        inset 0 1px 0 rgba(255, 226, 170, 0.12);
 }
 
 /* A fine highlight gives the card a crafted edge, not a neon outline. */
@@ -203,7 +203,7 @@
 }
 
 .card-subtitle {
-    margin: 8px 0 28px;
+    margin: 8px 0 24px;
     font-size: 19px;
     color: #c8becd;
 }
@@ -222,14 +222,14 @@
 .register-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
+    gap: 14px;
 }
 
 .field {
     display: flex;
     align-items: center;
     gap: 12px;
-    height: 56px;
+    height: 52px;
     padding: 0 16px;
     border: 1px solid rgba(176, 101, 191, 0.38);
     border-radius: 14px;
@@ -278,7 +278,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    height: 56px;
+    height: 54px;
     margin-top: 8px;
     border: 0;
     border-radius: 12px;
