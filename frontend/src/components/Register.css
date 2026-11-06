@@ -1,142 +1,139 @@
+/* NoxOrbit authentication: independently drawn atmosphere and real React form.
+   No screenshots or image-backed click targets are used in this layout. */
 .register-page {
     position: relative;
-    z-index: 1;
-    min-height: 100vh;
+    isolation: isolate;
+    min-height: max(100vh, 780px);
+    overflow: hidden;
     color: var(--ivory);
     text-align: left;
-}
-
-.auth-page {
-    isolation: isolate;
-    overflow: hidden;
     background:
-        radial-gradient(ellipse 72% 80% at 0% 56%, rgba(111, 31, 124, 0.38), transparent 77%),
-        radial-gradient(ellipse 52% 65% at 88% 4%, rgba(73, 19, 87, 0.2), transparent 82%),
-        linear-gradient(110deg, #16091f 0%, #0c0716 65%, #090710 100%);
-}
-
-/* Actual planetary and orbital artwork cropped from the approved reference.
-   Keep this layer behind interactive content and retain the intro separately. */
-.auth-page::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: url('/auth-artwork.svg') center bottom / cover no-repeat;
+        radial-gradient(ellipse 67% 81% at 1% 62%, rgba(111, 36, 126, .33), transparent 74%),
+        radial-gradient(ellipse 49% 58% at 100% 8%, rgba(67, 24, 84, .2), transparent 76%),
+        linear-gradient(112deg, #1a0a23 0%, #0f0919 52%, #0a0711 100%);
 }
 
 .register-page h1,
 .register-page h2 {
     color: var(--ivory);
-    font-weight: 600;
+    font-family: var(--font-display);
     text-align: left;
 }
 
 .register-page .accent {
-    color: #e0bd77;
+    color: #e7bd70;
 }
 
-/* top-right "Already have an account?" */
 .register-topbar {
     position: absolute;
-    top: 32px;
-    right: 6vw;
-    z-index: 2;
+    z-index: 4;
+    top: 34px;
+    right: 7vw;
     display: flex;
     align-items: center;
-    gap: 16px;
-    font-size: 14px;
-    color: var(--muted);
+    gap: 24px;
+    color: #d6cada;
+    font-size: 15px;
 }
 
 .btn-outline {
-    padding: 10px 22px;
-    border: 1px solid var(--gold);
+    min-height: 44px;
+    padding: 9px 28px;
+    border: 1px solid #dbb36b;
     border-radius: 999px;
-    background: transparent;
-    color: var(--gold-soft);
-    font: inherit;
+    color: #f2d58f;
+    background: rgba(21, 11, 26, .4);
+    font-weight: 650;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background .2s ease, border-color .2s ease, transform .2s ease;
 }
-
 .btn-outline:hover {
-    background: rgba(200, 169, 107, 0.12);
+    background: rgba(203, 157, 90, .15);
+    border-color: #ffe2a4;
+    transform: translateY(-1px);
 }
 
-/* two columns: hero on the left, card on the right */
 .register-layout {
+    position: relative;
+    z-index: 2;
     display: grid;
-    grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
-    gap: clamp(48px, 5.5vw, 98px);
-    min-height: 100vh;
-    max-width: 1650px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(52px, 5.1vw, 94px);
+    width: 100%;
+    max-width: 1672px;
+    min-height: max(100vh, 780px);
     margin: 0 auto;
-    padding: 106px 7vw 38px;
+    padding: clamp(124px, 13.4vh, 160px) 7vw 62px;
     box-sizing: border-box;
 }
 
 .register-hero {
-    position: relative;
-    isolation: isolate;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 28px;
-    padding-bottom: 8px;
-    z-index: 1;
+    align-items: flex-start;
+    min-width: 0;
+    padding-top: 32px;
 }
 
 .register-hero h1 {
-    margin: 0 0 19px;
-    font-size: clamp(45px, 4vw, 66px);
-    line-height: 1.04;
-    letter-spacing: -0.02em;
+    margin: 0 0 28px;
+    font-size: clamp(49px, 3.75vw, 65px);
+    font-weight: 700;
+    letter-spacing: -.037em;
+    line-height: 1.055;
 }
 
 .hero-sub {
-    max-width: 475px;
-    font-size: 18px;
-    line-height: 1.6;
-    color: #c8becd;
+    max-width: 535px;
+    margin: 0;
+    font-size: clamp(17px, 1.15vw, 20px);
+    line-height: 1.62;
+    color: #d7cbd9;
 }
 
 .hero-sub::after {
     content: "";
     display: block;
-    width: 48px;
-    height: 1px;
-    margin-top: 12px;
-    background: linear-gradient(90deg, #f4d99e, rgba(240, 194, 134, 0));
-    box-shadow: 0 0 9px rgba(243, 186, 117, .36);
+    width: 70px;
+    height: 2px;
+    margin-top: 20px;
+    background: linear-gradient(90deg, #f4d28f, rgba(242, 210, 143, 0));
+    box-shadow: 0 0 12px rgba(243, 177, 96, .35);
 }
 
 .feature-list {
-    list-style: none;
-    margin: 21px 0 0;
-    padding: 0;
     display: grid;
-    gap: 14px;
+    gap: 18px;
+    list-style: none;
+    margin: 30px 0 0;
+    padding: 0;
 }
 
 .feature {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 22px;
 }
 
 .feature-icon {
     display: grid;
     place-items: center;
+    width: 58px;
+    height: 58px;
     flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    border: 1px solid rgba(220, 153, 193, 0.56);
-    border-radius: 14px;
-    background: linear-gradient(140deg, rgba(155, 66, 170, 0.32), rgba(200, 169, 107, 0.08));
-    box-shadow: inset 0 1px rgba(254, 210, 166, .12);
-    color: var(--gold-soft);
+    border-radius: 16px;
+    border: 1px solid rgba(219, 146, 188, .6);
+    background:
+        radial-gradient(circle at 20% 10%, rgba(162, 74, 158, .35), transparent 75%),
+        rgba(36, 18, 46, .84);
+    color: #f5c370;
+    box-shadow: inset 0 1px 0 rgba(255, 229, 178, .1), 0 0 15px rgba(174, 77, 159, .08);
+}
+
+.feature-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.8;
 }
 
 .feature-title,
@@ -145,128 +142,147 @@
 }
 
 .feature-title {
-    font-weight: 600;
+    font-weight: 750;
+    font-size: clamp(16px, 1.04vw, 19px);
+    color: #f8f4f6;
 }
 
 .feature-text {
-    font-size: 14px;
-    color: #bcb1c3;
+    margin-top: 3px;
+    font-size: clamp(13px, .89vw, 16px);
+    color: #d2c3d3;
 }
 
-/* the glass card */
 .register-card {
-    justify-self: end;
-    align-self: start;
-    width: 100%;
-    max-width: 540px;
-    box-sizing: border-box;
     position: relative;
-    padding: 38px 42px;
-    border: 1px solid rgba(231, 175, 99, .78);
-    border-radius: 32px;
+    isolation: isolate;
+    align-self: start;
+    justify-self: end;
+    width: 100%;
+    max-width: 660px;
+    min-width: 0;
+    margin: 0;
+    padding: 48px clamp(40px, 4.2vw, 70px) 42px;
+    border: 1px solid rgba(237, 185, 111, .78);
+    border-radius: 42px;
     background:
-        radial-gradient(ellipse at 100% 0%, rgba(187, 53, 192, 0.35), transparent 46%),
-        radial-gradient(ellipse at 100% 100%, rgba(123, 24, 145, 0.27), transparent 36%),
-        linear-gradient(160deg, rgba(45, 17, 58, 0.985), rgba(18, 8, 27, 0.99));
+        radial-gradient(ellipse 68% 52% at 106% -10%, rgba(180, 54, 201, .4), transparent 94%),
+        radial-gradient(ellipse 53% 38% at 108% 105%, rgba(162, 51, 184, .42), transparent 94%),
+        linear-gradient(158deg, rgba(44, 19, 54, .98), rgba(22, 10, 30, .985) 57%, rgba(27, 10, 35, .99));
     box-shadow:
-        0 28px 100px rgba(0, 0, 0, .6),
-        0 0 35px rgba(181, 46, 190, .21),
-        0 0 2px rgba(251, 205, 134, .28),
-        inset 0 1px 0 rgba(255, 226, 170, .18);
+        0 34px 95px rgba(0, 0, 0, .48),
+        0 0 37px rgba(160, 57, 180, .14),
+        inset 0 1px 0 rgba(250, 215, 160, .12);
 }
 
-/* A fine highlight gives the card a crafted edge, not a neon outline. */
+.register-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Decorative highlights are handcrafted CSS/SVG — never reference-image crops. */
 .register-card::before {
     content: "";
-    position: absolute;
     pointer-events: none;
+    position: absolute;
+    z-index: 2;
     top: -2px;
-    right: 2%;
-    width: 42%;
+    right: 5%;
+    width: 44%;
     height: 3px;
-    border-radius: 50%;
-    background: linear-gradient(90deg, transparent 0%, #f3adf5 55%, #ffe9b7 78%, transparent);
-    box-shadow: 0 0 15px rgba(255, 178, 196, .9);
+    border-radius: 100%;
+    background: linear-gradient(90deg, transparent, #d885db 40%, #ffe2a3 75%, transparent);
+    box-shadow: 0 0 15px rgba(249, 168, 192, .62);
 }
 
-/* Refined orbital reflection inside the card's upper-right edge. */
 .register-card::after {
     content: "";
     position: absolute;
+    pointer-events: none;
+    z-index: 0;
     top: -1px;
     right: -1px;
-    width: min(40%, 210px);
-    height: 148px;
-    pointer-events: none;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 210 148'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23f5b6f3' stop-opacity='0'/%3E%3Cstop offset='.25' stop-color='%23f2adf6'/%3E%3Cstop offset='.75' stop-color='%238f42af' stop-opacity='.8'/%3E%3Cstop offset='1' stop-color='%238f42af' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 0 C90 2 128 26 178 85 C196 106 206 130 210 148' stroke='url(%23g)' stroke-width='2' fill='none'/%3E%3C/svg%3E") no-repeat right top / contain;
-    filter: drop-shadow(0 0 7px rgba(207, 89, 222, .58));
+    width: 36%;
+    aspect-ratio: 1 / .76;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 250 190'%3E%3Cdefs%3E%3ClinearGradient id='a' x1='0' y1='0' x2='.8' y2='1'%3E%3Cstop stop-color='%23f1b0e3' stop-opacity='0'/%3E%3Cstop offset='.3' stop-color='%23df8de5'/%3E%3Cstop offset='1' stop-color='%237a2c9c' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 1 C120 5 165 56 226 135 Q249 168 250 190' stroke='url(%23a)' fill='none' stroke-width='2.6'/%3E%3C/svg%3E") right top / contain no-repeat;
+    filter: drop-shadow(0 0 6px rgba(204, 106, 207, .32));
 }
 
 .card-eyebrow {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin: 0 0 14px;
-    font-size: 12px;
-    letter-spacing: 0.22em;
-    color: var(--gold-soft);
+    margin: 0 0 24px;
+    color: #f6e9f2;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .24em;
+    white-space: nowrap;
 }
-
 .card-eyebrow::after {
     content: "";
     flex: 1;
-    min-width: 18px;
     height: 1px;
-    background: linear-gradient(90deg, rgba(249, 210, 142, .9), transparent);
+    background: linear-gradient(90deg, #e9b878, rgba(233, 184, 120, 0));
 }
 
 .register-card .card-title {
     margin: 0;
-    font-size: clamp(34px, 2.8vw, 42px);
+    font-size: clamp(36px, 2.75vw, 46px);
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
+    line-height: 1.12;
+    letter-spacing: -.026em;
 }
 
 .card-subtitle {
-    margin: 8px 0 20px;
-    font-size: 19px;
-    color: #c8becd;
+    margin: 10px 0 30px;
+    font-size: clamp(17px, 1.18vw, 21px);
+    line-height: 1.45;
+    color: #d1bfce;
 }
 
 .form-message {
     margin: 0 0 18px;
     padding: 12px 14px;
-    border: 1px solid rgba(232, 123, 123, 0.45);
+    border: 1px solid rgba(237, 124, 129, .58);
     border-radius: 12px;
-    background: rgba(232, 123, 123, 0.12);
-    color: #f3b4b4;
+    background: rgba(94, 27, 39, .8);
+    color: #ffd1d1;
     font-size: 14px;
 }
 
-/* form fields */
 .register-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    gap: 14px;
 }
 
 .field {
     display: flex;
     align-items: center;
-    gap: 12px;
-    height: 54px;
-    padding: 0 16px;
-    border: 1px solid rgba(182, 88, 198, .56);
-    border-radius: 14px;
-    background: rgba(13, 7, 21, 0.83);
-    color: var(--muted);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    gap: 18px;
+    height: 64px;
+    min-width: 0;
+    padding: 0 23px;
+    border: 1px solid rgba(163, 70, 180, .62);
+    border-radius: 20px;
+    background: rgba(15, 7, 23, .87);
+    color: #ddd0df;
+    transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+.field:hover {
+    border-color: rgba(212, 122, 215, .8);
 }
 
 .field:focus-within {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(200, 169, 107, 0.18);
+    border-color: #edc080;
+    background: rgba(25, 12, 34, .96);
+    box-shadow: 0 0 0 3px rgba(234, 186, 117, .12);
+}
+
+.field svg {
+    flex-shrink: 0;
 }
 
 .field input {
@@ -276,153 +292,141 @@
     border: 0;
     outline: 0;
     background: transparent;
-    color: var(--ivory);
-    font: inherit;
-    font-size: 16px;
+    color: #fff7ef;
+    font-family: var(--font-body);
+    font-size: 17px;
 }
 
 .field input::placeholder {
-    color: #bdb2c4;
+    color: #d0c1d0;
+    opacity: 1;
 }
 
 .field-toggle {
     display: grid;
     place-items: center;
-    padding: 4px;
+    padding: 5px;
     border: 0;
     background: transparent;
-    color: inherit;
+    color: #d8c7d7;
     cursor: pointer;
 }
 
-.field-toggle:hover {
-    color: var(--gold-soft);
-}
+.field-toggle:hover { color: #f3d599; }
 
 .btn-primary {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 10px;
-    height: 56px;
-    margin-top: 8px;
-    border: 0;
-    border-radius: 12px;
-    background: linear-gradient(120deg, #f2d58f, #c99b50);
-    color: var(--obsidian);
-    font: inherit;
-    font-size: 16px;
-    font-weight: 600;
+    align-items: center;
+    gap: 22px;
+    height: 66px;
+    margin-top: 18px;
+    border: 1px solid #f5d088;
+    border-radius: 22px;
+    background: linear-gradient(117deg, #ffe39a, #eac174 54%, #ce9648);
+    color: #180e18;
+    font-size: 19px;
+    font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 5px 24px rgba(237, 170, 75, .31), 0 0 20px rgba(235, 174, 83, .1);
-    transition: transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 8px 26px rgba(229, 150, 69, .32), 0 0 19px rgba(245, 187, 90, .18);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
 
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(200, 169, 107, 0.3);
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+    box-shadow: 0 12px 35px rgba(229, 150, 69, .36);
 }
 
 .card-terms {
-    margin-top: 18px;
-    text-align: center;
+    max-width: 450px;
+    margin: 26px auto 0;
+    color: #d6cad5;
     font-size: 13px;
-    color: var(--muted);
+    line-height: 1.65;
+    text-align: center;
+}
+.card-terms .accent { font-weight: 750; }
+
+@media (max-width: 1240px) and (min-width: 901px) {
+    .register-layout {
+        gap: 34px;
+        padding-left: 5.5vw;
+        padding-right: 5.5vw;
+    }
+    .register-topbar { right: 5.5vw; }
+    .register-card { padding-left: 32px; padding-right: 32px; }
+    .register-hero h1 { font-size: clamp(39px, 4vw, 51px); }
+    .feature { gap: 14px; }
 }
 
-/* A laptop browser has much less vertical space than a full-screen mockup.
-   Use a compact desktop treatment so the primary action stays visible. */
-@media (min-width: 901px) and (max-height: 750px) {
-    /* Fit the entire reference composition into short desktop windows:
-       this keeps both the moon and the lower planetary horizon visible. */
-    .auth-page::before {
-        background-size: 100% 100%;
-    }
-
-    .register-layout {
-        padding-top: 96px;
-        padding-bottom: 20px;
-        gap: clamp(36px, 5vw, 84px);
-    }
-    .register-hero { padding-top: 12px; }
+@media (min-width: 901px) and (max-height: 800px) {
+    .register-page,
+    .register-layout { min-height: max(100vh, 730px); }
+    .register-layout { padding-top: 116px; padding-bottom: 38px; }
+    .register-hero { padding-top: 15px; }
     .register-hero h1 {
-        font-size: clamp(43px, 3.7vw, 53px);
-        margin-bottom: 14px;
+        font-size: clamp(42px, 3.75vw, 56px);
+        margin-bottom: 17px;
     }
     .hero-sub { font-size: 16px; line-height: 1.5; }
-    .hero-sub::after { margin-top: 12px; }
-    .feature-list { margin-top: 19px; gap: 10px; }
-    .feature-icon { width: 42px; height: 42px; }
-    .feature-text { font-size: 13px; }
-    .register-card { padding: 32px 38px; border-radius: 26px; }
-    .card-eyebrow { margin-bottom: 9px; font-size: 11px; }
-    .register-card .card-title { font-size: 35px; }
-    .card-subtitle { margin: 6px 0 16px; font-size: 17px; }
-    .register-form { gap: 12px; }
-    .field { height: 49px; }
-    .btn-primary { height: 53px; margin-top: 5px; }
-    .card-terms { margin-top: 12px; font-size: 11px; }
+    .hero-sub::after { margin-top: 14px; }
+    .feature-list { margin-top: 21px; gap: 13px; }
+    .feature-icon { width: 45px; height: 45px; border-radius: 13px; }
+    .feature-icon svg { width: 22px; height: 22px; }
+    .feature-title { font-size: 15px; }
+    .feature-text { font-size: 12px; }
+    .register-card { padding-top: 34px; padding-bottom: 30px; border-radius: 30px; }
+    .card-eyebrow { margin-bottom: 14px; font-size: 11px; }
+    .register-card .card-title { font-size: 36px; }
+    .card-subtitle { margin: 6px 0 20px; font-size: 17px; }
+    .register-form { gap: 11px; }
+    .field { height: 51px; padding: 0 18px; border-radius: 14px; }
+    .field input { font-size: 15px; }
+    .btn-primary { height: 56px; margin-top: 9px; font-size: 16px; border-radius: 14px; }
+    .card-terms { margin-top: 15px; font-size: 11px; }
 }
 
-/* narrow screens: form only */
 @media (max-width: 900px) {
+    .register-page { min-height: 100vh; overflow: hidden; }
     .register-layout {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
         min-height: 100vh;
-        padding-top: 120px;
+        padding: 142px 24px 58px;
         gap: 0;
     }
-
-    .register-hero {
-        display: none;
-    }
-
+    .register-hero { display: none; }
     .register-card {
-        max-width: 520px;
         justify-self: center;
-        align-self: center;
-        padding: 32px 24px;
+        align-self: start;
+        width: min(100%, 570px);
+        padding: 39px clamp(23px, 6vw, 50px);
+        border-radius: 29px;
     }
-
-    .register-topbar {
-        right: 20px;
-    }
+    .register-topbar { right: 24px; top: 25px; }
 }
 
 @media (max-width: 600px) {
-    .register-layout {
-        padding: 96px 16px 32px;
-    }
+    .register-layout { padding: 122px 16px 35px; }
+    .register-topbar { right: 16px; top: 20px; gap: 0; }
+    .register-topbar span { display: none; }
+    .btn-outline { padding: 7px 18px; min-height: 39px; font-size: 13px; }
+    .register-card { padding: 31px 22px; border-radius: 24px; }
+    .card-eyebrow { font-size: 10px; margin-bottom: 17px; }
+    .register-card .card-title { font-size: 31px; }
+    .card-subtitle { font-size: 16px; margin: 8px 0 24px; }
+    .field { height: 54px; border-radius: 14px; padding: 0 15px; }
+    .field input { font-size: 15px; }
+    .register-form { gap: 12px; }
+    .btn-primary { height: 56px; margin-top: 10px; font-size: 16px; }
+    .card-terms { font-size: 11px; }
+}
 
-    .register-topbar {
-        top: 22px;
-        right: 16px;
-    }
-
-    .register-topbar span {
-        display: none;
-    }
-
-    .btn-outline {
-        padding: 8px 18px;
-    }
-
-    .register-card {
-        padding: 28px 20px;
-        border-radius: 20px;
-    }
-
-    .auth-page::before {
-        background-position: 34% bottom;
-    }
-
-    .register-card .card-title {
-        font-size: 28px;
-    }
-
-    .card-subtitle {
-        font-size: 17px;
-    }
+@media (prefers-reduced-motion: reduce) {
+    .btn-outline,
+    .field,
+    .btn-primary { transition-duration: .01ms; }
 }
 
 .register-card .card-subtitle strong {
