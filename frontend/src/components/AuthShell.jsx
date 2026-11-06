@@ -7,9 +7,9 @@ const FEATURES = [
     { icon: <ChartNoAxesColumnIncreasing size={20} />, title: 'Achieve more', text: 'Turn ideas into real progress' },
 ]
 
-export default function AuthShell({ topbarText, topbarLabel, onTopbar, children }) {
+export default function AuthShell({ topbarText, topbarLabel, onTopbar, visualMode, children }) {
     return (
-        <div className="register-page auth-page">
+        <div className={`register-page auth-page ${visualMode === "reference" ? "auth-reference" : ""}`}>
             <div className="register-topbar">
                 <span>{topbarText}</span>
                 <button type="button" className="btn-outline" onClick={() => onTopbar?.()}>
