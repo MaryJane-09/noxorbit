@@ -19,8 +19,6 @@ const ORBIT_UPPER =
     "M 940 270 C 829 302 706 387 642 477 C 616 514 604 543 613 558";
 const ORBIT_RETURN =
     "M 613 558 C 632 599 695 612 775 588 C 833 571 886 552 945 529";
-const ORBIT_FLARE =
-    "M 633 519 C 655 477 681 434 713 404";
 
 export default function AuthCosmos() {
     return (
@@ -55,12 +53,14 @@ export default function AuthCosmos() {
                         <stop offset="1" stopColor="#542663" stopOpacity="0" />
                     </linearGradient>
                     <linearGradient id="nox-orbit-flare" gradientUnits="userSpaceOnUse"
-                        x1="630" y1="521" x2="718" y2="399">
+                        x1="610" y1="544" x2="904" y2="278">
                         <stop stopColor="#f7a9c7" stopOpacity="0" />
-                        <stop offset=".22" stopColor="#ffd9b0" />
-                        <stop offset=".47" stopColor="#fff2c9" />
-                        <stop offset=".75" stopColor="#f5b69e" stopOpacity=".66" />
-                        <stop offset="1" stopColor="#f2a4be" stopOpacity="0" />
+                        <stop offset=".11" stopColor="#f7aeae" stopOpacity=".6" />
+                        <stop offset=".23" stopColor="#ffe5b9" />
+                        <stop offset=".31" stopColor="#fff3d5" />
+                        <stop offset=".43" stopColor="#f7bfa5" stopOpacity=".66" />
+                        <stop offset=".62" stopColor="#da77b9" stopOpacity="0" />
+                        <stop offset="1" stopColor="#da77b9" stopOpacity="0" />
                     </linearGradient>
                     <radialGradient id="nox-moon-disc" cx="26%" cy="38%" r="90%">
                         <stop stopColor="#4b2858" />
@@ -111,12 +111,12 @@ export default function AuthCosmos() {
                     <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-color)"
                         strokeWidth="2.2" strokeLinecap="round" />
 
-                    <path d={ORBIT_FLARE} fill="none" stroke="#f5b8ae"
-                        strokeWidth="11" opacity=".45" filter="url(#nox-soft-glow)" />
-                    <path d={ORBIT_FLARE} fill="none" stroke="url(#nox-orbit-flare)"
-                        strokeWidth="3.5" strokeLinecap="round" />
-                    <circle cx="667" cy="458" r="3.1" fill="#ffefcb"
-                        opacity=".9" filter="url(#nox-soft-glow)" />
+                    <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-flare)"
+                        strokeWidth="12" opacity=".47" filter="url(#nox-soft-glow)" />
+                    <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-flare)"
+                        strokeWidth="2.9" strokeLinecap="round" />
+                    <circle cx="674" cy="431" r="3" fill="#ffefce"
+                        opacity=".5" filter="url(#nox-soft-glow)" />
 
                     <path d={ORBIT_RETURN} fill="none" stroke="url(#nox-orbit-return)"
                         strokeWidth="1.15" strokeLinecap="round" />
