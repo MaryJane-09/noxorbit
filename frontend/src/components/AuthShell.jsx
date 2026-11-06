@@ -1,10 +1,10 @@
-import { Users, SquareCheck, Zap } from 'lucide-react'
+import { Users, SquareCheck, ChartNoAxesColumnIncreasing } from 'lucide-react'
 import './Register.css'
 
 const FEATURES = [
     { icon: <Users size={20} />, title: 'Work together', text: 'Keep your team in sync' },
     { icon: <SquareCheck size={20} />, title: 'Stay organized', text: 'Manage tasks, projects and deadlines' },
-    { icon: <Zap size={20} />, title: 'Turn ideas into action', text: 'Build, create and achieve more' },
+    { icon: <ChartNoAxesColumnIncreasing size={20} />, title: 'Achieve more', text: 'Turn ideas into real progress' },
 ]
 
 export default function AuthShell({ topbarText, topbarLabel, onTopbar, children }) {
@@ -20,7 +20,8 @@ export default function AuthShell({ topbarText, topbarLabel, onTopbar, children 
             <div className="register-layout">
                 <section className="register-hero">
                     <h1>
-                        Everything you need,<br />
+                        Everything you<br />
+                        need,<br />
                         <span className="accent">in one place.</span>
                     </h1>
                     <p className="hero-sub">
