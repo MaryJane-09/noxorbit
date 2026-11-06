@@ -10,7 +10,7 @@
     isolation: isolate;
     overflow: hidden;
     background:
-        linear-gradient(90deg, rgba(12, 7, 19, 0.06), rgba(9, 5, 16, 0.18) 70%),
+        linear-gradient(90deg, rgba(12, 7, 19, 0.02), rgba(9, 5, 16, 0.14) 70%),
         url('/auth-atmosphere.svg') center bottom / cover no-repeat,
         #100918;
 }
@@ -67,11 +67,11 @@
 .register-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(48px, 6vw, 110px);
-    min-height: 100vh;
+    gap: clamp(52px, 6vw, 110px);
+    min-height: max(100vh, 780px);
     max-width: 1600px;
     margin: 0 auto;
-    padding: 120px 7vw 48px;
+    padding: 148px 7vw 72px;
     box-sizing: border-box;
 }
 
@@ -80,20 +80,21 @@
     isolation: isolate;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 24px;
     padding-bottom: 8px;
     z-index: 1;
 }
 
 .register-hero h1 {
     margin: 0 0 20px;
-    font-size: clamp(38px, 4vw, 60px);
+    font-size: clamp(42px, 4.15vw, 64px);
     line-height: 1.08;
     letter-spacing: -0.02em;
 }
 
 .hero-sub {
-    max-width: 440px;
+    max-width: 470px;
     font-size: 17px;
     line-height: 1.6;
     color: #c8becd;
@@ -101,10 +102,10 @@
 
 .feature-list {
     list-style: none;
-    margin: 28px 0 0;
+    margin: 32px 0 0;
     padding: 0;
     display: grid;
-    gap: 14px;
+    gap: 18px;
 }
 
 .feature {
@@ -117,9 +118,9 @@
     display: grid;
     place-items: center;
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    border: 1px solid rgba(200, 169, 107, 0.25);
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(220, 153, 193, 0.42);
     border-radius: 14px;
     background: linear-gradient(140deg, rgba(135, 65, 157, 0.24), rgba(200, 169, 107, 0.07));
     color: var(--gold-soft);
@@ -140,7 +141,7 @@
 }
 
 .hero-footer {
-    margin-top: 22px;
+    margin-top: 24px;
     padding-top: 0;
     font-size: 15px;
     color: var(--muted);
@@ -162,17 +163,17 @@
     width: 100%;
     max-width: 540px;
     box-sizing: border-box;
-    padding: 38px 42px;
+    padding: 48px 48px;
     position: relative;
     border: 1px solid rgba(234, 179, 105, 0.6);
-    border-radius: 30px;
+    border-radius: 34px;
     background:
-        radial-gradient(ellipse at 100% 0%, rgba(153, 53, 182, 0.24), transparent 52%),
-        radial-gradient(ellipse at 100% 100%, rgba(116, 32, 139, 0.17), transparent 45%),
-        linear-gradient(150deg, rgba(44, 20, 57, 0.98), rgba(18, 9, 28, 0.99));
+        radial-gradient(ellipse at 110% 0%, rgba(173, 60, 188, 0.38), transparent 48%),
+        radial-gradient(ellipse at 100% 100%, rgba(116, 32, 139, 0.22), transparent 42%),
+        linear-gradient(150deg, rgba(43, 18, 55, 0.98), rgba(18, 8, 27, 0.99));
     box-shadow:
         0 30px 100px rgba(0, 0, 0, 0.56),
-        0 0 28px rgba(163, 55, 192, 0.13),
+        0 0 34px rgba(163, 55, 192, 0.2),
         inset 0 1px 0 rgba(255, 226, 170, 0.12);
 }
 
@@ -198,7 +199,7 @@
 
 .register-card .card-title {
     margin: 0;
-    font-size: clamp(32px, 2.7vw, 40px);
+    font-size: clamp(34px, 2.8vw, 42px);
     line-height: 1.15;
 }
 
@@ -229,7 +230,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    height: 52px;
+    height: 58px;
     padding: 0 16px;
     border: 1px solid rgba(176, 101, 191, 0.38);
     border-radius: 14px;
@@ -278,7 +279,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    height: 54px;
+    height: 60px;
     margin-top: 8px;
     border: 0;
     border-radius: 12px;
@@ -308,6 +309,7 @@
 @media (max-width: 900px) {
     .register-layout {
         grid-template-columns: 1fr;
+        min-height: 100vh;
         padding-top: 120px;
         gap: 0;
     }
