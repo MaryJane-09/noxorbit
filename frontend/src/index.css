@@ -1,6 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@500;600;700&display=swap');
+
 :root {
   color-scheme: dark;
-  font-family: Inter, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Manrope", "Segoe UI", Arial, sans-serif;
+  --font-display: "Outfit", "Manrope", "Segoe UI", sans-serif;
+  font-family: var(--font-body);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -75,6 +79,8 @@ h1,
 h2,
 h3 {
   color: var(--ivory);
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
 }
 
 p {
