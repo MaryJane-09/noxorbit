@@ -13,26 +13,32 @@
     min-height: 760px;
 }
 
+/* One travelling reflection, not a constantly spinning or flashing ring. */
 .auth-orbit-sheen {
-    opacity: .86;
-    animation: nox-orbit-travel 13s linear infinite;
-}
-
-.auth-orbit-spark {
-    filter: drop-shadow(0 0 5px #ffe3b6) drop-shadow(0 0 11px #d67bc8);
+    opacity: .66;
+    animation: nox-orbit-travel 16s linear infinite;
 }
 
 .auth-star-pulse {
-    animation: nox-star-flicker 6s ease-in-out infinite alternate;
+    animation: nox-star-flicker 7s ease-in-out infinite alternate;
+}
+
+.auth-planet-clouds {
+    animation: nox-atmosphere-breathe 24s ease-in-out infinite alternate;
 }
 
 @keyframes nox-orbit-travel {
-    to { stroke-dashoffset: -1262; }
+    to { stroke-dashoffset: -1000; }
 }
 
 @keyframes nox-star-flicker {
-    from { opacity: .13; }
-    to { opacity: .7; }
+    from { opacity: .14; }
+    to { opacity: .5; }
+}
+
+@keyframes nox-atmosphere-breathe {
+    from { opacity: .76; }
+    to { opacity: 1; }
 }
 
 @media (max-width: 900px) {
@@ -44,11 +50,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .auth-orbit-sheen,
-    .auth-star-pulse {
-        animation: none;
-    }
-    .auth-orbit-spark {
-        display: none;
-    }
+    .auth-orbit-sheen { animation: none; opacity: 0; }
+    .auth-star-pulse,
+    .auth-planet-clouds { animation: none; }
 }
