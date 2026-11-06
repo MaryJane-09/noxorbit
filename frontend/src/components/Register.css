@@ -596,3 +596,217 @@
     justify-content: flex-end;
     margin-top: -6px;
 }
+
+/*
+ * Reference-accurate desktop registration.
+ * The approved artwork is displayed at its original 1672:940 aspect ratio.
+ * The existing React controls remain real, accessible, interactive elements
+ * placed over the fields and actions in the visual reference. Other auth
+ * steps and compact screens keep the standard responsive form layout.
+ */
+@media (min-width: 1000px) {
+    .auth-reference {
+        width: 100%;
+        min-height: max(100vh, calc(100vw * 940 / 1672));
+        overflow: visible;
+        background: #100919 url('/auth-reference.avif') top center / 100% auto no-repeat;
+    }
+
+    .auth-reference::before {
+        display: none;
+    }
+
+    .app-shell:has(.auth-reference) .cinematic-intro .brand-assembly.is-settled {
+        opacity: 0;
+    }
+
+    .auth-reference .register-layout {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: none;
+        height: calc(100vw * 940 / 1672);
+        min-height: 0;
+        padding: 0;
+        margin: 0;
+    }
+
+    .auth-reference .register-hero {
+        position: absolute;
+        top: 16%;
+        left: 7%;
+        width: 39%;
+        padding: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .auth-reference .register-topbar {
+        position: absolute;
+        top: 3.5%;
+        right: 6.7%;
+        width: 6.8%;
+        height: 5.3%;
+        display: block;
+        z-index: 15;
+    }
+
+    .auth-reference .register-topbar span {
+        display: none;
+    }
+
+    .auth-reference .register-topbar .btn-outline {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        opacity: 0;
+    }
+
+    .auth-reference .register-card {
+        position: absolute;
+        top: 13.25%;
+        left: 52.23%;
+        width: 39.6%;
+        height: 76.4%;
+        max-width: none;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        backdrop-filter: none;
+        overflow: visible;
+        align-self: auto;
+        justify-self: auto;
+    }
+
+    .auth-reference .register-card::before,
+    .auth-reference .register-card::after {
+        display: none;
+    }
+
+    /* Visible lettering belongs to the exact approved artwork.
+       The original text stays in the DOM for assistive technology. */
+    .auth-reference .register-card > .card-eyebrow,
+    .auth-reference .register-card > .card-title,
+    .auth-reference .register-card > .card-subtitle,
+    .auth-reference .register-card > .card-terms {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .auth-reference .register-form {
+        position: absolute;
+        inset: 0;
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .auth-reference .register-form > .field {
+        position: absolute;
+        left: 10.8%;
+        width: 78.4%;
+        height: 9%;
+        margin: 0;
+        padding: 0 3.4%;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: 1px solid transparent;
+        border-radius: 15px;
+        background: transparent;
+        box-shadow: none;
+        transition: border-color .18s ease, background-color .18s ease;
+    }
+
+    .auth-reference .register-form > .field:nth-of-type(1) { top: 28.6%; }
+    .auth-reference .register-form > .field:nth-of-type(2) { top: 39.5%; }
+    .auth-reference .register-form > .field:nth-of-type(3) { top: 50.4%; }
+    .auth-reference .register-form > .field:nth-of-type(4) { top: 61.3%; }
+
+    .auth-reference .field > svg,
+    .auth-reference .field-toggle {
+        opacity: 0;
+        flex-shrink: 0;
+    }
+
+    .auth-reference .register-form .field input {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        outline: none;
+        color: transparent;
+        caret-color: #f4f1ea;
+        font-size: clamp(12px, 1.07vw, 17px);
+    }
+
+    .auth-reference .field input::placeholder {
+        color: transparent;
+    }
+
+    .auth-reference .register-form > .field:focus-within,
+    .auth-reference .register-form > .field:has(input:not(:placeholder-shown)) {
+        background: #140a20;
+        border-color: rgba(182, 88, 198, .9);
+        box-shadow: 0 0 0 2px rgba(200, 169, 107, .13);
+    }
+
+    .auth-reference .register-form > .field:focus-within svg,
+    .auth-reference .register-form > .field:has(input:not(:placeholder-shown)) svg,
+    .auth-reference .register-form > .field:focus-within .field-toggle,
+    .auth-reference .register-form > .field:has(input:not(:placeholder-shown)) .field-toggle {
+        opacity: 1;
+    }
+
+    .auth-reference .register-form > .field:focus-within input,
+    .auth-reference .register-form > .field:has(input:not(:placeholder-shown)) input {
+        color: #f4f1ea;
+    }
+
+    .auth-reference .register-form > .field:focus-within input::placeholder {
+        color: #bdb2c4;
+    }
+
+    .auth-reference .register-form > .btn-primary {
+        position: absolute;
+        top: 74.85%;
+        left: 10.8%;
+        width: 78.4%;
+        height: 9.3%;
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+        border-radius: 23px;
+        cursor: pointer;
+    }
+
+    .auth-reference .register-form > .btn-primary:focus-visible,
+    .auth-reference .register-topbar .btn-outline:focus-visible {
+        opacity: .2;
+        outline: 3px solid #ffe6ac;
+        outline-offset: 3px;
+    }
+
+    .auth-reference .register-form > .btn-primary:disabled {
+        cursor: progress;
+    }
+
+    /* Runtime validation must remain visible, even over the image-backed card. */
+    .auth-reference .form-message {
+        position: absolute;
+        top: 21.5%;
+        left: 10.8%;
+        width: 78.4%;
+        margin: 0;
+        z-index: 2;
+        background: rgba(68, 18, 35, .96);
+        color: #ffd0d0;
+        font-size: clamp(12px, .95vw, 15px);
+    }
+}
