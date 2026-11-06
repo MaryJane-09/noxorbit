@@ -130,7 +130,7 @@ export default function Register({ onLogin }) {
     }
 
     return (
-        <AuthShell topbarText="Already have an account?" topbarLabel="Login" onTopbar={onLogin}>
+        <AuthShell topbarText="Already have an account?" topbarLabel="Login" onTopbar={onLogin} visualMode={step === "register" ? "reference" : undefined}>
             {step === "register" && (
                 <>
                     <p className="card-eyebrow">CREATE YOUR ACCOUNT</p>
