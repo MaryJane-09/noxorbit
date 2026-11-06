@@ -25,7 +25,7 @@ function Intro({ onComplete }) {
             <div className={`brand-assembly ${settled ? "is-settled" : ""}`}>
                 <img src="/noxorbit-mark.svg" className="main-logo" alt="" />
                 <div className="brand-text">
-                    <img src="/noxorbit-wordmark-study-02.svg" className={`brand-name ${showName ? "is-visible" : ""}`} alt="Noxorbit" />
+                    <span className={`brand-name ${showName ? "is-visible" : ""}`}>NOXORBIT</span>
                     <span className={`brand-tagline ${showTagline ? "is-visible" : ""}`}>CONNECT · COLLABORATE · ACHIEVE</span>
                 </div>
             </div>
