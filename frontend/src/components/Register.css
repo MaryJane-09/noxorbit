@@ -712,10 +712,10 @@
         width: 78.4%;
         height: 9%;
         margin: 0;
-        padding: 0 3.4%;
+        padding: 0 4.6%;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 30px;
         border: 1px solid transparent;
         border-radius: 15px;
         background: transparent;
