@@ -153,22 +153,6 @@
     color: #bcb1c3;
 }
 
-.hero-footer {
-    margin-top: 24px;
-    padding-top: 0;
-    font-size: 15px;
-    color: var(--muted);
-}
-
-.hero-footer::after {
-    content: "";
-    display: block;
-    width: 36px;
-    height: 2px;
-    margin-top: 14px;
-    background: var(--gold);
-}
-
 /* the glass card */
 .register-card {
     justify-self: end;
@@ -364,8 +348,6 @@
     .feature-list { margin-top: 19px; gap: 10px; }
     .feature-icon { width: 42px; height: 42px; }
     .feature-text { font-size: 13px; }
-    .hero-footer { margin-top: 14px; font-size: 12px; }
-    .hero-footer::after { margin-top: 8px; }
     .register-card { padding: 32px 38px; border-radius: 26px; }
     .card-eyebrow { margin-bottom: 9px; font-size: 11px; }
     .register-card .card-title { font-size: 35px; }
