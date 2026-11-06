@@ -333,6 +333,12 @@
 /* A laptop browser has much less vertical space than a full-screen mockup.
    Use a compact desktop treatment so the primary action stays visible. */
 @media (min-width: 901px) and (max-height: 750px) {
+    /* Fit the entire reference composition into short desktop windows:
+       this keeps both the moon and the lower planetary horizon visible. */
+    .auth-page::before {
+        background-size: 100% 100%;
+    }
+
     .register-layout {
         padding-top: 96px;
         padding-bottom: 20px;
