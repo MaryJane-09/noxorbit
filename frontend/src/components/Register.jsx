@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
-    User, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, ShieldCheck, CircleCheck,
-    Users, SquareCheck, Zap,
+    User, Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, CircleCheck,
 } from 'lucide-react'
 import './Register.css'
 import AuthShell from './AuthShell'
@@ -9,12 +8,6 @@ import AuthShell from './AuthShell'
 const OTP_LENGTH = 6
 const OTP_LIFETIME = 300 // seconds — keep in sync with the 5-minute expiry in the Go otp package
 const RESEND_AFTER = 30  // seconds before "Resend code" unlocks
-
-const FEATURES = [
-    { icon: <Users size={20} />, title: 'Work together', text: 'Keep your team in sync' },
-    { icon: <SquareCheck size={20} />, title: 'Stay organized', text: 'Manage tasks, projects and deadlines' },
-    { icon: <Zap size={20} />, title: 'Turn ideas into action', text: 'Build, create and achieve more' },
-]
 
 function formatTime(total) {
     const m = String(Math.floor(total / 60)).padStart(2, "0")
