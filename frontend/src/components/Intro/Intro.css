@@ -63,15 +63,24 @@
 
 .brand-name {
     transform: translateX(-12px);
-    filter: brightness(1.28) saturate(1.12) drop-shadow(0 0 4px rgba(200, 169, 107, 0.12));
+    /* Enhance the existing wordmark without changing its shape or dimensions. */
+    filter: brightness(1.4) saturate(1.12)
+        drop-shadow(0 1px 1px rgba(0, 0, 0, 0.65))
+        drop-shadow(0 0 3px rgba(241, 214, 143, 0.25));
 }
 
 .brand-tagline {
-    width: 108%;
-    max-width: none;
+    width: 100%;
     transform: translateY(5px);
-    transform-origin: left center;
-    filter: brightness(1.75) contrast(1.22) drop-shadow(0 0 3px rgba(244, 241, 234, 0.16));
+    color: #f6e6c3;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: 0.13em;
+    white-space: nowrap;
+    text-shadow:
+        0 1px 3px rgba(0, 0, 0, 0.9),
+        0 0 5px rgba(229, 204, 145, 0.25);
 }
 
 .brand-name.is-visible,
@@ -104,7 +113,8 @@
     }
 
     .brand-tagline {
-        width: 105%;
+        font-size: clamp(8px, 2.1vw, 11px);
+        letter-spacing: 0.08em;
     }
 
     .brand-assembly.is-settled {
