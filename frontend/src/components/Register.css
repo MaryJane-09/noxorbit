@@ -794,7 +794,16 @@
     }
 
     .auth-reference .register-form > .btn-primary:disabled {
+        opacity: 1;
         cursor: progress;
+        background: linear-gradient(120deg, #e1c17e, #ba9559);
+        color: #1a1020;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .auth-reference .register-form > .btn-primary:disabled svg {
+        opacity: 1;
     }
 
     /* Runtime validation must remain visible, even over the image-backed card. */
