@@ -13,10 +13,14 @@ const STARS = Array.from({ length: 64 }, (_, i) => ({
     opacity: 0.1 + noise(i + 351) * 0.27,
 }));
 
-// One continuous orbital sweep. Both endpoints sit behind the form,
-// leaving the illuminated curve visible without an abrupt cut in open space.
-const ORBIT =
-    "M 1040 274 C 862 301 724 378 638 493 C 566 592 604 626 732 574 C 863 520 962 488 1084 475";
+// Reference geometry: a lit upper sweep and an almost invisible return.
+// The orbit should read as a crescent of light, never as a uniformly glowing oval.
+const ORBIT_UPPER =
+    "M 940 270 C 829 302 706 387 642 477 C 616 514 604 543 613 558";
+const ORBIT_RETURN =
+    "M 613 558 C 632 599 695 612 775 588 C 833 571 886 552 945 529";
+const ORBIT_FLARE =
+    "M 633 519 C 655 477 681 434 713 404";
 
 export default function AuthCosmos() {
     return (
@@ -34,13 +38,29 @@ export default function AuthCosmos() {
                         <stop offset="1" stopColor="#f0a5e8" stopOpacity="0" />
                     </radialGradient>
                     <linearGradient id="nox-orbit-color" gradientUnits="userSpaceOnUse"
-                        x1="605" y1="562" x2="857" y2="300">
-                        <stop stopColor="#a450b5" stopOpacity=".28" />
-                        <stop offset=".23" stopColor="#c37bbb" stopOpacity=".62" />
-                        <stop offset=".48" stopColor="#eab49e" stopOpacity=".91" />
-                        <stop offset=".62" stopColor="#ffe3b6" stopOpacity=".98" />
-                        <stop offset=".79" stopColor="#c58cbb" stopOpacity=".67" />
-                        <stop offset="1" stopColor="#a251af" stopOpacity=".16" />
+                        x1="610" y1="544" x2="904" y2="278">
+                        <stop stopColor="#a850ae" stopOpacity=".44" />
+                        <stop offset=".16" stopColor="#f1a2bd" stopOpacity=".84" />
+                        <stop offset=".26" stopColor="#ffe9c2" />
+                        <stop offset=".34" stopColor="#ffd5ae" />
+                        <stop offset=".47" stopColor="#d778bb" stopOpacity=".62" />
+                        <stop offset=".72" stopColor="#854090" stopOpacity=".34" />
+                        <stop offset="1" stopColor="#764081" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="nox-orbit-return" gradientUnits="userSpaceOnUse"
+                        x1="614" y1="557" x2="940" y2="529">
+                        <stop stopColor="#b34dba" stopOpacity=".36" />
+                        <stop offset=".16" stopColor="#74327d" stopOpacity=".19" />
+                        <stop offset=".5" stopColor="#572767" stopOpacity=".11" />
+                        <stop offset="1" stopColor="#542663" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="nox-orbit-flare" gradientUnits="userSpaceOnUse"
+                        x1="630" y1="521" x2="718" y2="399">
+                        <stop stopColor="#f7a9c7" stopOpacity="0" />
+                        <stop offset=".22" stopColor="#ffd9b0" />
+                        <stop offset=".47" stopColor="#fff2c9" />
+                        <stop offset=".75" stopColor="#f5b69e" stopOpacity=".66" />
+                        <stop offset="1" stopColor="#f2a4be" stopOpacity="0" />
                     </linearGradient>
                     <radialGradient id="nox-moon-disc" cx="26%" cy="38%" r="90%">
                         <stop stopColor="#4b2858" />
@@ -79,22 +99,38 @@ export default function AuthCosmos() {
                     ))}
                 </g>
 
-                {/* A continuous, low-contrast orbit with one travelling warm reflection. */}
+                {/* Layered orbital sweep: purple ghost trails, a golden focal flare,
+                    and a very dark return into the card — matching the reference. */}
                 <g className="auth-orbital-art">
-                    <path d={ORBIT} fill="none" stroke="#ae5bba"
-                        strokeWidth="12" opacity=".16" filter="url(#nox-soft-glow)" />
-                    <path d={ORBIT} fill="none" stroke="#a85fb2"
-                        strokeWidth="1.25" opacity=".38" strokeLinecap="round" />
-                    <path d={ORBIT} fill="none" stroke="url(#nox-orbit-color)"
-                        strokeWidth="2.65" strokeLinecap="round" />
-                    <path d={ORBIT} className="auth-orbit-sheen auth-orbit-aura"
-                        fill="none" stroke="#ffd7a3" strokeWidth="8"
+                    <path d="M 940 264 C 820 301 698 384 636 473 C 604 520 602 544 614 564"
+                        fill="none" stroke="#854094" opacity=".23" strokeWidth="1.1" />
+                    <path d="M 943 280 C 826 316 717 396 655 484 C 622 532 613 548 623 574"
+                        fill="none" stroke="#9c448f" opacity=".24" strokeWidth=".95" />
+                    <path d={ORBIT_UPPER} fill="none" stroke="#ab599e"
+                        strokeWidth="9" opacity=".12" filter="url(#nox-soft-glow)" />
+                    <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-color)"
+                        strokeWidth="2.2" strokeLinecap="round" />
+
+                    <path d={ORBIT_FLARE} fill="none" stroke="#f5b8ae"
+                        strokeWidth="11" opacity=".45" filter="url(#nox-soft-glow)" />
+                    <path d={ORBIT_FLARE} fill="none" stroke="url(#nox-orbit-flare)"
+                        strokeWidth="3.5" strokeLinecap="round" />
+                    <circle cx="667" cy="458" r="3.1" fill="#ffefcb"
+                        opacity=".9" filter="url(#nox-soft-glow)" />
+
+                    <path d={ORBIT_RETURN} fill="none" stroke="url(#nox-orbit-return)"
+                        strokeWidth="1.15" strokeLinecap="round" />
+                    <path d="M 618 563 C 646 606 710 607 800 579 C 854 562 909 540 952 521"
+                        fill="none" stroke="#783784" opacity=".1" strokeWidth=".8" />
+
+                    <path d={ORBIT_UPPER} className="auth-orbit-sheen auth-orbit-aura"
+                        fill="none" stroke="#ffe4bb" strokeWidth="7"
                         strokeLinecap="round" filter="url(#nox-soft-glow)"
-                        pathLength="1000" strokeDasharray="52 948" />
-                    <path d={ORBIT} className="auth-orbit-sheen"
-                        fill="none" stroke="#fff0c7" strokeWidth="2.5"
+                        pathLength="1000" strokeDasharray="34 966" />
+                    <path d={ORBIT_UPPER} className="auth-orbit-sheen"
+                        fill="none" stroke="#ffefd5" strokeWidth="1.8"
                         strokeLinecap="round" pathLength="1000"
-                        strokeDasharray="52 948" />
+                        strokeDasharray="34 966" />
                 </g>
 
                 <g className="auth-distant-moon">
