@@ -320,6 +320,10 @@
 /* A laptop browser has much less vertical space than a full-screen mockup.
    Use a compact desktop treatment so the primary action stays visible. */
 @media (min-width: 901px) and (max-height: 750px) {
+    .auth-page::before {
+        background-size: 100% 105%;
+    }
+
     .register-layout {
         padding-top: 100px;
         padding-bottom: 22px;
