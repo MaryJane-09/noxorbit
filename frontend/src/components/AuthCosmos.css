@@ -15,8 +15,16 @@
 
 /* One travelling reflection, not a constantly spinning or flashing ring. */
 .auth-orbit-sheen {
-    opacity: .66;
-    animation: nox-orbit-travel 16s linear infinite;
+    opacity: .82;
+    animation: nox-orbit-travel 14s linear infinite;
+}
+
+.auth-orbit-aura {
+    opacity: .62;
+}
+
+.auth-moon-halo {
+    animation: nox-moon-light 18s ease-in-out infinite alternate;
 }
 
 .auth-star-pulse {
@@ -32,6 +40,11 @@
     to { opacity: .5; }
 }
 
+@keyframes nox-moon-light {
+    from { opacity: .14; }
+    to { opacity: .22; }
+}
+
 @media (max-width: 900px) {
     .auth-cosmos-svg {
         width: 125%;
@@ -42,5 +55,6 @@
 
 @media (prefers-reduced-motion: reduce) {
     .auth-orbit-sheen { animation: none; opacity: 0; }
-    .auth-star-pulse { animation: none; }
+    .auth-star-pulse,
+    .auth-moon-halo { animation: none; }
 }
