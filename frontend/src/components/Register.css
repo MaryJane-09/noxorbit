@@ -10,16 +10,16 @@
     isolation: isolate;
     overflow: hidden;
     background:
-        radial-gradient(ellipse 60% 85% at 0% 65%, rgba(91, 28, 105, 0.3), transparent 80%),
-        radial-gradient(ellipse 55% 75% at 90% 15%, rgba(58, 18, 71, 0.14), transparent 75%),
-        #100919;
+        radial-gradient(ellipse 72% 80% at 0% 56%, rgba(111, 31, 124, 0.38), transparent 77%),
+        radial-gradient(ellipse 52% 65% at 88% 4%, rgba(73, 19, 87, 0.2), transparent 82%),
+        linear-gradient(110deg, #16091f 0%, #0c0716 65%, #090710 100%);
 }
 
 /* Actual planetary and orbital artwork cropped from the approved reference.
    Keep this layer behind interactive content and retain the intro separately. */
 .auth-page::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
@@ -68,12 +68,12 @@
 /* two columns: hero on the left, card on the right */
 .register-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(52px, 6vw, 110px);
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+    gap: clamp(48px, 5.5vw, 98px);
     min-height: 100vh;
-    max-width: 1600px;
+    max-width: 1650px;
     margin: 0 auto;
-    padding: 130px 7vw 52px;
+    padding: 124px 7vw 42px;
     box-sizing: border-box;
 }
 
@@ -83,21 +83,21 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-top: 14px;
+    padding-top: 10px;
     padding-bottom: 8px;
     z-index: 1;
 }
 
 .register-hero h1 {
-    margin: 0 0 20px;
-    font-size: clamp(42px, 4.15vw, 64px);
-    line-height: 1.08;
+    margin: 0 0 19px;
+    font-size: clamp(45px, 4vw, 66px);
+    line-height: 1.04;
     letter-spacing: -0.02em;
 }
 
 .hero-sub {
-    max-width: 470px;
-    font-size: 17px;
+    max-width: 475px;
+    font-size: 18px;
     line-height: 1.6;
     color: #c8becd;
 }
@@ -132,9 +132,10 @@
     flex-shrink: 0;
     width: 48px;
     height: 48px;
-    border: 1px solid rgba(220, 153, 193, 0.42);
+    border: 1px solid rgba(220, 153, 193, 0.56);
     border-radius: 14px;
-    background: linear-gradient(140deg, rgba(135, 65, 157, 0.24), rgba(200, 169, 107, 0.07));
+    background: linear-gradient(140deg, rgba(155, 66, 170, 0.32), rgba(200, 169, 107, 0.08));
+    box-shadow: inset 0 1px rgba(254, 210, 166, .12);
     color: var(--gold-soft);
 }
 
@@ -175,18 +176,19 @@
     width: 100%;
     max-width: 540px;
     box-sizing: border-box;
-    padding: 48px 48px;
     position: relative;
-    border: 1px solid rgba(234, 179, 105, 0.6);
-    border-radius: 34px;
+    padding: 46px 46px;
+    border: 1px solid rgba(231, 175, 99, .78);
+    border-radius: 32px;
     background:
-        radial-gradient(ellipse at 110% 0%, rgba(173, 60, 188, 0.38), transparent 48%),
-        radial-gradient(ellipse at 100% 100%, rgba(116, 32, 139, 0.22), transparent 42%),
-        linear-gradient(150deg, rgba(43, 18, 55, 0.98), rgba(18, 8, 27, 0.99));
+        radial-gradient(ellipse at 100% 0%, rgba(187, 53, 192, 0.35), transparent 46%),
+        radial-gradient(ellipse at 100% 100%, rgba(123, 24, 145, 0.27), transparent 36%),
+        linear-gradient(160deg, rgba(45, 17, 58, 0.985), rgba(18, 8, 27, 0.99));
     box-shadow:
-        0 30px 100px rgba(0, 0, 0, 0.56),
-        0 0 34px rgba(163, 55, 192, 0.2),
-        inset 0 1px 0 rgba(255, 226, 170, 0.12);
+        0 28px 100px rgba(0, 0, 0, .6),
+        0 0 35px rgba(181, 46, 190, .21),
+        0 0 2px rgba(251, 205, 134, .28),
+        inset 0 1px 0 rgba(255, 226, 170, .18);
 }
 
 /* A fine highlight gives the card a crafted edge, not a neon outline. */
@@ -194,12 +196,13 @@
     content: "";
     position: absolute;
     pointer-events: none;
-    top: -1px;
-    right: 9%;
-    width: 48%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #ffe5ad, #e5a1f5, transparent);
-    box-shadow: 0 0 16px rgba(229, 160, 245, 0.65);
+    top: -2px;
+    right: 2%;
+    width: 42%;
+    height: 3px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, transparent 0%, #f3adf5 55%, #ffe9b7 78%, transparent);
+    box-shadow: 0 0 15px rgba(255, 178, 196, .9);
 }
 
 .card-eyebrow {
@@ -212,6 +215,8 @@
 .register-card .card-title {
     margin: 0;
     font-size: clamp(34px, 2.8vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.025em;
     line-height: 1.15;
 }
 
@@ -244,7 +249,7 @@
     gap: 12px;
     height: 58px;
     padding: 0 16px;
-    border: 1px solid rgba(176, 101, 191, 0.38);
+    border: 1px solid rgba(182, 88, 198, .56);
     border-radius: 14px;
     background: rgba(13, 7, 21, 0.83);
     color: var(--muted);
@@ -301,7 +306,7 @@
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 5px 24px rgba(219, 159, 76, 0.28);
+    box-shadow: 0 5px 24px rgba(237, 170, 75, .31), 0 0 20px rgba(235, 174, 83, .1);
     transition: transform 0.15s, box-shadow 0.2s;
 }
 
@@ -320,94 +325,31 @@
 /* A laptop browser has much less vertical space than a full-screen mockup.
    Use a compact desktop treatment so the primary action stays visible. */
 @media (min-width: 901px) and (max-height: 750px) {
-    .auth-page::before {
-        background-size: cover;
-        background-position: center calc(100% + 90px);
-    }
-
     .register-layout {
-        padding-top: 100px;
-        padding-bottom: 22px;
-        gap: clamp(40px, 5vw, 90px);
+        padding-top: 96px;
+        padding-bottom: 20px;
+        gap: clamp(36px, 5vw, 84px);
     }
-
-    .register-hero {
-        padding-top: 12px;
-    }
-
+    .register-hero { padding-top: 12px; }
     .register-hero h1 {
-        font-size: clamp(40px, 4vw, 56px);
+        font-size: clamp(43px, 3.7vw, 53px);
         margin-bottom: 14px;
     }
-
-    .hero-sub {
-        font-size: 16px;
-        line-height: 1.5;
-    }
-
-    .hero-sub::after {
-        margin-top: 12px;
-    }
-
-    .feature-list {
-        margin-top: 24px;
-        gap: 12px;
-    }
-
-    .feature-icon {
-        width: 42px;
-        height: 42px;
-    }
-
-    .feature-text {
-        font-size: 13px;
-    }
-
-    .hero-footer {
-        margin-top: 14px;
-        font-size: 12px;
-    }
-
-    .hero-footer::after {
-        margin-top: 8px;
-    }
-
-    .register-card {
-        padding: 34px 38px;
-        border-radius: 24px;
-    }
-
-    .card-eyebrow {
-        margin-bottom: 8px;
-        font-size: 11px;
-    }
-
-    .register-card .card-title {
-        font-size: 34px;
-    }
-
-    .card-subtitle {
-        margin: 6px 0 16px;
-        font-size: 17px;
-    }
-
-    .register-form {
-        gap: 12px;
-    }
-
-    .field {
-        height: 48px;
-    }
-
-    .btn-primary {
-        height: 52px;
-        margin-top: 4px;
-    }
-
-    .card-terms {
-        margin-top: 12px;
-        font-size: 11px;
-    }
+    .hero-sub { font-size: 16px; line-height: 1.5; }
+    .hero-sub::after { margin-top: 12px; }
+    .feature-list { margin-top: 19px; gap: 10px; }
+    .feature-icon { width: 42px; height: 42px; }
+    .feature-text { font-size: 13px; }
+    .hero-footer { margin-top: 14px; font-size: 12px; }
+    .hero-footer::after { margin-top: 8px; }
+    .register-card { padding: 32px 38px; border-radius: 26px; }
+    .card-eyebrow { margin-bottom: 9px; font-size: 11px; }
+    .register-card .card-title { font-size: 35px; }
+    .card-subtitle { margin: 6px 0 16px; font-size: 17px; }
+    .register-form { gap: 12px; }
+    .field { height: 49px; }
+    .btn-primary { height: 53px; margin-top: 5px; }
+    .card-terms { margin-top: 12px; font-size: 11px; }
 }
 
 /* narrow screens: form only */
