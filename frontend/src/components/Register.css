@@ -160,6 +160,7 @@
     justify-self: end;
     width: 100%;
     max-width: 660px;
+    --auth-card-corner-radius: 42px;
     min-width: 0;
     margin: 0;
     padding: 48px clamp(40px, 4.2vw, 70px) 42px;
@@ -181,19 +182,7 @@
 }
 
 /* Decorative highlights are handcrafted CSS/SVG — never reference-image crops. */
-.register-card::before {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    z-index: 2;
-    top: -2px;
-    right: 5%;
-    width: 44%;
-    height: 3px;
-    border-radius: 100%;
-    background: linear-gradient(90deg, transparent, #d885db 40%, #ffe2a3 75%, transparent);
-    box-shadow: 0 0 15px rgba(249, 168, 192, .62);
-}
+/* The top rim illumination is provided by .card-edge-light--top only. */
 
 .register-card::after {
     content: "";
@@ -227,96 +216,97 @@
 }
 
 .card-edge-light--top {
-    top: -4px;
-    right: 2%;
-    width: 38%;
-    height: 5px;
-    border-radius: 100%;
-    background: linear-gradient(
-        90deg, transparent 0%, rgba(223, 132, 217, .3) 24%,
-        rgba(251, 206, 198, .86) 55%, #fff2c8 75%,
-        rgba(238, 160, 218, .45) 89%, transparent
-    );
-    box-shadow:
-        0 0 8px rgba(255, 217, 180, .7),
-        0 0 27px rgba(213, 105, 208, .42);
+    top: -2px;
+    right: 3%;
+    width: 39%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(208, 111, 213, .16) 19%,
+        rgba(252, 203, 198, .68) 50%,
+        rgba(255, 232, 191, .82) 72%,
+        rgba(227, 138, 223, .16) 89%,
+        transparent 100%);
+    box-shadow: 0 0 13px rgba(235, 152, 196, .28);
 }
 
 .card-edge-light--top::before {
-    top: -22px;
-    right: -8%;
-    width: 135%;
-    height: 58px;
-    background: radial-gradient(ellipse at 73% 50%,
-        rgba(250, 185, 208, .38),
-        rgba(176, 74, 185, .22) 38%,
-        transparent 72%);
-    filter: blur(8px);
+    top: -27px;
+    right: -6%;
+    width: 128%;
+    height: 67px;
+    background: radial-gradient(ellipse at 69% 48%,
+        rgba(252, 195, 204, .31) 0%,
+        rgba(175, 79, 184, .16) 39%,
+        transparent 76%);
+    filter: blur(12px);
 }
 
 .card-edge-light--bottom {
-    bottom: -4px;
-    left: 24%;
-    width: 45%;
-    height: 5px;
-    border-radius: 100%;
-    background: radial-gradient(ellipse at 54% 50%,
-        #ffedcd 0%, rgba(246, 202, 159, .91) 19%,
-        rgba(224, 136, 174, .57) 44%, transparent 80%);
-    box-shadow:
-        0 0 11px rgba(255, 194, 157, .7),
-        0 0 30px rgba(218, 89, 182, .36);
+    bottom: -2px;
+    left: 29%;
+    width: 36%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(231, 152, 190, .22) 25%,
+        rgba(255, 223, 194, .68) 51%,
+        rgba(227, 154, 194, .2) 79%,
+        transparent 100%);
+    box-shadow: 0 0 12px rgba(250, 178, 167, .3);
 }
 
 .card-edge-light--bottom::before {
-    bottom: -17px;
-    left: 7%;
-    width: 88%;
-    height: 48px;
-    background: radial-gradient(ellipse at center,
-        rgba(252, 192, 157, .34),
-        rgba(169, 71, 167, .16) 46%,
-        transparent 78%);
-    filter: blur(8px);
+    bottom: -24px;
+    left: -12%;
+    width: 124%;
+    height: 65px;
+    background: radial-gradient(ellipse at 50% 50%,
+        rgba(252, 192, 167, .28),
+        rgba(194, 102, 177, .13) 45%,
+        transparent 76%);
+    filter: blur(13px);
 }
 
+/* The lower corner catches light around its *curved* rim.
+   No separate horizontal/vertical bars or sharp L-shaped join. */
 .card-edge-light--corner {
-    right: -3px;
-    bottom: -4px;
-    width: 150px;
-    height: 126px;
-    border-radius: 0 0 40px 0;
-    background: radial-gradient(ellipse at 100% 100%,
-        rgba(220, 97, 237, .39),
-        rgba(163, 64, 192, .22) 36%,
-        transparent 76%);
+    right: 0;
+    bottom: 0;
+    width: 151px;
+    height: 148px;
+    border-radius: 0 0 var(--auth-card-corner-radius, 42px) 0;
+    background: radial-gradient(ellipse at 99% 98%,
+        rgba(217, 111, 223, .28),
+        rgba(160, 65, 184, .12) 45%,
+        transparent 75%);
 }
 
 .card-edge-light--corner::before {
-    right: 1px;
-    bottom: 3px;
-    width: 115px;
-    height: 4px;
-    background: linear-gradient(90deg,
-        transparent, rgba(241, 145, 207, .33) 45%,
-        rgba(255, 211, 202, .95));
-    border-radius: 100%;
-    box-shadow: 0 0 16px rgba(228, 92, 209, .68);
+    inset: 0;
+    border-right: 1.5px solid rgba(248, 172, 231, .68);
+    border-bottom: 1.5px solid rgba(247, 177, 210, .65);
+    border-radius: inherit;
+    -webkit-mask-image: radial-gradient(
+        ellipse 155px 145px at 100% 100%, #000 0%, transparent 80%);
+    mask-image: radial-gradient(
+        ellipse 155px 145px at 100% 100%, #000 0%, transparent 80%);
 }
 
 .card-edge-light--corner::after {
-    right: 1px;
-    bottom: 1px;
-    width: 4px;
-    height: 98px;
-    border-radius: 100%;
-    background: linear-gradient(0deg,
-        rgba(255, 220, 208, .88),
-        rgba(229, 114, 217, .6) 32%,
-        transparent 100%);
-    box-shadow: 0 0 15px rgba(213, 79, 221, .53);
+    right: -13px;
+    bottom: -13px;
+    width: 137px;
+    height: 124px;
+    border-radius: 45%;
+    background: radial-gradient(ellipse at 65% 60%,
+        rgba(227, 132, 227, .3),
+        rgba(160, 73, 193, .13) 37%,
+        transparent 75%);
+    filter: blur(17px);
 }
-
 .card-eyebrow {
     display: flex;
     align-items: center;
@@ -485,7 +475,7 @@
     .feature-icon svg { width: 22px; height: 22px; }
     .feature-title { font-size: 15px; }
     .feature-text { font-size: 12px; }
-    .register-card { padding-top: 34px; padding-bottom: 30px; border-radius: 30px; }
+    .register-card { --auth-card-corner-radius: 30px; padding-top: 34px; padding-bottom: 30px; border-radius: 30px; }
     .card-eyebrow { margin-bottom: 14px; font-size: 11px; }
     .register-card .card-title { font-size: 36px; }
     .card-subtitle { margin: 6px 0 20px; font-size: 17px; }
@@ -512,6 +502,7 @@
         width: min(100%, 570px);
         padding: 39px clamp(23px, 6vw, 50px);
         border-radius: 29px;
+        --auth-card-corner-radius: 29px;
     }
     .register-topbar { right: 24px; top: 25px; }
 }
@@ -524,7 +515,7 @@
     .register-topbar { right: 16px; top: 20px; gap: 0; }
     .register-topbar span { display: none; }
     .btn-outline { padding: 7px 18px; min-height: 39px; font-size: 13px; }
-    .register-card { padding: 31px 22px; border-radius: 24px; }
+    .register-card { --auth-card-corner-radius: 24px; padding: 31px 22px; border-radius: 24px; }
     .card-eyebrow { font-size: 10px; margin-bottom: 17px; }
     .register-card .card-title { font-size: 31px; }
     .card-subtitle { font-size: 16px; margin: 8px 0 24px; }
