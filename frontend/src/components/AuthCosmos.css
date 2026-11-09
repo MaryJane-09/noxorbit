@@ -13,10 +13,20 @@
     min-height: 760px;
 }
 
-/* Orbital glow follows a short section of the SVG path, then fades.
-   The orbit itself stays still, retaining its layered depth. */
+/* The central golden flare stays visible at all times. A second soft
+   bloom travels only a short section of the curve, never a dashed ring. */
+.auth-orbit-beacon {
+    opacity: .94;
+    animation: nox-beacon-breathe 6s ease-in-out infinite alternate;
+}
+
 .auth-orbit-glimmer {
     pointer-events: none;
+}
+
+@keyframes nox-beacon-breathe {
+    from { opacity: .85; }
+    to { opacity: 1; }
 }
 
 .auth-moon-halo {
@@ -47,6 +57,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .auth-orbit-glimmer { display: none; }
+    .auth-orbit-beacon { animation: none; opacity: 1; }
     .auth-star-pulse,
     .auth-moon-halo { animation: none; }
 }
