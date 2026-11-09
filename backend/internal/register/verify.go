@@ -44,14 +44,10 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 			return
 		}
 		if time.Now().After(storedOTP.ExpiresAt) {
+			// Expired registration codes must not affect password-reset codes.
+			_ = otpRepo.Delete(info.Email, otp.PurposeRegister)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
-			err = otpRepo.Delete(info.Email, otp.PurposeReset)
-			if err != nil {
-				w.WriteHeader(http.StatusConflict)
-				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
-				return
-			}
 			return
 		}
 		if info.Code != storedOTP.Code {
@@ -77,7 +73,7 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pen
 			return
 		}
 
-		err = otpRepo.Delete(info.Email, otp.PurposeReset)
+		err = otpRepo.Delete(info.Email, otp.PurposeRegister)
 		if err != nil {
 			w.WriteHeader(http.StatusConflict)
 			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
