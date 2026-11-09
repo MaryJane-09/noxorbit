@@ -30,11 +30,8 @@ func ValidateRegister(info user.User) error {
 		return errors.New("Invalid email input")
 	}
 
-	if len(info.Password) ==  0{
-		return errors.New("Password cannot be empty")
-	}
-	if len(info.Password) < 8 {
-		return errors.New("Password is too short")
+	if err := ValidatePassword(info.Password); err != nil {
+		return err
 	}
 
 	return nil

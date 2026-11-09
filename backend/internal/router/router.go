@@ -8,7 +8,6 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
-	"github.com/MaryJane-09/noxorbit/backend/internal/pending"
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
@@ -54,15 +53,14 @@ func New(pool *pgxpool.Pool) http.Handler {
 	}
 	repo := user.NewRepository(pool)
 	otpRepo := otp.NewRepository(pool)
-	pendingRepo := pending.NewRepository(pool)
 	sessionRepo := session.NewRepository(pool)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
-	mux.HandleFunc("/register", register.RegisterHandler(repo, otpRepo, pendingRepo, &sender))
+	mux.HandleFunc("/register", register.RegisterHandler(otpRepo, &sender))
 	mux.HandleFunc("/users", auth.RequireAuth(sessionRepo, user.UsersHandler(repo)))
 	mux.HandleFunc("/me", auth.RequireAuth(sessionRepo, auth.MeHandler(repo)))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
-	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo, pendingRepo))
+	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo))
 	mux.HandleFunc("/login", auth.LoginHandler(repo, sessionRepo))
 	mux.HandleFunc("/forgot-password", auth.ForgotPasswordHandler(repo, otpRepo, &sender))
 	mux.HandleFunc("/reset-password", auth.ResetPasswordHandler(repo, otpRepo, sessionRepo))

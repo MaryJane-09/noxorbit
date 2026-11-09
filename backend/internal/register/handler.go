@@ -9,7 +9,6 @@ import (
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
-	"github.com/MaryJane-09/noxorbit/backend/internal/pending"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"github.com/MaryJane-09/noxorbit/backend/internal/validate"
 )
@@ -18,96 +17,62 @@ type ErrorResponse struct {
 	Error string `json:"error"`
 }
 
-func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pendingRepo *pending.PendingRepository, sender *email.EmailSender) http.HandlerFunc {
+// RegisterHandler validates the submitted details and sends an email code.
+// It does not persist the name or password before the email is verified.
+func RegisterHandler(otpRepo *otp.OTPRepository, sender *email.EmailSender) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Method not allowed"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Method not allowed"})
 			return
 		}
 		defer r.Body.Close()
 
 		var info user.User
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&info)
-		if err != nil {
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&info); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to decode request body"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Invalid registration request"})
 			return
 		}
-		
+		info.Name = strings.TrimSpace(info.Name)
 		info.Email = strings.ToLower(strings.TrimSpace(info.Email))
-		err = validate.ValidateRegister(info)
-		if err != nil {
+		if err := validate.ValidateRegister(info); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: err.Error()})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: err.Error()})
 			return
 		}
 
-		err = pendingRepo.Create(info)
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Pending user not saved"})
-			return
-		}
 		code, err := otp.Generate(6)
 		if err != nil {
-			err = pendingRepo.Delete(info.Email)
-			if err != nil {
-				w.WriteHeader(http.StatusConflict)
-				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete pending user"})
-				return
-			}
+			log.Println("Generate registration code:", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Could not generate OTP"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not generate verification code"})
 			return
 		}
-
-		NewOTP := otp.OTP{
+		err = otpRepo.Create(otp.OTP{
 			Email:     info.Email,
 			Purpose:   otp.PurposeRegister,
 			Code:      code,
 			ExpiresAt: time.Now().Add(otp.ExpiryTime),
 			Verified:  false,
-		}
-
-		err = otpRepo.Create(NewOTP)
+		})
 		if err != nil {
-			err = pendingRepo.Delete(info.Email)
-			if err != nil {
-				w.WriteHeader(http.StatusConflict)
-				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete pending user"})
-				return
-			}
+			log.Println("Save registration code:", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Could not create new OTP"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not create verification code"})
 			return
 		}
 
-		err = sender.SendVerification(info.Name, info.Email, code)
-		if err != nil {
-			sendErr := err
-			err = otpRepo.Delete(info.Email, otp.PurposeRegister)
-			if err != nil {
-				w.WriteHeader(http.StatusConflict)
-				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
-				return
-			}
-			err = pendingRepo.Delete(info.Email)
-			if err != nil {
-				w.WriteHeader(http.StatusConflict)
-				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete pending user"})
-				return
-			}
+		if err := sender.SendVerification(info.Name, info.Email, code); err != nil {
+			log.Println("Send registration code:", err)
+			_ = otpRepo.Delete(info.Email, otp.PurposeRegister)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: sendErr.Error()})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not send verification email"})
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{
+		_ = json.NewEncoder(w).Encode(map[string]string{
 			"message": "Verification code generated successfully",
 		})
 	}

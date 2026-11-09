@@ -1,6 +1,7 @@
 package register
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -8,86 +9,87 @@ import (
 	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
-	"github.com/MaryJane-09/noxorbit/backend/internal/pending"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
+	"github.com/MaryJane-09/noxorbit/backend/internal/validate"
 )
 
+// Registration details arrive again with the emailed code, rather than being
+// loaded from a mutable pending-registration row in the database.
 type OTPVerification struct {
-	Email string `json:"email"`
-	Code  string `json:"code"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Code     string `json:"code"`
 }
 
-func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pendingRepo *pending.PendingRepository) http.HandlerFunc {
+func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Method not allowed"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Method not allowed"})
 			return
 		}
 		defer r.Body.Close()
 
-		var info OTPVerification
-		decoder := json.NewDecoder(r.Body)
-		err := decoder.Decode(&info)
-		if err != nil {
+		var req OTPVerification
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&req); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to decode request body"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Invalid verification request"})
 			return
 		}
-		info.Email = strings.ToLower(strings.TrimSpace(info.Email))
-		storedOTP, err := otpRepo.FindByEmail(info.Email, otp.PurposeRegister)
+
+		info := user.User{
+			Name:     strings.TrimSpace(req.Name),
+			Email:    strings.ToLower(strings.TrimSpace(req.Email)),
+			Password: req.Password,
+		}
+		if err := validate.ValidateRegister(info); err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		code := strings.TrimSpace(req.Code)
+		if len(code) != 6 {
+			w.WriteHeader(http.StatusBadRequest)
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})
+			return
+		}
+
+		stored, err := otpRepo.FindByEmail(info.Email, otp.PurposeRegister)
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "No OTP was found for this email."})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "No OTP was found for this email."})
 			return
 		}
-		if time.Now().After(storedOTP.ExpiresAt) {
-			// Expired registration codes must not affect password-reset codes.
+		if time.Now().After(stored.ExpiresAt) {
 			_ = otpRepo.Delete(info.Email, otp.PurposeRegister)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
 			return
 		}
-		if info.Code != storedOTP.Code {
+		if subtle.ConstantTimeCompare([]byte(code), []byte(stored.Code)) != 1 {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})
 			return
 		}
-		pendingUser, err := pendingRepo.FindByEmail(info.Email)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "User cannot be found"})
-			return
-		}
-		err = repo.Create(pendingUser)
-		if err != nil {
+
+		// Only the verified request determines the account's name and password.
+		// UserRepository.Create hashes the password with bcrypt before saving it.
+		if err := repo.Create(info); err != nil {
 			if errors.Is(err, user.ErrEmailExists) {
 				w.WriteHeader(http.StatusConflict)
-				json.NewEncoder(w).Encode(ErrorResponse{Error: user.ErrEmailExists.Error()})
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: user.ErrEmailExists.Error()})
 				return
 			}
-			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to create user"})
+			w.WriteHeader(http.StatusInternalServerError)
+			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to create user"})
 			return
 		}
-
-		err = otpRepo.Delete(info.Email, otp.PurposeRegister)
-		if err != nil {
-			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
-			return
-		}
-		err = pendingRepo.Delete(info.Email)
-		if err != nil {
-			w.WriteHeader(http.StatusConflict)
-			json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete pending user"})
-			return
-		}
-
+		_ = otpRepo.Delete(info.Email, otp.PurposeRegister)
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{
+		_ = json.NewEncoder(w).Encode(map[string]string{
 			"message": "User created successfully",
 		})
 	}

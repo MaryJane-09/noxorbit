@@ -4,6 +4,7 @@ import {
 } from 'lucide-react'
 import './Register.css'
 import AuthShell from './AuthShell'
+import { API } from '../api'
 
 const OTP_LENGTH = 6
 const OTP_LIFETIME = 300 // seconds — keep in sync with the 5-minute expiry in the Go otp package
@@ -44,7 +45,7 @@ export default function Register({ onLogin }) {
 
     // Used by both the first registration and "Resend code".
     async function sendRegistration() {
-        const response = await fetch("http://localhost:8080/register", {
+        const response = await fetch(`${API}/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: form.name, email: form.email, password: form.password })
@@ -103,10 +104,10 @@ export default function Register({ onLogin }) {
         setLoading(true)
         setNotice("")
         try {
-            const response = await fetch("http://localhost:8080/verify-otp", {
+            const response = await fetch(`${API}/verify-otp`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email: form.email, code: otpCode.trim() })
+                body: JSON.stringify({ name: form.name, email: form.email, password: form.password, code: otpCode.trim() })
             })
             const data = await response.json()
             if (response.ok) {
