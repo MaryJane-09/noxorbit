@@ -103,9 +103,8 @@ func (s EmailSender) sendCode(to, subject string, c codeEmail) error {
 }
 
 // buildCodeMessage constructs an independent notification, not an email reply.
-// Every email receives a unique non-secret reference in its subject, so Gmail
-// does not mix old verification codes and password-reset notifications.
-// The code itself is never included in the subject.
+// Subjects stay clean and purpose-specific; a unique Message-ID remains in
+// the email headers. Gmail may still group messages with identical subjects.
 func (s EmailSender) buildCodeMessage(to, subject string, c codeEmail) ([]byte, error) {
 	if strings.ContainsAny(to, "\r\n") {
 		return nil, errors.New("invalid recipient address")
@@ -119,14 +118,12 @@ func (s EmailSender) buildCodeMessage(to, subject string, c codeEmail) ([]byte, 
 		return nil, errors.New("invalid sender domain")
 	}
 
-	// A random reference distinguishes this notification from every other
-	// registration or reset email without exposing the one-time code.
+	// A random identifier is used only in the hidden Message-ID header,
+	// never in the visible subject or the one-time code.
 	var nonce [16]byte
 	if _, err := rand.Read(nonce[:]); err != nil {
-		return nil, fmt.Errorf("generate email reference: %w", err)
+		return nil, fmt.Errorf("generate email message ID: %w", err)
 	}
-	reference := strings.ToUpper(hex.EncodeToString(nonce[:5]))
-	uniqueSubject := subject + " [NX-" + reference + "]"
 	messageID := "<noxorbit." + hex.EncodeToString(nonce[:]) + "@" + sender.Address[at+1:] + ">"
 
 	c.Name = cleanName(c.Name)
@@ -152,7 +149,7 @@ func (s EmailSender) buildCodeMessage(to, subject string, c codeEmail) ([]byte, 
 		"To: " + to + "\r\n" +
 		"Date: " + time.Now().UTC().Format(time.RFC1123Z) + "\r\n" +
 		"Message-ID: " + messageID + "\r\n" +
-		"Subject: " + mime.QEncoding.Encode("UTF-8", uniqueSubject) + "\r\n" +
+		"Subject: " + mime.QEncoding.Encode("UTF-8", subject) + "\r\n" +
 		"MIME-Version: 1.0\r\n" +
 		"Content-Type: multipart/alternative; boundary=" + mw.Boundary() + "\r\n" +
 		"\r\n" + body.String()

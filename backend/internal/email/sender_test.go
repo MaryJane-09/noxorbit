@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestEmailNotificationsHaveIndependentSubjectsAndIDs(t *testing.T) {
+func TestEmailNotificationsHaveCleanSubjectsAndIndependentIDs(t *testing.T) {
 	sender := EmailSender{GmailAddress: "noxorbit@example.com"}
 	details := codeEmail{
 		Heading:   "Your password reset code",
@@ -43,8 +43,11 @@ func TestEmailNotificationsHaveIndependentSubjectsAndIDs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if subject1 == subject2 || !strings.HasPrefix(subject1, "Reset your Noxorbit password [NX-") {
-		t.Fatalf("subjects should be distinctive, got %q and %q", subject1, subject2)
+	if subject1 != "Reset your Noxorbit password" || subject2 != subject1 {
+		t.Fatalf("subjects should be clean and stable, got %q and %q", subject1, subject2)
+	}
+	if strings.Contains(subject1, "[NX-") {
+		t.Fatal("visible subject must not include a random reference")
 	}
 	if strings.Contains(subject1, details.Code) || strings.Contains(subject2, details.Code) {
 		t.Fatal("one-time code must not appear in the subject")
@@ -57,6 +60,20 @@ func TestEmailNotificationsHaveIndependentSubjectsAndIDs(t *testing.T) {
 	}
 	if m1.Header.Get("Date") == "" {
 		t.Fatal("missing Date header")
+	}
+
+	// Verification and reset messages keep distinct, descriptive subjects.
+	verification, err := sender.buildCodeMessage("reader@example.com", "Verify your Noxorbit account", details)
+	if err != nil {
+		t.Fatal(err)
+	}
+	verificationMail := parse(verification)
+	verificationSubject, err := new(mime.WordDecoder).DecodeHeader(verificationMail.Header.Get("Subject"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if verificationSubject != "Verify your Noxorbit account" || verificationSubject == subject1 {
+		t.Fatalf("registration and reset subjects should differ, got %q and %q", verificationSubject, subject1)
 	}
 }
 
