@@ -1,12 +1,12 @@
 package register
 
 import (
-		"encoding/json"
+	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
 	"strings"
-	
+
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"github.com/MaryJane-09/noxorbit/backend/internal/validate"
