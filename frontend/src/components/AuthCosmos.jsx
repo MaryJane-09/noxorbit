@@ -13,12 +13,13 @@ const STARS = Array.from({ length: 64 }, (_, i) => ({
     opacity: 0.1 + noise(i + 351) * 0.27,
 }));
 
-// Reference geometry: a lit upper sweep and an almost invisible return.
-// The orbit should read as a crescent of light, never as a uniformly glowing oval.
+// A larger sculpted oval, scaled to the annotated visual reference.
+// The card hides both upper and lower ends; the upper edge is luminous
+// while the lower return is a barely visible shadow.
 const ORBIT_UPPER =
-    "M 940 270 C 829 302 706 387 642 477 C 616 514 604 543 613 558";
+    "M 1010 235 C 835 264 697 357 594 496 C 512 607 488 705 570 749";
 const ORBIT_RETURN =
-    "M 613 558 C 632 599 695 612 775 588 C 833 571 886 552 945 529";
+    "M 570 749 C 650 810 836 718 1020 586";
 
 export default function AuthCosmos() {
     return (
@@ -36,30 +37,30 @@ export default function AuthCosmos() {
                         <stop offset="1" stopColor="#f0a5e8" stopOpacity="0" />
                     </radialGradient>
                     <linearGradient id="nox-orbit-color" gradientUnits="userSpaceOnUse"
-                        x1="610" y1="544" x2="904" y2="278">
-                        <stop stopColor="#a850ae" stopOpacity=".44" />
-                        <stop offset=".16" stopColor="#f1a2bd" stopOpacity=".84" />
-                        <stop offset=".26" stopColor="#ffe9c2" />
-                        <stop offset=".34" stopColor="#ffd5ae" />
-                        <stop offset=".47" stopColor="#d778bb" stopOpacity=".62" />
-                        <stop offset=".72" stopColor="#854090" stopOpacity=".34" />
+                        x1="545" y1="665" x2="952" y2="252">
+                        <stop stopColor="#a64fbb" stopOpacity=".19" />
+                        <stop offset=".13" stopColor="#b86bb5" stopOpacity=".45" />
+                        <stop offset=".31" stopColor="#e49ab9" stopOpacity=".77" />
+                        <stop offset=".49" stopColor="#ffe1b4" stopOpacity=".95" />
+                        <stop offset=".59" stopColor="#d995b7" stopOpacity=".72" />
+                        <stop offset=".78" stopColor="#9860a7" stopOpacity=".37" />
                         <stop offset="1" stopColor="#764081" stopOpacity="0" />
                     </linearGradient>
                     <linearGradient id="nox-orbit-return" gradientUnits="userSpaceOnUse"
-                        x1="614" y1="557" x2="940" y2="529">
-                        <stop stopColor="#b34dba" stopOpacity=".36" />
-                        <stop offset=".16" stopColor="#74327d" stopOpacity=".19" />
-                        <stop offset=".5" stopColor="#572767" stopOpacity=".11" />
+                        x1="570" y1="749" x2="1020" y2="586">
+                        <stop stopColor="#b269b7" stopOpacity=".28" />
+                        <stop offset=".24" stopColor="#8a438d" stopOpacity=".15" />
+                        <stop offset=".58" stopColor="#5d286c" stopOpacity=".07" />
                         <stop offset="1" stopColor="#542663" stopOpacity="0" />
                     </linearGradient>
                     <linearGradient id="nox-orbit-flare" gradientUnits="userSpaceOnUse"
-                        x1="610" y1="544" x2="904" y2="278">
+                        x1="522" y1="711" x2="935" y2="243">
                         <stop stopColor="#f7a9c7" stopOpacity="0" />
-                        <stop offset=".11" stopColor="#f7aeae" stopOpacity=".6" />
-                        <stop offset=".23" stopColor="#ffe5b9" />
-                        <stop offset=".31" stopColor="#fff3d5" />
-                        <stop offset=".43" stopColor="#f7bfa5" stopOpacity=".66" />
-                        <stop offset=".62" stopColor="#da77b9" stopOpacity="0" />
+                        <stop offset=".22" stopColor="#f6b3c1" stopOpacity=".23" />
+                        <stop offset=".36" stopColor="#ffd4b2" stopOpacity=".62" />
+                        <stop offset=".49" stopColor="#fff5d7" stopOpacity=".98" />
+                        <stop offset=".59" stopColor="#f5c7ad" stopOpacity=".72" />
+                        <stop offset=".72" stopColor="#dd85be" stopOpacity=".16" />
                         <stop offset="1" stopColor="#da77b9" stopOpacity="0" />
                     </linearGradient>
                     <radialGradient id="nox-moon-disc" cx="26%" cy="38%" r="90%">
@@ -118,69 +119,61 @@ export default function AuthCosmos() {
                     ))}
                 </g>
 
-                {/* A sculpted ribbon: atmospheric depth and delicately offset purple
-                    traces; only the upper sweep catches gold, the lower return fades. */}
+                {/* A broad orbital ribbon following the user's annotated silhouette.
+                    Layered traces give depth, while a faint lower return disappears
+                    behind the card. Only a localized bloom moves, never the ring. */}
                 <g className="auth-orbital-art">
-                    <ellipse cx="714" cy="425" rx="116" ry="100"
-                        fill="url(#nox-orbit-ambient)" opacity=".65" />
-                    <path d="M 945 255 C 815 297 686 386 625 478 C 600 520 603 547 614 564"
-                        fill="none" stroke="#7d3c95" strokeWidth="1.25"
-                        opacity=".25" />
-                    <path d="M 951 283 C 831 314 723 396 661 488 C 629 532 623 550 630 567"
-                        fill="none" stroke="#a364a7" strokeWidth="1.15"
-                        opacity=".23" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="#a94d9f"
-                        strokeWidth="26" opacity=".22"
+                    <ellipse cx="671" cy="520" rx="203" ry="224"
+                        fill="url(#nox-orbit-ambient)" opacity=".72" />
+                    <path d="M 1022 221 C 825 254 691 340 580 487 C 495 605 468 716 550 758"
+                        fill="none" stroke="#7d3c95" strokeWidth="1.5"
+                        opacity=".26" />
+                    <path d="M 1010 255 C 843 289 710 370 614 508 C 539 616 521 700 592 743"
+                        fill="none" stroke="#b16ab3" strokeWidth="1.15"
+                        opacity=".28" />
+                    <path d={ORBIT_UPPER} fill="none" stroke="#a951a6"
+                        strokeWidth="33" opacity=".24"
                         filter="url(#nox-atmosphere-glow)" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="#d68ab5"
-                        strokeWidth="11" opacity=".25"
+                    <path d={ORBIT_UPPER} fill="none" stroke="#d487b9"
+                        strokeWidth="14" opacity=".3"
                         filter="url(#nox-soft-glow)" />
                     <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-color)"
-                        strokeWidth="2.55" strokeLinecap="round" />
-
-                    {/* This is stationary illumination along the curve, not a moving dash. */}
+                        strokeWidth="2.8" strokeLinecap="round" />
                     <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-flare)"
-                        strokeWidth="18" opacity=".45"
-                        filter="url(#nox-soft-glow)" />
+                        strokeWidth="19" opacity=".52" filter="url(#nox-soft-glow)" />
                     <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-flare)"
-                        strokeWidth="3.2" opacity=".9" strokeLinecap="round" />
+                        strokeWidth="3.3" strokeLinecap="round" />
 
                     <path d={ORBIT_RETURN} fill="none"
-                        stroke="url(#nox-orbit-return)" strokeWidth="1.05" />
-                    <path d="M 619 567 C 647 599 710 600 794 579 C 855 561 909 539 951 520"
-                        fill="none" stroke="#7b3f87" strokeWidth=".65"
-                        opacity=".085" />
+                        stroke="url(#nox-orbit-return)" strokeWidth="1.15" />
+                    <path d="M 571 758 C 651 821 836 734 1024 590"
+                        fill="none" stroke="#87408d" strokeWidth="1"
+                        opacity=".095" />
 
-                    {/* A permanent focal flare keeps the orbit luminous even between
-                        movement cycles. The warm highlight follows the actual tangent
-                        of the upper curve; it is not a second rotating line. */}
+                    {/* A persistent champagne flare, plus a slow, diffuse shimmer.
+                        The glow never turns into a spinning outline. */}
                     <g className="auth-orbit-beacon">
-                        <ellipse cx="650" cy="466" rx="97" ry="43"
-                            transform="rotate(-62 650 466)"
-                            fill="url(#nox-flare-halo)" opacity=".86" />
-                        <ellipse cx="650" cy="466" rx="53" ry="17"
-                            transform="rotate(-62 650 466)"
+                        <ellipse cx="650" cy="430" rx="97" ry="39"
+                            transform="rotate(-50 650 430)"
+                            fill="url(#nox-flare-halo)" opacity=".83" />
+                        <ellipse cx="650" cy="430" rx="49" ry="16"
+                            transform="rotate(-50 650 430)"
                             fill="url(#nox-moving-gold)" opacity=".92" />
-                        <circle cx="650" cy="466" r="4.5" fill="#fff1c6"
-                            opacity=".8" filter="url(#nox-soft-glow)" />
-                        <circle cx="650" cy="466" r="1.5" fill="#fff5da"
+                        <circle cx="650" cy="430" r="3.8" fill="#fff0cb"
+                            opacity=".68" filter="url(#nox-soft-glow)" />
+                        <circle cx="650" cy="430" r="1.3" fill="#fff6df"
                             opacity=".95" />
                     </g>
-
-                    {/* A soft bloom glides a short section of the visible arc.
-                        No dash, no circling the orbit, no long blackout between passes. */}
                     <g className="auth-orbit-glimmer">
-                        <ellipse rx="43" ry="15" transform="rotate(-45)"
-                            fill="url(#nox-moving-gold)" opacity=".93" />
-                        <ellipse rx="21" ry="6" transform="rotate(-45)"
-                            fill="url(#nox-flare-halo)" opacity=".87" />
+                        <ellipse rx="39" ry="13" transform="rotate(-48)"
+                            fill="url(#nox-moving-gold)" opacity=".82" />
                         <animateMotion
-                            path="M 662 446 C 640 474 622 506 615 535"
-                            dur="10s" repeatCount="indefinite" calcMode="linear" />
-                        <animate attributeName="opacity" dur="10s"
+                            path="M 775 324 C 735 352 696 384 660 418 C 626 456 594 496 571 529"
+                            dur="14s" repeatCount="indefinite" calcMode="linear" />
+                        <animate attributeName="opacity" dur="14s"
                             repeatCount="indefinite"
-                            values="0;.95;.92;0;0"
-                            keyTimes="0;.25;.6;.82;1" />
+                            values="0;.72;.84;.12;0"
+                            keyTimes="0;.26;.52;.79;1" />
                     </g>
                 </g>
                 <g className="auth-distant-moon">
