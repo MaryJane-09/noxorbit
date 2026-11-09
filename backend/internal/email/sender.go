@@ -15,14 +15,9 @@ import (
 	"strings"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type EmailSender struct {
-	GmailAddress     string
-	GmailAppPassword string
-	SMTPHost         string
-	SMTPPort         string
-}
 
 //
 //go:embed templates/code.html
@@ -46,6 +41,20 @@ func (c codeEmail) text() string {
 		"This code expires in %d minutes. Enter it exactly as shown; it is case-sensitive.\n"+
 		"Never share it with anyone. Noxorbit will never ask you for it.\n\n%s\n",
 		c.Heading, c.Name, c.Intro, c.Code, c.Minutes, c.Footer)
+}
+
+type EmailSender struct {
+	pool             *pgxpool.Pool
+	GmailAddress     string
+	GmailAppPassword string
+	SMTPHost         string
+	SMTPPort         string
+}
+
+func NewRepository(pool *pgxpool.Pool) *EmailSender {
+	return &EmailSender{
+		pool: pool,
+	}
 }
 
 func (s EmailSender) SendVerification(name, to, code string) error {
