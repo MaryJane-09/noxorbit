@@ -43,7 +43,12 @@ export default function AuthShell({ topbarText, topbarLabel, onTopbar, children 
                     </ul>
                 </section>
 
-                <section className="register-card">{children}</section>
+                <section className="register-card">
+                    <span className="card-edge-light card-edge-light--top" aria-hidden="true" />
+                    <span className="card-edge-light card-edge-light--bottom" aria-hidden="true" />
+                    <span className="card-edge-light card-edge-light--corner" aria-hidden="true" />
+                    {children}
+                </section>
             </div>
         </div>
     )
