@@ -719,3 +719,129 @@
     justify-content: flex-end;
     margin-top: -6px;
 }
+
+
+/* Authentication interaction and responsive refinements.
+   Deliberately scoped to controls and compact screens: the approved
+   desktop composition, colours and cosmic artwork remain unchanged. */
+.field-toggle {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    margin-right: -7px;
+    padding: 0;
+    border-radius: 12px;
+    transition: color .18s ease, background-color .18s ease;
+}
+
+.field-toggle:hover:not(:disabled) {
+    color: #f3d599;
+    background: rgba(229, 204, 145, .07);
+}
+
+.field-toggle:focus-visible {
+    outline: 2px solid #ffe2a4;
+    outline-offset: 2px;
+}
+
+.field-toggle:disabled {
+    cursor: not-allowed;
+}
+
+/* Input groups already indicate keyboard focus around the whole field. */
+.field input:focus-visible {
+    outline: none;
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0) scale(.992);
+    filter: brightness(.98);
+    box-shadow: 0 4px 15px rgba(229, 150, 69, .24);
+}
+
+.btn-outline:active:not(:disabled) {
+    transform: translateY(0) scale(.98);
+}
+
+.btn-primary:focus-visible,
+.btn-outline:focus-visible,
+.btn-secondary:focus-visible,
+.link-btn:focus-visible {
+    outline: 2px solid #ffe2a4;
+    outline-offset: 4px;
+}
+
+.otp-actions {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+}
+
+.link-btn {
+    min-height: 44px;
+    padding-block: 8px;
+}
+
+@media (max-width: 900px) {
+    .register-page,
+    .register-layout {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
+}
+
+@media (max-width: 600px) {
+    .btn-outline {
+        min-height: 44px;
+    }
+    .field {
+        height: 56px;
+        gap: 10px;
+        padding-inline: 14px;
+    }
+    .field input {
+        font-size: 16px;
+    }
+    .field-toggle {
+        margin-right: -8px;
+    }
+}
+
+@media (max-width: 420px) {
+    .register-layout { padding: 114px 12px 28px; }
+    .register-topbar { top: 17px; right: 12px; }
+    .register-card { padding: 28px 18px 30px; }
+    .card-eyebrow {
+        white-space: normal;
+        font-size: 9px;
+        letter-spacing: .16em;
+    }
+    .card-eyebrow::after { min-width: 24px; }
+    .register-card .card-title { font-size: clamp(27px, 8vw, 31px); }
+    .field { padding-inline: 12px; }
+    .otp-input {
+        height: 58px;
+        padding: 0 8px;
+        font-size: clamp(19px, 6vw, 24px);
+        letter-spacing: .17em;
+        text-indent: .17em;
+    }
+    .otp-actions { align-items: flex-start; }
+    .otp-actions .link-btn { font-size: 13px; }
+    .card-terms { overflow-wrap: anywhere; }
+}
+
+@media (hover: none) {
+    .btn-primary:hover:not(:disabled),
+    .btn-outline:hover:not(:disabled) {
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .field-toggle,
+    .btn-secondary,
+    .link-btn,
+    .otp-input {
+        transition-duration: .01ms;
+    }
+}
