@@ -1,0 +1,84 @@
+/* Signed-in holding screen. This is intentionally not a dashboard:
+   keep the authenticated experience aligned with the approved auth identity
+   without introducing unimplemented workspace functionality. */
+.home-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.home-page .home-wrap {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 160px clamp(20px, 5vw, 80px) 64px;
+}
+
+.home-page .home-card {
+    flex: 0 1 660px;
+    width: 100%;
+    max-width: 660px;
+    align-self: center;
+    justify-self: center;
+    padding: clamp(34px, 4vw, 54px);
+}
+
+.home-page .home-card .card-title {
+    overflow-wrap: anywhere;
+}
+
+.home-page .home-email {
+    overflow-wrap: anywhere;
+    margin-bottom: 24px;
+}
+
+.home-page .home-actions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.home-page .home-actions .btn-primary {
+    width: auto;
+    min-width: 155px;
+    height: 56px;
+    margin: 0;
+    padding: 0 24px;
+    border-radius: 16px;
+    font-size: 16px;
+}
+
+@media (max-width: 900px) {
+    .home-page .home-wrap {
+        padding: 146px 24px 50px;
+    }
+
+    .home-page .home-card {
+        max-width: 570px;
+    }
+}
+
+@media (max-width: 600px) {
+    .home-page .home-wrap {
+        padding: 134px 16px 40px;
+    }
+
+    .home-page .home-card {
+        padding: 32px 22px;
+    }
+}
+
+@media (max-width: 420px) {
+    .home-page .home-wrap {
+        padding: 122px 12px 32px;
+    }
+
+    .home-page .home-card {
+        padding: 28px 18px;
+    }
+}
