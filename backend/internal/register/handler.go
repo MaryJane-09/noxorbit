@@ -2,6 +2,7 @@ package register
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"strings"
@@ -50,7 +51,7 @@ func RegisterHandler(otpRepo *otp.OTPRepository, sender *email.EmailSender) http
 			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not generate verification code"})
 			return
 		}
-		err = otpRepo.Create(otp.OTP{
+		err = otpRepo.Issue(otp.OTP{
 			Email:     info.Email,
 			Purpose:   otp.PurposeRegister,
 			Code:      code,
@@ -58,6 +59,12 @@ func RegisterHandler(otpRepo *otp.OTPRepository, sender *email.EmailSender) http
 			Verified:  false,
 		})
 		if err != nil {
+			if errors.Is(err, otp.ErrCooldown) {
+				w.Header().Set("Retry-After", "60")
+				w.WriteHeader(http.StatusTooManyRequests)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Please wait a minute before requesting another code"})
+				return
+			}
 			log.Println("Save registration code:", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not create verification code"})
@@ -66,7 +73,7 @@ func RegisterHandler(otpRepo *otp.OTPRepository, sender *email.EmailSender) http
 
 		if err := sender.SendVerification(info.Name, info.Email, code); err != nil {
 			log.Println("Send registration code:", err)
-			_ = otpRepo.Delete(info.Email, otp.PurposeRegister)
+			_ = otpRepo.DeleteIfCode(info.Email, otp.PurposeRegister, code)
 			w.WriteHeader(http.StatusInternalServerError)
 			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not send verification email"})
 			return
