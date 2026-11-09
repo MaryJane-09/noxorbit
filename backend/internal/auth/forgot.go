@@ -1,14 +1,14 @@
 package auth
 
 import (
-		"encoding/json"
+	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
 	"net/mail"
-	"time"
 	"strings"
-	
+	"time"
+
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
@@ -29,7 +29,7 @@ func ForgotPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepositor
 		var req struct {
 			Email string `json:"email"`
 		}
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&req); err != nil {
 			writeError(w, http.StatusBadRequest, "Invalid request")
 			return
 		}
@@ -53,10 +53,9 @@ func sendResetCode(users *user.UserRepository, otpRepo *otp.OTPRepository, sende
 		if !errors.Is(err, user.ErrNotFound) {
 			log.Println(err)
 		}
-		return 
+		return
 	}
 
-	
 
 	code, err := otp.Generate(6)
 	if err != nil {
