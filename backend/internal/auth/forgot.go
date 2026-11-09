@@ -1,15 +1,13 @@
 package auth
 
 import (
-	"crypto/subtle"
-	"encoding/json"
+		"encoding/json"
 	"errors"
 	"log"
 	"net/http"
 	"net/mail"
 	"strings"
-	"time"
-
+	
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
@@ -17,7 +15,6 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/validate"
 )
 
-const resendCooldown = time.Minute 
 const invalidCodeMessage = "Invalid or expired code"
 
 func ForgotPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepository, sender *email.EmailSender) http.HandlerFunc {
@@ -59,31 +56,27 @@ func sendResetCode(users *user.UserRepository, otpRepo *otp.OTPRepository, sende
 	}
 
 	
-	if existing, err := otpRepo.FindByEmail(addr, otp.PurposeReset); err == nil {
-		issuedAt := existing.ExpiresAt.Add(-otp.ExpiryTime)
-		if time.Since(issuedAt) < resendCooldown {
-			return
-		}
-	}
 
 	code, err := otp.Generate(6)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	err = otpRepo.Create(otp.OTP{
+	err = otpRepo.Issue(otp.OTP{
 		Email:     addr,
 		Purpose:   otp.PurposeReset,
 		Code:      code,
 		ExpiresAt: time.Now().Add(otp.ExpiryTime),
 	})
 	if err != nil {
-		log.Println(err)
+		if !errors.Is(err, otp.ErrCooldown) {
+			log.Println("Save reset code:", err)
+		}
 		return
 	}
 	if err := sender.SendPasswordReset(u.Name, addr, code); err != nil {
 		log.Println(err)
-		_ = otpRepo.Delete(addr, otp.PurposeReset) 
+		_ = otpRepo.DeleteIfCode(addr, otp.PurposeReset, code)
 	}
 }
 
@@ -112,19 +105,18 @@ func ResetPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepository
 			return
 		}
 
-		stored, err := otpRepo.FindByEmail(addr, otp.PurposeReset)
-		if err != nil {
-			writeError(w, http.StatusBadRequest, invalidCodeMessage)
-			return
-		}
-		if time.Now().After(stored.ExpiresAt) {
-			_ = otpRepo.Delete(addr, otp.PurposeReset)
-			writeError(w, http.StatusBadRequest, invalidCodeMessage)
-			return
-		}
-		
-		if subtle.ConstantTimeCompare([]byte(code), []byte(stored.Code)) != 1 {
-			writeError(w, http.StatusBadRequest, invalidCodeMessage)
+		// OTP verification is atomic: five wrong guesses lock the code,
+		// and a successful match consumes it before resetting the password.
+		if err := otpRepo.Verify(addr, otp.PurposeReset, code); err != nil {
+			switch {
+			case errors.Is(err, otp.ErrTooManyAttempts):
+				writeError(w, http.StatusTooManyRequests, "Too many incorrect codes. Request a new one.")
+			case errors.Is(err, otp.ErrInvalidCode), errors.Is(err, otp.ErrNotFound), errors.Is(err, otp.ErrExpired):
+				writeError(w, http.StatusBadRequest, invalidCodeMessage)
+			default:
+				log.Println("Verify reset code:", err)
+				writeError(w, http.StatusInternalServerError, "Something went wrong")
+			}
 			return
 		}
 
