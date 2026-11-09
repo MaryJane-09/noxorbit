@@ -2,12 +2,14 @@ package router
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/config"
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
+	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
@@ -54,15 +56,19 @@ func New(pool *pgxpool.Pool) http.Handler {
 	repo := user.NewRepository(pool)
 	otpRepo := otp.NewRepository(pool)
 	sessionRepo := session.NewRepository(pool)
+	limits := ratelimit.New(pool)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
-	mux.HandleFunc("/register", register.RegisterHandler(otpRepo, &sender))
+	// Fixed 15-minute IP quotas limit request floods before expensive work.
+	// These use the TCP peer, not untrusted forwarded headers.
+	const window = 15 * time.Minute
+	mux.Handle("/register", limits.LimitIP("register", 12, window, register.RegisterHandler(otpRepo, &sender)))
 	mux.HandleFunc("/users", auth.RequireAuth(sessionRepo, user.UsersHandler(repo)))
 	mux.HandleFunc("/me", auth.RequireAuth(sessionRepo, auth.MeHandler(repo)))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
-	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo))
-	mux.HandleFunc("/login", auth.LoginHandler(repo, sessionRepo))
-	mux.HandleFunc("/forgot-password", auth.ForgotPasswordHandler(repo, otpRepo, &sender))
-	mux.HandleFunc("/reset-password", auth.ResetPasswordHandler(repo, otpRepo, sessionRepo))
+	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))
+	mux.Handle("/login", limits.LimitIP("login", 60, window, auth.LoginHandler(repo, sessionRepo, limits)))
+	mux.Handle("/forgot-password", limits.LimitIP("forgot-password", 12, window, auth.ForgotPasswordHandler(repo, otpRepo, &sender)))
+	mux.Handle("/reset-password", limits.LimitIP("reset-password", 40, window, auth.ResetPasswordHandler(repo, otpRepo, sessionRepo)))
 	return corsMiddleware(mux)
 }
