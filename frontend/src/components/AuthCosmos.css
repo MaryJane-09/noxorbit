@@ -13,14 +13,10 @@
     min-height: 760px;
 }
 
-/* One travelling reflection, not a constantly spinning or flashing ring. */
-.auth-orbit-sheen {
-    opacity: .82;
-    animation: nox-orbit-travel 14s linear infinite;
-}
-
-.auth-orbit-aura {
-    opacity: .62;
+/* Orbital glow follows a short section of the SVG path, then fades.
+   The orbit itself stays still, retaining its layered depth. */
+.auth-orbit-glimmer {
+    pointer-events: none;
 }
 
 .auth-moon-halo {
@@ -29,10 +25,6 @@
 
 .auth-star-pulse {
     animation: nox-star-flicker 7s ease-in-out infinite alternate;
-}
-
-@keyframes nox-orbit-travel {
-    to { stroke-dashoffset: -1000; }
 }
 
 @keyframes nox-star-flicker {
@@ -54,7 +46,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .auth-orbit-sheen { animation: none; opacity: 0; }
+    .auth-orbit-glimmer { display: none; }
     .auth-star-pulse,
     .auth-moon-halo { animation: none; }
 }
