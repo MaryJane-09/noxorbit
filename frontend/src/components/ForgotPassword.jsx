@@ -153,7 +153,8 @@ export default function ForgotPassword({ onLogin }) {
                                 value={form.newPassword} onChange={handleChange} disabled={!sent} required />
                             <button type="button" className="field-toggle" disabled={!sent}
                                 onClick={() => setShowPassword(!showPassword)}
-                                aria-label={showPassword ? "Hide password" : "Show password"}>
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                aria-pressed={showPassword}>
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </label>
