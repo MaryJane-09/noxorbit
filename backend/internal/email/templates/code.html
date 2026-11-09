@@ -1,61 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark light">
-<meta name="supported-color-schemes" content="dark light">
-<title>{{.Heading}}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="supported-color-schemes" content="dark light">
+  <title>{{.Heading}}</title>
 </head>
-<body style="margin:0;padding:0;background-color:#09080c;">
+<body style="margin:0;padding:0;background-color:#0d0913;">
 
-<!-- Preview text shown next to the subject in the inbox list. The code is deliberately not in it. -->
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#09080c;">{{.Preheader}}</div>
+  <!-- Safe inbox preview: never expose the one-time code in the preview text. -->
+  <div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;overflow:hidden;opacity:0;color:#0d0913;mso-hide:all;">{{.Preheader}}</div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#09080c" style="background-color:#09080c;">
-  <tr>
-    <td align="center" style="padding:40px 16px;">
-      <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#0d0913" style="width:100%;background-color:#0d0913;">
+    <tr>
+      <td align="center" style="padding:38px 16px 44px;">
 
-        <tr>
-          <td align="center" style="padding-bottom:28px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-            <div style="font-size:26px;font-weight:300;letter-spacing:10px;color:#e5cc91;">NOXORBIT</div>
-            <div style="padding-top:8px;font-size:10px;letter-spacing:4px;color:#8a6d2f;">CONNECT &bull; COLLABORATE &bull; ACHIEVE</div>
-          </td>
-        </tr>
+        <table role="presentation" width="560" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:560px;">
+          <!-- The wordmark is real text, so it renders even when images are blocked. -->
+          <tr>
+            <td align="center" style="padding:0 8px 28px;font-family:Arial,Helvetica,sans-serif;">
+              <div style="color:#eed18b;font-size:26px;line-height:1.2;font-weight:700;letter-spacing:3px;">NOXORBIT</div>
+              <div style="color:#e1cba5;font-size:10px;line-height:1.5;font-weight:600;letter-spacing:2px;padding-top:7px;">CONNECT &bull; COLLABORATE &bull; ACHIEVE</div>
+            </td>
+          </tr>
 
-        <tr>
-          <td bgcolor="#17111f" style="background-color:#17111f;border:1px solid #43372f;border-radius:18px;padding:40px 36px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#f4f1ea;">
-            <p style="margin:0 0 14px;font-size:12px;letter-spacing:4px;color:#b3ada3;">{{.Eyebrow}}</p>
-            <h1 style="margin:0 0 20px;font-size:26px;line-height:1.25;font-weight:600;color:#f4f1ea;">{{.Heading}}</h1>
-            <p style="margin:0 0 8px;font-size:16px;line-height:1.6;color:#f4f1ea;">Hello {{.Name}},</p>
-            <p style="margin:0 0 28px;font-size:16px;line-height:1.6;color:#b3ada3;">{{.Intro}}</p>
+          <!-- Main message uses email-safe tables and inline styles. -->
+          <tr>
+            <td bgcolor="#211329" style="background-color:#211329;border:1px solid #856448;border-radius:20px;padding:0;font-family:Arial,Helvetica,sans-serif;color:#f4f1ea;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="height:3px;font-size:1px;line-height:3px;background-color:#d9ae67;border-radius:20px 20px 0 0;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td style="padding:34px 32px 36px;">
+                    <div style="font-size:11px;line-height:1.5;font-weight:700;letter-spacing:2.3px;color:#e4c17f;">{{.Eyebrow}}</div>
+                    <h1 style="margin:12px 0 14px;font-size:29px;line-height:1.2;font-weight:700;letter-spacing:-.5px;color:#f4f1ea;">{{.Heading}}</h1>
+                    <p style="margin:0 0 8px;font-size:16px;line-height:1.6;color:#f4f1ea;">Hello {{.Name}},</p>
+                    <p style="margin:0 0 25px;font-size:15px;line-height:1.65;color:#d4c4d3;">{{.Intro}}</p>
 
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-              <tr>
-                <td align="center" bgcolor="#09080c" style="background-color:#09080c;border:1px solid #c8a96b;border-radius:14px;padding:22px 12px;">
-                  <span style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:34px;font-weight:700;letter-spacing:8px;padding-left:8px;color:#e5cc91;">{{.Code}}</span>
-                </td>
-              </tr>
-            </table>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                      <tr>
+                        <td align="center" bgcolor="#120c1b" style="background-color:#120c1b;border:1px solid #825e91;border-radius:15px;padding:24px 12px 22px;">
+                          <div style="font-size:10px;line-height:1.6;letter-spacing:2.4px;font-weight:700;color:#cbb7d2;">YOUR VERIFICATION CODE</div>
+                          <!-- A single text node remains easy to select/copy on desktop and mobile. -->
+                          <div style="padding:12px 0 9px;white-space:nowrap;word-break:normal;user-select:all;-webkit-user-select:all;">
+                            <span style="font-family:Consolas,Menlo,'Courier New',monospace;font-size:33px;line-height:1.4;font-weight:700;letter-spacing:6px;color:#f3d18d;">{{.Code}}</span>
+                          </div>
+                          <div style="font-size:12px;line-height:1.6;color:#cfbfd4;">Select the code above to copy it.</div>
+                        </td>
+                      </tr>
+                    </table>
 
-            <p style="margin:24px 0 0;font-size:14px;line-height:1.6;text-align:center;color:#b3ada3;">
-              Expires in {{.Minutes}} minutes. Enter it exactly as shown, it is case-sensitive.
-            </p>
-          </td>
-        </tr>
+                    <p style="margin:22px 0 0;text-align:center;color:#e5cc91;font-size:14px;line-height:1.5;font-weight:600;">Valid for {{.Minutes}} minutes</p>
+                    <p style="margin:6px 0 0;text-align:center;color:#c9b9cc;font-size:13px;line-height:1.6;">Paste the code into NoxOrbit to continue. Codes are case-sensitive.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-        <tr>
-          <td align="center" style="padding:28px 8px 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.7;color:#8c877d;">
-            Never share this code with anyone. Noxorbit will never ask you for it.<br>
-            {{.Footer}}
-          </td>
-        </tr>
+          <tr>
+            <td align="center" style="padding:27px 16px 0;font-family:Arial,Helvetica,sans-serif;">
+              <p style="margin:0;color:#e3d5e2;font-size:12px;line-height:1.7;">Keep this code private. NoxOrbit will never ask you to share it.</p>
+              <p style="margin:8px 0 0;color:#9e8da4;font-size:12px;line-height:1.7;">{{.Footer}}</p>
+              <p style="margin:22px 0 0;color:#826c87;font-size:11px;line-height:1.6;">&copy; NoxOrbit &middot; Secure account verification</p>
+            </td>
+          </tr>
+        </table>
 
-      </table>
-    </td>
-  </tr>
-</table>
+      </td>
+    </tr>
+  </table>
 
 </body>
 </html>
