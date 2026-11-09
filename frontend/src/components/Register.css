@@ -657,6 +657,16 @@
     margin-bottom: 28px;
 }
 
+/* Centred success action for both email verification and password reset. */
+.success-state .btn-primary {
+    width: fit-content;
+    max-width: 100%;
+    min-width: min(220px, 100%);
+    margin: 0 auto;
+    padding-inline: 24px;
+}
+
+
 .home-wrap {
     display: grid;
     place-items: center;
