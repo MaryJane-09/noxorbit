@@ -37,9 +37,10 @@ type codeEmail struct {
 }
 
 func (c codeEmail) text() string {
-	return fmt.Sprintf("NOXORBIT\n\n%s\n\nHello %s,\n\n%s\n\n    %s\n\n"+
-		"This code expires in %d minutes. Enter it exactly as shown; it is case-sensitive.\n"+
-		"Never share it with anyone. Noxorbit will never ask you for it.\n\n%s\n",
+	return fmt.Sprintf("NOXORBIT\n\n%s\n\nHello %s,\n\n%s\n\nYOUR VERIFICATION CODE\n%s\n\n"+
+		"Select and copy the code above, then paste it into NoxOrbit.\n"+
+		"Valid for %d minutes. The code is case-sensitive.\n"+
+		"Keep this code private; NoxOrbit will never ask you to share it.\n\n%s\n",
 		c.Heading, c.Name, c.Intro, c.Code, c.Minutes, c.Footer)
 }
 
