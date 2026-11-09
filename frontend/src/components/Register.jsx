@@ -208,7 +208,7 @@ export default function Register({ onLogin }) {
                             className="otp-input"
                             type="text"
                             name="otp"
-                            placeholder="········"
+                            placeholder="······"
                             aria-label="Verification code"
                             autoComplete="one-time-code"
                             autoCapitalize="off"
