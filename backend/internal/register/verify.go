@@ -1,13 +1,12 @@
 package register
 
 import (
-	"crypto/subtle"
-	"encoding/json"
+		"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"strings"
-	"time"
-
+	
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"github.com/MaryJane-09/noxorbit/backend/internal/validate"
@@ -57,21 +56,27 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository) htt
 			return
 		}
 
-		stored, err := otpRepo.FindByEmail(info.Email, otp.PurposeRegister)
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "No OTP was found for this email."})
-			return
-		}
-		if time.Now().After(stored.ExpiresAt) {
-			_ = otpRepo.Delete(info.Email, otp.PurposeRegister)
-			w.WriteHeader(http.StatusBadRequest)
-			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
-			return
-		}
-		if subtle.ConstantTimeCompare([]byte(code), []byte(stored.Code)) != 1 {
-			w.WriteHeader(http.StatusBadRequest)
-			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})
+		// Verify holds a database row lock, counts wrong guesses, and marks
+		// a successful code as used before it can be submitted again.
+		if err := otpRepo.Verify(info.Email, otp.PurposeRegister, code); err != nil {
+			switch {
+			case errors.Is(err, otp.ErrNotFound):
+				w.WriteHeader(http.StatusNotFound)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "No OTP was found for this email."})
+			case errors.Is(err, otp.ErrExpired):
+				w.WriteHeader(http.StatusBadRequest)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
+			case errors.Is(err, otp.ErrTooManyAttempts):
+				w.WriteHeader(http.StatusTooManyRequests)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Too many incorrect codes. Request a new one."})
+			case errors.Is(err, otp.ErrInvalidCode):
+				w.WriteHeader(http.StatusBadRequest)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})
+			default:
+				log.Println("Verify registration code:", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Could not verify code"})
+			}
 			return
 		}
 
