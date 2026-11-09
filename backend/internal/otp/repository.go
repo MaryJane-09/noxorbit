@@ -76,14 +76,11 @@ func (r *OTPRepository) Verify(email, purpose, submitted string) error {
 	if err != nil {
 		return err
 	}
-	if !time.Now().Before(expiresAt) {
-		return ErrExpired
+	wrong, verdict := inspectCode(submitted, stored, expiresAt, verified, attempts, time.Now())
+	if verdict != nil && !wrong {
+		return verdict
 	}
-	if verified || attempts >= MaxAttempts {
-		return ErrTooManyAttempts
-	}
-
-	if subtle.ConstantTimeCompare([]byte(submitted), []byte(stored)) != 1 {
+	if wrong {
 		attempts++
 		if _, err := tx.Exec(ctx, `UPDATE otps SET attempts = $3
 			WHERE email = $1 AND purpose = $2`, email, purpose, attempts); err != nil {
@@ -92,10 +89,7 @@ func (r *OTPRepository) Verify(email, purpose, submitted string) error {
 		if err := tx.Commit(ctx); err != nil {
 			return err
 		}
-		if attempts >= MaxAttempts {
-			return ErrTooManyAttempts
-		}
-		return ErrInvalidCode
+		return verdict
 	}
 
 	if _, err := tx.Exec(ctx, `UPDATE otps SET verified = true
@@ -103,6 +97,25 @@ func (r *OTPRepository) Verify(email, purpose, submitted string) error {
 		return err
 	}
 	return tx.Commit(ctx)
+}
+
+// inspectCode has no database dependency so the five-guess policy can be
+// unit-tested. The caller persists the increment before returning the error.
+// wrong is true only when this submission must count as an incorrect guess.
+func inspectCode(submitted, stored string, expiresAt time.Time, verified bool, attempts int, now time.Time) (wrong bool, err error) {
+	if !now.Before(expiresAt) {
+		return false, ErrExpired
+	}
+	if verified || attempts >= MaxAttempts {
+		return false, ErrTooManyAttempts
+	}
+	if subtle.ConstantTimeCompare([]byte(submitted), []byte(stored)) != 1 {
+		if attempts+1 >= MaxAttempts {
+			return true, ErrTooManyAttempts
+		}
+		return true, ErrInvalidCode
+	}
+	return false, nil
 }
 
 // DeleteIfCode prevents email-send failures from deleting a newer code issued
