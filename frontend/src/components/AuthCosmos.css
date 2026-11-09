@@ -13,19 +13,34 @@
     min-height: 760px;
 }
 
-/* The central golden flare stays visible at all times. A second soft
-   bloom travels only a short section of the curve, never a dashed ring. */
-.auth-orbit-beacon {
-    opacity: .94;
-    animation: nox-beacon-breathe 6s ease-in-out infinite alternate;
+/* The middle of the page now has a quiet, layered starlight atmosphere.
+   Motion affects only diffuse mist and the focal star — no rotating ring. */
+.auth-celestial-mist {
+    transform-origin: 770px 475px;
+    animation: nox-mist-drift 13s ease-in-out infinite alternate;
 }
 
-.auth-orbit-glimmer {
-    pointer-events: none;
+.auth-celestial-focal {
+    transform-origin: 774px 461px;
+    animation: nox-star-breathe 7s ease-in-out infinite alternate;
 }
 
-@keyframes nox-beacon-breathe {
-    from { opacity: .85; }
+.auth-celestial-dust {
+    animation: nox-dust-breathe 10s ease-in-out infinite alternate;
+}
+
+@keyframes nox-mist-drift {
+    from { opacity: .76; transform: translate(0, 5px) scale(.98); }
+    to { opacity: 1; transform: translate(0, -6px) scale(1.03); }
+}
+
+@keyframes nox-star-breathe {
+    from { opacity: .76; transform: scale(.96); }
+    to { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes nox-dust-breathe {
+    from { opacity: .57; }
     to { opacity: 1; }
 }
 
@@ -56,8 +71,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .auth-orbit-glimmer { display: none; }
-    .auth-orbit-beacon { animation: none; opacity: 1; }
+    .auth-celestial-mist,
+    .auth-celestial-focal,
+    .auth-celestial-dust,
     .auth-star-pulse,
     .auth-moon-halo { animation: none; }
 }
