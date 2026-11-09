@@ -8,7 +8,7 @@ import { API } from '../api'
 
 const OTP_LENGTH = 6
 const OTP_LIFETIME = 300 // seconds — keep in sync with the 5-minute expiry in the Go otp package
-const RESEND_AFTER = 30  // seconds before "Resend code" unlocks
+const RESEND_AFTER = 60  // match the backend resend cooldown
 
 function formatTime(total) {
     const m = String(Math.floor(total / 60)).padStart(2, "0")
@@ -23,6 +23,7 @@ export default function Register({ onLogin }) {
     const [step, setStep] = useState("register")
     const [otpCode, setOtpCode] = useState("")
     const [secondsLeft, setSecondsLeft] = useState(OTP_LIFETIME)
+    const [codeLocked, setCodeLocked] = useState(false)
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirm, setShowConfirm] = useState(false)
@@ -67,6 +68,7 @@ export default function Register({ onLogin }) {
                 setMessage("")
                 setNotice("")
                 setOtpCode("")
+                setCodeLocked(false)
                 setSecondsLeft(OTP_LIFETIME)
                 setStep("verify")
             } else {
@@ -87,6 +89,7 @@ export default function Register({ onLogin }) {
             const { ok, data } = await sendRegistration()
             if (ok) {
                 setOtpCode("")
+                setCodeLocked(false)
                 setSecondsLeft(OTP_LIFETIME)
                 setNotice("A new code is on its way.")
             } else {
@@ -113,6 +116,9 @@ export default function Register({ onLogin }) {
             if (response.ok) {
                 setMessage("")
                 setStep("completed")
+            } else if (response.status === 429 && data.error?.includes("incorrect codes")) {
+                setCodeLocked(true)
+                setMessage(data.error)
             } else if (data.error === "This OTP has expired") {
                 // The server is authoritative: never show a positive countdown
                 // once it has rejected the code as expired.
@@ -227,15 +233,17 @@ export default function Register({ onLogin }) {
                         />
 
                         <p className={`otp-timer ${expired ? "is-expired" : ""}`}>
-                            {expired
-                                ? "This code has expired. Request a new one."
+                            {codeLocked
+                                ? "Too many attempts. Request a new code."
+                                : expired
+                                    ? "This code has expired. Request a new one."
                                 : `Code expires in ${formatTime(secondsLeft)}`}
                         </p>
 
                         <button
                             type="submit"
                             className="btn-primary"
-                            disabled={loading || expired || otpCode.trim().length !== OTP_LENGTH}
+                            disabled={loading || expired || codeLocked || otpCode.trim().length !== OTP_LENGTH}
                         >
                             Verify <ArrowRight size={18} />
                         </button>
