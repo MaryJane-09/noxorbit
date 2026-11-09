@@ -39,7 +39,8 @@
     opacity: 0;
     transform: scale(0.88);
     animation: logo-enter 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-    filter: brightness(1.08) saturate(1.06) drop-shadow(0 0 3px rgba(200, 169, 107, 0.12));
+    /* Keep the mark’s actual SVG champagne gradient unaltered. */
+    filter: drop-shadow(0 0 3px rgba(200, 169, 107, 0.12));
 }
 
 .brand-text {
@@ -69,8 +70,23 @@
     line-height: 1.12;
     letter-spacing: 0.075em;
     white-space: nowrap;
-    color: #ebcf91;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55);
+    /* Same six champagne-gold stops used by noxorbit-mark.svg.
+       Keep text editable and crisp while matching the N mark. */
+    color: #f2d477;
+    background: linear-gradient(
+        90deg,
+        #c99632 0%,
+        #f2d477 22%,
+        #ffe8a0 43%,
+        #ddb34f 58%,
+        #c18e32 78%,
+        #986b25 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
 }
 
 .brand-tagline {
