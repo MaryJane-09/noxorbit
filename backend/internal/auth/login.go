@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
+	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"golang.org/x/crypto/bcrypt"
@@ -33,7 +34,7 @@ func writeError(w http.ResponseWriter, status int, message string) {
 	writeJSON(w, status, register.ErrorResponse{Error: message})
 }
 
-func LoginHandler(users *user.UserRepository, sessions *session.SessionRepository) http.HandlerFunc {
+func LoginHandler(users *user.UserRepository, sessions *session.SessionRepository, limits *ratelimit.Store) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			writeError(w, http.StatusMethodNotAllowed, "Method not allowed")
@@ -47,6 +48,20 @@ func LoginHandler(users *user.UserRepository, sessions *session.SessionRepositor
 			return
 		}
 		req.Email = strings.ToLower(strings.TrimSpace(req.Email))
+
+		// Count all attempts (including successful ones) before bcrypt.
+		// The per-email quota complements the router's per-IP quota.
+		allowed, err := limits.Allow(r.Context(), "login:email:"+req.Email, 12, 15*time.Minute)
+		if err != nil {
+			log.Println("Rate limiter failed:", err)
+			writeError(w, http.StatusServiceUnavailable, "Service temporarily unavailable")
+			return
+		}
+		if !allowed {
+			w.Header().Set("Retry-After", "900")
+			writeError(w, http.StatusTooManyRequests, "Too many login attempts. Please try again later.")
+			return
+		}
 
 		u, err := users.FindByEmail(req.Email)
 		if err != nil {
