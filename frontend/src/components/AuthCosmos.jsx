@@ -13,14 +13,6 @@ const STARS = Array.from({ length: 64 }, (_, i) => ({
     opacity: 0.1 + noise(i + 351) * 0.27,
 }));
 
-// A larger sculpted oval, scaled to the annotated visual reference.
-// The card hides both upper and lower ends; the upper edge is luminous
-// while the lower return is a barely visible shadow.
-const ORBIT_UPPER =
-    "M 1010 235 C 835 264 697 357 594 496 C 512 607 488 705 570 749";
-const ORBIT_RETURN =
-    "M 570 749 C 650 810 836 718 1020 586";
-
 export default function AuthCosmos() {
     return (
         <div className="auth-cosmos" aria-hidden="true">
@@ -36,33 +28,6 @@ export default function AuthCosmos() {
                         <stop stopColor="#f0a5e8" stopOpacity=".22" />
                         <stop offset="1" stopColor="#f0a5e8" stopOpacity="0" />
                     </radialGradient>
-                    <linearGradient id="nox-orbit-color" gradientUnits="userSpaceOnUse"
-                        x1="545" y1="665" x2="952" y2="252">
-                        <stop stopColor="#a64fbb" stopOpacity=".19" />
-                        <stop offset=".13" stopColor="#b86bb5" stopOpacity=".45" />
-                        <stop offset=".31" stopColor="#e49ab9" stopOpacity=".77" />
-                        <stop offset=".49" stopColor="#ffe1b4" stopOpacity=".95" />
-                        <stop offset=".59" stopColor="#d995b7" stopOpacity=".72" />
-                        <stop offset=".78" stopColor="#9860a7" stopOpacity=".37" />
-                        <stop offset="1" stopColor="#764081" stopOpacity="0" />
-                    </linearGradient>
-                    <linearGradient id="nox-orbit-return" gradientUnits="userSpaceOnUse"
-                        x1="570" y1="749" x2="1020" y2="586">
-                        <stop stopColor="#b269b7" stopOpacity=".28" />
-                        <stop offset=".24" stopColor="#8a438d" stopOpacity=".15" />
-                        <stop offset=".58" stopColor="#5d286c" stopOpacity=".07" />
-                        <stop offset="1" stopColor="#542663" stopOpacity="0" />
-                    </linearGradient>
-                    <linearGradient id="nox-orbit-flare" gradientUnits="userSpaceOnUse"
-                        x1="522" y1="711" x2="935" y2="243">
-                        <stop stopColor="#f7a9c7" stopOpacity="0" />
-                        <stop offset=".22" stopColor="#f6b3c1" stopOpacity=".23" />
-                        <stop offset=".36" stopColor="#ffd4b2" stopOpacity=".62" />
-                        <stop offset=".49" stopColor="#fff5d7" stopOpacity=".98" />
-                        <stop offset=".59" stopColor="#f5c7ad" stopOpacity=".72" />
-                        <stop offset=".72" stopColor="#dd85be" stopOpacity=".16" />
-                        <stop offset="1" stopColor="#da77b9" stopOpacity="0" />
-                    </linearGradient>
                     <radialGradient id="nox-moon-disc" cx="26%" cy="38%" r="90%">
                         <stop stopColor="#4b2858" />
                         <stop offset=".26" stopColor="#2b1737" />
@@ -78,24 +43,25 @@ export default function AuthCosmos() {
                     <clipPath id="nox-moon-clip">
                         <circle cx="764" cy="207" r="31" />
                     </clipPath>
-                    <radialGradient id="nox-moving-gold">
-                        <stop stopColor="#fff8df" stopOpacity="1" />
-                        <stop offset=".18" stopColor="#ffe4a9" stopOpacity=".93" />
-                        <stop offset=".46" stopColor="#ecb383" stopOpacity=".57" />
-                        <stop offset=".78" stopColor="#d77bb9" stopOpacity=".19" />
-                        <stop offset="1" stopColor="#a45aaa" stopOpacity="0" />
+                    {/* Atmospheric light field: no rings, outlines or traced arcs. */}
+                    <radialGradient id="nox-celestial-violet">
+                        <stop stopColor="#a765be" stopOpacity=".34" />
+                        <stop offset=".28" stopColor="#7f3b97" stopOpacity=".26" />
+                        <stop offset=".65" stopColor="#4b1c62" stopOpacity=".11" />
+                        <stop offset="1" stopColor="#2a1038" stopOpacity="0" />
                     </radialGradient>
-                    <radialGradient id="nox-flare-halo">
-                        <stop stopColor="#fff7d8" stopOpacity=".9" />
-                        <stop offset=".17" stopColor="#f9d69b" stopOpacity=".7" />
-                        <stop offset=".46" stopColor="#d692ae" stopOpacity=".33" />
-                        <stop offset=".78" stopColor="#a858ab" stopOpacity=".12" />
-                        <stop offset="1" stopColor="#8f488f" stopOpacity="0" />
+                    <radialGradient id="nox-celestial-amber">
+                        <stop stopColor="#ffe6ac" stopOpacity=".58" />
+                        <stop offset=".16" stopColor="#e7ba83" stopOpacity=".4" />
+                        <stop offset=".38" stopColor="#ba789d" stopOpacity=".18" />
+                        <stop offset=".75" stopColor="#8b4b9c" stopOpacity=".065" />
+                        <stop offset="1" stopColor="#693979" stopOpacity="0" />
                     </radialGradient>
-                    <radialGradient id="nox-orbit-ambient">
-                        <stop stopColor="#e19ab5" stopOpacity=".27" />
-                        <stop offset=".42" stopColor="#a451a4" stopOpacity=".14" />
-                        <stop offset="1" stopColor="#6a316f" stopOpacity="0" />
+                    <radialGradient id="nox-celestial-spark">
+                        <stop stopColor="#fff8e5" stopOpacity=".85" />
+                        <stop offset=".17" stopColor="#ffe3b8" stopOpacity=".64" />
+                        <stop offset=".4" stopColor="#e7a3b4" stopOpacity=".25" />
+                        <stop offset="1" stopColor="#a65ca7" stopOpacity="0" />
                     </radialGradient>
                     <filter id="nox-soft-glow" x="-100%" y="-100%" width="300%" height="300%">
                         <feGaussianBlur stdDeviation="5" />
@@ -119,61 +85,43 @@ export default function AuthCosmos() {
                     ))}
                 </g>
 
-                {/* A broad orbital ribbon following the user's annotated silhouette.
-                    Layered traces give depth, while a faint lower return disappears
-                    behind the card. Only a localized bloom moves, never the ring. */}
-                <g className="auth-orbital-art">
-                    <ellipse cx="671" cy="520" rx="203" ry="224"
-                        fill="url(#nox-orbit-ambient)" opacity=".72" />
-                    <path d="M 1022 221 C 825 254 691 340 580 487 C 495 605 468 716 550 758"
-                        fill="none" stroke="#7d3c95" strokeWidth="1.5"
-                        opacity=".26" />
-                    <path d="M 1010 255 C 843 289 710 370 614 508 C 539 616 521 700 592 743"
-                        fill="none" stroke="#b16ab3" strokeWidth="1.15"
-                        opacity=".28" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="#a951a6"
-                        strokeWidth="33" opacity=".24"
-                        filter="url(#nox-atmosphere-glow)" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="#d487b9"
-                        strokeWidth="14" opacity=".3"
-                        filter="url(#nox-soft-glow)" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-color)"
-                        strokeWidth="2.8" strokeLinecap="round" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-flare)"
-                        strokeWidth="19" opacity=".52" filter="url(#nox-soft-glow)" />
-                    <path d={ORBIT_UPPER} fill="none" stroke="url(#nox-orbit-flare)"
-                        strokeWidth="3.3" strokeLinecap="round" />
-
-                    <path d={ORBIT_RETURN} fill="none"
-                        stroke="url(#nox-orbit-return)" strokeWidth="1.15" />
-                    <path d="M 571 758 C 651 821 836 734 1024 590"
-                        fill="none" stroke="#87408d" strokeWidth="1"
-                        opacity=".095" />
-
-                    {/* A persistent champagne flare, plus a slow, diffuse shimmer.
-                        The glow never turns into a spinning outline. */}
-                    <g className="auth-orbit-beacon">
-                        <ellipse cx="650" cy="430" rx="97" ry="39"
-                            transform="rotate(-50 650 430)"
-                            fill="url(#nox-flare-halo)" opacity=".83" />
-                        <ellipse cx="650" cy="430" rx="49" ry="16"
-                            transform="rotate(-50 650 430)"
-                            fill="url(#nox-moving-gold)" opacity=".92" />
-                        <circle cx="650" cy="430" r="3.8" fill="#fff0cb"
-                            opacity=".68" filter="url(#nox-soft-glow)" />
-                        <circle cx="650" cy="430" r="1.3" fill="#fff6df"
-                            opacity=".95" />
+                {/* Quiet celestial atmosphere in the negative space between copy
+                    and card. No orbit, no continuous line or artificial loop. */}
+                <g className="auth-celestial-field">
+                    <g className="auth-celestial-mist">
+                        <ellipse cx="759" cy="470" rx="219" ry="112"
+                            transform="rotate(-27 759 470)"
+                            fill="url(#nox-celestial-violet)" />
+                        <ellipse cx="816" cy="428" rx="149" ry="70"
+                            transform="rotate(-32 816 428)"
+                            fill="url(#nox-celestial-violet)" opacity=".58" />
+                        <ellipse cx="766" cy="475" rx="111" ry="84"
+                            fill="url(#nox-celestial-amber)" opacity=".7" />
                     </g>
-                    <g className="auth-orbit-glimmer">
-                        <ellipse rx="39" ry="13" transform="rotate(-48)"
-                            fill="url(#nox-moving-gold)" opacity=".82" />
-                        <animateMotion
-                            path="M 775 324 C 735 352 696 384 660 418 C 626 456 594 496 571 529"
-                            dur="14s" repeatCount="indefinite" calcMode="linear" />
-                        <animate attributeName="opacity" dur="14s"
-                            repeatCount="indefinite"
-                            values="0;.72;.84;.12;0"
-                            keyTimes="0;.26;.52;.79;1" />
+
+                    {/* A single warm focal star with diffuse depth, not a bright
+                        streak crossing the description or registration card. */}
+                    <g className="auth-celestial-focal">
+                        <circle cx="774" cy="461" r="73"
+                            fill="url(#nox-celestial-spark)" opacity=".52" />
+                        <circle cx="774" cy="461" r="29"
+                            fill="url(#nox-celestial-spark)" opacity=".67" />
+                        <path d="M 774 451 Q 775 459 784 461 Q 775 463 774 471 Q 773 463 764 461 Q 773 459 774 451 Z"
+                            fill="#ffe9c4" opacity=".8" />
+                        <circle cx="774" cy="461" r="1.25" fill="#fff8e2" />
+                    </g>
+
+                    {/* Small related points give the space texture without
+                        competing with the form or turning into a constellation line. */}
+                    <g className="auth-celestial-dust">
+                        <circle cx="695" cy="396" r="1" fill="#f8d9d0" opacity=".55" />
+                        <circle cx="732" cy="372" r=".8" fill="#dfbadb" opacity=".45" />
+                        <circle cx="838" cy="409" r="1.1" fill="#f7d4b8" opacity=".63" />
+                        <circle cx="860" cy="482" r=".8" fill="#ffe7c7" opacity=".58" />
+                        <circle cx="687" cy="533" r=".85" fill="#eec1d7" opacity=".47" />
+                        <circle cx="814" cy="546" r="1" fill="#f1d2c4" opacity=".52" />
+                        <circle cx="767" cy="572" r=".7" fill="#ddb6d9" opacity=".4" />
+                        <circle cx="643" cy="459" r=".7" fill="#cc9ccc" opacity=".38" />
                     </g>
                 </g>
                 <g className="auth-distant-moon">
