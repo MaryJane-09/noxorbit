@@ -68,6 +68,7 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 
 		NewOTP := otp.OTP{
 			Email:     info.Email,
+			Purpose:   otp.PurposeRegister,
 			Code:      code,
 			ExpiresAt: time.Now().Add(otp.ExpiryTime),
 			Verified:  false,
@@ -89,7 +90,7 @@ func RegisterHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository, pend
 		err = sender.SendVerification(info.Name, info.Email, code)
 		if err != nil {
 			sendErr := err
-			err = otpRepo.Delete(info.Email, otp.PurposeReset)
+			err = otpRepo.Delete(info.Email, otp.PurposeRegister)
 			if err != nil {
 				w.WriteHeader(http.StatusConflict)
 				json.NewEncoder(w).Encode(ErrorResponse{Error: "Failed to delete otp"})
