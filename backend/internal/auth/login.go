@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
 	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
@@ -43,7 +44,7 @@ func LoginHandler(users *user.UserRepository, sessions *session.SessionRepositor
 		defer r.Body.Close()
 
 		var req LoginRequest
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&req); err != nil {
 			writeError(w, http.StatusBadRequest, "Invalid request")
 			return
 		}
