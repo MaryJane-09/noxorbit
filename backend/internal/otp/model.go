@@ -1,11 +1,13 @@
 package otp
 
-import (
-	"time"
-)
+import "time"
 
-const ExpiryTime = Time * time.Minute
-const Time = 5
+const (
+	Time          = 5
+	ExpiryTime    = Time * time.Minute
+	IssueCooldown = time.Minute
+	MaxAttempts   = 5
+)
 
 const (
 	PurposeRegister = "register"
