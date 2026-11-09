@@ -13,14 +13,6 @@ const STARS = Array.from({ length: 64 }, (_, i) => ({
     opacity: 0.1 + noise(i + 351) * 0.27,
 }));
 
-// Small, scattered light points support the nebula without a central star.
-const NEBULA_DUST = Array.from({ length: 23 }, (_, i) => ({
-    x: Math.round(628 + noise(i * 7 + 401) * 310),
-    y: Math.round(353 + noise(i * 7 + 529) * 238),
-    radius: 0.35 + noise(i * 7 + 607) * 0.72,
-    opacity: 0.22 + noise(i * 7 + 719) * 0.38,
-}));
-
 export default function AuthCosmos() {
     return (
         <div className="auth-cosmos" aria-hidden="true">
@@ -51,40 +43,6 @@ export default function AuthCosmos() {
                     <clipPath id="nox-moon-clip">
                         <circle cx="764" cy="207" r="31" />
                     </clipPath>
-                    {/* Soft overlapping gas clouds, with no drawn ring or focal star. */}
-                    <radialGradient id="nox-veil-violet">
-                        <stop stopColor="#aa59b6" stopOpacity=".32" />
-                        <stop offset=".26" stopColor="#87459a" stopOpacity=".26" />
-                        <stop offset=".59" stopColor="#532265" stopOpacity=".12" />
-                        <stop offset="1" stopColor="#381744" stopOpacity="0" />
-                    </radialGradient>
-                    <radialGradient id="nox-veil-plum">
-                        <stop stopColor="#8f408e" stopOpacity=".28" />
-                        <stop offset=".38" stopColor="#743176" stopOpacity=".17" />
-                        <stop offset=".78" stopColor="#451b52" stopOpacity=".04" />
-                        <stop offset="1" stopColor="#2d1435" stopOpacity="0" />
-                    </radialGradient>
-                    <radialGradient id="nox-veil-rose">
-                        <stop stopColor="#d18cae" stopOpacity=".21" />
-                        <stop offset=".24" stopColor="#b573a8" stopOpacity=".16" />
-                        <stop offset=".62" stopColor="#803c83" stopOpacity=".05" />
-                        <stop offset="1" stopColor="#4e254e" stopOpacity="0" />
-                    </radialGradient>
-                    <radialGradient id="nox-veil-champagne">
-                        <stop stopColor="#f3cbaf" stopOpacity=".18" />
-                        <stop offset=".18" stopColor="#d6a5aa" stopOpacity=".16" />
-                        <stop offset=".5" stopColor="#a064a2" stopOpacity=".065" />
-                        <stop offset="1" stopColor="#763f81" stopOpacity="0" />
-                    </radialGradient>
-                    <radialGradient id="nox-veil-dust">
-                        <stop stopColor="#fff0d9" stopOpacity=".53" />
-                        <stop offset=".16" stopColor="#e7bda3" stopOpacity=".3" />
-                        <stop offset=".65" stopColor="#a66da3" stopOpacity=".065" />
-                        <stop offset="1" stopColor="#803c80" stopOpacity="0" />
-                    </radialGradient>
-                    <filter id="nox-soft-glow" x="-100%" y="-100%" width="300%" height="300%">
-                        <feGaussianBlur stdDeviation="5" />
-                    </filter>
                     <filter id="nox-atmosphere-glow" x="-100%" y="-100%" width="300%" height="300%">
                         <feGaussianBlur stdDeviation="13" />
                     </filter>
@@ -104,48 +62,6 @@ export default function AuthCosmos() {
                     ))}
                 </g>
 
-                {/* A broad, layered atmosphere in the negative space.
-                    No isolated star, ring, outline or obvious repeating shape. */}
-                <g className="auth-celestial-field">
-                    <g className="auth-nebula-back">
-                        <ellipse cx="774" cy="478" rx="250" ry="132"
-                            transform="rotate(-24 774 478)"
-                            fill="url(#nox-veil-violet)" opacity=".76" />
-                        <ellipse cx="842" cy="419" rx="185" ry="83"
-                            transform="rotate(-34 842 419)"
-                            fill="url(#nox-veil-plum)" opacity=".72" />
-                        <ellipse cx="700" cy="567" rx="170" ry="95"
-                            transform="rotate(-24 700 567)"
-                            fill="url(#nox-veil-plum)" opacity=".62" />
-                    </g>
-                    <g className="auth-nebula-front">
-                        <ellipse cx="795" cy="474" rx="160" ry="67"
-                            transform="rotate(-29 795 474)"
-                            fill="url(#nox-veil-rose)" opacity=".73" />
-                        <ellipse cx="738" cy="526" rx="152" ry="63"
-                            transform="rotate(-28 738 526)"
-                            fill="url(#nox-veil-violet)" opacity=".46" />
-                        <ellipse cx="803" cy="471" rx="116" ry="47"
-                            transform="rotate(-27 803 471)"
-                            fill="url(#nox-veil-champagne)" opacity=".7" />
-                    </g>
-
-                    {/* Scattered champagne light, never a single oversized star. */}
-                    <g className="auth-nebula-sparks">
-                        <circle cx="692" cy="432" r="22"
-                            fill="url(#nox-veil-dust)" opacity=".55" />
-                        <circle cx="842" cy="493" r="19"
-                            fill="url(#nox-veil-dust)" opacity=".5" />
-                        <circle cx="754" cy="557" r="15"
-                            fill="url(#nox-veil-dust)" opacity=".37" />
-                        {NEBULA_DUST.map((particle, i) => (
-                            <circle key={i} cx={particle.x} cy={particle.y}
-                                r={particle.radius}
-                                fill={i % 3 === 0 ? "#e6b7be" : "#e4c8d8"}
-                                opacity={particle.opacity} />
-                        ))}
-                    </g>
-                </g>
                 <g className="auth-distant-moon">
                     <circle className="auth-moon-halo" cx="764" cy="207" r="43"
                         fill="#b763bf" opacity=".19" filter="url(#nox-atmosphere-glow)" />
