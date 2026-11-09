@@ -657,12 +657,20 @@
     margin-bottom: 28px;
 }
 
-/* Centred success action for both email verification and password reset. */
-.success-state .btn-primary {
-    width: fit-content;
-    max-width: 100%;
+/* A full-width layout container keeps both success buttons truly centered,
+   independently of the button's own flex sizing and intrinsic width. */
+.success-state .success-actions {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-state .success-actions .btn-primary {
+    width: auto;
     min-width: min(220px, 100%);
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
     padding-inline: 24px;
 }
 
