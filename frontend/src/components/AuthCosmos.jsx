@@ -155,15 +155,15 @@ export default function AuthCosmos() {
                         movement cycles. The warm highlight follows the actual tangent
                         of the upper curve; it is not a second rotating line. */}
                     <g className="auth-orbit-beacon">
-                        <ellipse cx="699" cy="413" rx="97" ry="43"
-                            transform="rotate(-44 699 413)"
+                        <ellipse cx="650" cy="466" rx="97" ry="43"
+                            transform="rotate(-62 650 466)"
                             fill="url(#nox-flare-halo)" opacity=".86" />
-                        <ellipse cx="699" cy="413" rx="53" ry="17"
-                            transform="rotate(-44 699 413)"
+                        <ellipse cx="650" cy="466" rx="53" ry="17"
+                            transform="rotate(-62 650 466)"
                             fill="url(#nox-moving-gold)" opacity=".92" />
-                        <circle cx="699" cy="413" r="4.5" fill="#fff1c6"
+                        <circle cx="650" cy="466" r="4.5" fill="#fff1c6"
                             opacity=".8" filter="url(#nox-soft-glow)" />
-                        <circle cx="699" cy="413" r="1.5" fill="#fff5da"
+                        <circle cx="650" cy="466" r="1.5" fill="#fff5da"
                             opacity=".95" />
                     </g>
 
@@ -175,7 +175,7 @@ export default function AuthCosmos() {
                         <ellipse rx="21" ry="6" transform="rotate(-45)"
                             fill="url(#nox-flare-halo)" opacity=".87" />
                         <animateMotion
-                            path="M 743 374 C 726 389 712 402 699 413 C 684 430 671 447 650 472"
+                            path="M 662 446 C 640 474 622 506 615 535"
                             dur="10s" repeatCount="indefinite" calcMode="linear" />
                         <animate attributeName="opacity" dur="10s"
                             repeatCount="indefinite"
