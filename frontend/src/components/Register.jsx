@@ -258,9 +258,11 @@ export default function Register({ onLogin }) {
                     <p className="card-eyebrow">EMAIL VERIFIED</p>
                     <h2 className="card-title">Welcome to <span className="accent">Noxorbit</span></h2>
                     <p className="card-subtitle">Your account is ready.</p>
+                    <div className="success-actions">
                     <button type="button" className="btn-primary" onClick={() => onLogin?.()}>
                         Continue to login <ArrowRight size={18} />
                     </button>
+                    </div>
                 </div>
             )}
         </AuthShell>
