@@ -108,9 +108,11 @@ export default function ForgotPassword({ onLogin }) {
                     <p className="card-eyebrow">PASSWORD UPDATED</p>
                     <h2 className="card-title">You are <span className="accent">all set</span></h2>
                     <p className="card-subtitle">Log in with your new password. You have been signed out everywhere else.</p>
+                    <div className="success-actions">
                     <button type="button" className="btn-primary" onClick={onLogin}>
                         Back to login <ArrowRight size={18} />
                     </button>
+                    </div>
                 </div>
             ) : (
                 <>
