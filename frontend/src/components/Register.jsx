@@ -159,7 +159,8 @@ export default function Register({ onLogin }) {
                                 value={form.password} onChange={handleChange} required />
                             <button type="button" className="field-toggle"
                                 onClick={() => setShowPassword(!showPassword)}
-                                aria-label={showPassword ? "Hide password" : "Show password"}>
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                aria-pressed={showPassword}>
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </label>
@@ -171,13 +172,14 @@ export default function Register({ onLogin }) {
                                 value={form.confirmPassword} onChange={handleChange} required />
                             <button type="button" className="field-toggle"
                                 onClick={() => setShowConfirm(!showConfirm)}
-                                aria-label={showConfirm ? "Hide password" : "Show password"}>
+                                aria-label={showConfirm ? "Hide password" : "Show password"}
+                                aria-pressed={showConfirm}>
                                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </label>
 
                         <button type="submit" className="btn-primary" disabled={loading}>
-                            Create Account <ArrowRight size={18} />
+                            {loading ? "Creating account…" : "Create Account"} <ArrowRight size={18} />
                         </button>
                     </form>
 
