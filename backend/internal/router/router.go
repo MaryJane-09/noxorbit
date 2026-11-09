@@ -56,7 +56,6 @@ func New(pool *pgxpool.Pool) http.Handler {
 	otpRepo := otp.NewRepository(pool)
 	pendingRepo := pending.NewRepository(pool)
 	sessionRepo := session.NewRepository(pool)
-	emailRepo := email.NewRepository(pool)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	mux.HandleFunc("/register", register.RegisterHandler(repo, otpRepo, pendingRepo, &sender))
@@ -65,7 +64,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo, pendingRepo))
 	mux.HandleFunc("/login", auth.LoginHandler(repo, sessionRepo))
-	mux.HandleFunc("/forgot-password", auth.ForgotPasswordHandler(repo, otpRepo, emailRepo))
+	mux.HandleFunc("/forgot-password", auth.ForgotPasswordHandler(repo, otpRepo, &sender))
 	mux.HandleFunc("/reset-password", auth.ResetPasswordHandler(repo, otpRepo, sessionRepo))
 	return corsMiddleware(mux)
 }
