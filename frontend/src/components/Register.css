@@ -67,6 +67,27 @@
     box-sizing: border-box;
 }
 
+/* One soft atmospheric light field behind the form — no floating object
+   between the hero text and the card. The card remains real HTML/CSS. */
+.register-layout::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    top: 8%;
+    right: -6%;
+    width: min(740px, 62vw);
+    height: min(640px, 86%);
+    background: radial-gradient(
+        ellipse 63% 66% at 63% 48%,
+        rgba(108, 39, 139, .34) 0%,
+        rgba(76, 28, 104, .19) 37%,
+        rgba(48, 20, 65, .07) 63%,
+        transparent 85%
+    );
+    filter: blur(30px);
+}
+
 .register-hero {
     display: flex;
     flex-direction: column;
@@ -84,7 +105,7 @@
 }
 
 .hero-sub {
-    /* Reserve visual breathing room before the illuminated orbital arc. */
+    /* Maintain a comfortable reading width without crowding the form. */
     max-width: min(370px, 100%);
     margin: 0;
     font-size: clamp(17px, 1.15vw, 20px);
@@ -488,6 +509,12 @@
 
 @media (max-width: 900px) {
     .register-page { min-height: 100vh; overflow: hidden; }
+    .register-layout::before {
+        top: 65px;
+        right: -25%;
+        width: 120%;
+        height: 640px;
+    }
     .register-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr);
