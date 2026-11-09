@@ -19,8 +19,8 @@ func corsMiddleware(next http.Handler) http.Handler {
 	// Vite normally starts on 5173 and may switch to 5174 if 5173 is in use.
 	// Only trusted local development origins may make credentialed requests.
 	allowedOrigins := map[string]bool{
-		"http://localhost:5173":  true,
-		"http://localhost:5174":  true,
+		"http://localhost:5173": true,
+		"http://localhost:5174": true,
 		"http://127.0.0.1:5173": true,
 		"http://127.0.0.1:5174": true,
 	}
@@ -56,6 +56,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	otpRepo := otp.NewRepository(pool)
 	pendingRepo := pending.NewRepository(pool)
 	sessionRepo := session.NewRepository(pool)
+	emailRepo := email.NewRepository(pool)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	mux.HandleFunc("/register", register.RegisterHandler(repo, otpRepo, pendingRepo, &sender))
@@ -64,5 +65,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.HandleFunc("/verify-otp", register.VerifyOTPHandler(repo, otpRepo, pendingRepo))
 	mux.HandleFunc("/login", auth.LoginHandler(repo, sessionRepo))
+	mux.HandleFunc("/forgot-password", auth.ForgotPasswordHandler(repo, otpRepo, emailRepo))
+	mux.HandleFunc("/reset-password", auth.ResetPasswordHandler(repo, otpRepo, sessionRepo))
 	return corsMiddleware(mux)
 }
