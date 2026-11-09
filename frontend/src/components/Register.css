@@ -208,6 +208,115 @@
     filter: drop-shadow(0 0 6px rgba(204, 106, 207, .32));
 }
 
+/* Three soft, localized reflections from the approved mockup:
+   top-right, bottom-centre, and lower-right corner. The form stays fully
+   interactive; these elements are only lighting, never image overlays. */
+.register-card > .card-edge-light {
+    position: absolute;
+    z-index: 3;
+    display: block;
+    pointer-events: none;
+}
+
+.card-edge-light::before,
+.card-edge-light::after {
+    content: "";
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+.card-edge-light--top {
+    top: -4px;
+    right: 2%;
+    width: 38%;
+    height: 5px;
+    border-radius: 100%;
+    background: linear-gradient(
+        90deg, transparent 0%, rgba(223, 132, 217, .3) 24%,
+        rgba(251, 206, 198, .86) 55%, #fff2c8 75%,
+        rgba(238, 160, 218, .45) 89%, transparent
+    );
+    box-shadow:
+        0 0 8px rgba(255, 217, 180, .7),
+        0 0 27px rgba(213, 105, 208, .42);
+}
+
+.card-edge-light--top::before {
+    top: -22px;
+    right: -8%;
+    width: 135%;
+    height: 58px;
+    background: radial-gradient(ellipse at 73% 50%,
+        rgba(250, 185, 208, .38),
+        rgba(176, 74, 185, .22) 38%,
+        transparent 72%);
+    filter: blur(8px);
+}
+
+.card-edge-light--bottom {
+    bottom: -4px;
+    left: 24%;
+    width: 45%;
+    height: 5px;
+    border-radius: 100%;
+    background: radial-gradient(ellipse at 54% 50%,
+        #ffedcd 0%, rgba(246, 202, 159, .91) 19%,
+        rgba(224, 136, 174, .57) 44%, transparent 80%);
+    box-shadow:
+        0 0 11px rgba(255, 194, 157, .7),
+        0 0 30px rgba(218, 89, 182, .36);
+}
+
+.card-edge-light--bottom::before {
+    bottom: -17px;
+    left: 7%;
+    width: 88%;
+    height: 48px;
+    background: radial-gradient(ellipse at center,
+        rgba(252, 192, 157, .34),
+        rgba(169, 71, 167, .16) 46%,
+        transparent 78%);
+    filter: blur(8px);
+}
+
+.card-edge-light--corner {
+    right: -3px;
+    bottom: -4px;
+    width: 150px;
+    height: 126px;
+    border-radius: 0 0 40px 0;
+    background: radial-gradient(ellipse at 100% 100%,
+        rgba(220, 97, 237, .39),
+        rgba(163, 64, 192, .22) 36%,
+        transparent 76%);
+}
+
+.card-edge-light--corner::before {
+    right: 1px;
+    bottom: 3px;
+    width: 115px;
+    height: 4px;
+    background: linear-gradient(90deg,
+        transparent, rgba(241, 145, 207, .33) 45%,
+        rgba(255, 211, 202, .95));
+    border-radius: 100%;
+    box-shadow: 0 0 16px rgba(228, 92, 209, .68);
+}
+
+.card-edge-light--corner::after {
+    right: 1px;
+    bottom: 1px;
+    width: 4px;
+    height: 98px;
+    border-radius: 100%;
+    background: linear-gradient(0deg,
+        rgba(255, 220, 208, .88),
+        rgba(229, 114, 217, .6) 32%,
+        transparent 100%);
+    box-shadow: 0 0 15px rgba(213, 79, 221, .53);
+}
+
 .card-eyebrow {
     display: flex;
     align-items: center;
@@ -408,6 +517,9 @@
 }
 
 @media (max-width: 600px) {
+    .card-edge-light--corner { width: 105px; height: 95px; }
+    .card-edge-light--corner::after { height: 68px; }
+    .card-edge-light--top { width: 43%; }
     .register-layout { padding: 122px 16px 35px; }
     .register-topbar { right: 16px; top: 20px; gap: 0; }
     .register-topbar span { display: none; }
