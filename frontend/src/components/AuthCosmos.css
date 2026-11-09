@@ -13,35 +13,6 @@
     min-height: 760px;
 }
 
-/* Broad layered gas clouds: gradual shifts in opacity and position,
-   rather than a star pulsing like a UI indicator. */
-.auth-nebula-back {
-    animation: nox-nebula-drift 22s ease-in-out infinite alternate;
-}
-
-.auth-nebula-front {
-    animation: nox-nebula-breathe 16s ease-in-out infinite alternate;
-}
-
-.auth-nebula-sparks {
-    animation: nox-dust-shimmer 13s ease-in-out infinite alternate;
-}
-
-@keyframes nox-nebula-drift {
-    from { opacity: .81; transform: translate(-6px, 4px); }
-    to { opacity: 1; transform: translate(8px, -5px); }
-}
-
-@keyframes nox-nebula-breathe {
-    from { opacity: .76; transform: translate(3px, 3px); }
-    to { opacity: 1; transform: translate(-5px, -4px); }
-}
-
-@keyframes nox-dust-shimmer {
-    from { opacity: .68; }
-    to { opacity: .93; }
-}
-
 .auth-moon-halo {
     animation: nox-moon-light 18s ease-in-out infinite alternate;
 }
@@ -69,9 +40,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .auth-nebula-back,
-    .auth-nebula-front,
-    .auth-nebula-sparks,
     .auth-star-pulse,
     .auth-moon-halo { animation: none; }
 }
