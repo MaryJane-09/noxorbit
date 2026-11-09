@@ -675,18 +675,6 @@
 }
 
 
-.home-wrap {
-    display: grid;
-    place-items: center;
-    min-height: 100vh;
-    padding: 24px;
-    box-sizing: border-box;
-}
-
-.home-wrap .register-card {
-    justify-self: center;
-}
-
 .btn-secondary {
     height: 48px;
     border: 1px solid var(--gold);
