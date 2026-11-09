@@ -84,7 +84,8 @@
 }
 
 .hero-sub {
-    max-width: 535px;
+    /* Reserve visual breathing room before the illuminated orbital arc. */
+    max-width: min(370px, 100%);
     margin: 0;
     font-size: clamp(17px, 1.15vw, 20px);
     line-height: 1.62;
@@ -245,29 +246,28 @@
 
 .card-edge-light--bottom {
     bottom: -2px;
-    left: 29%;
-    width: 36%;
+    left: 34%;
+    width: 27%;
     height: 2px;
     border-radius: 999px;
-    background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(231, 152, 190, .22) 25%,
-        rgba(255, 223, 194, .68) 51%,
-        rgba(227, 154, 194, .2) 79%,
-        transparent 100%);
-    box-shadow: 0 0 12px rgba(250, 178, 167, .3);
+    background: radial-gradient(ellipse at 50% 50%,
+        rgba(255, 239, 208, .94) 0%,
+        rgba(249, 205, 166, .66) 18%,
+        rgba(215, 133, 185, .23) 48%,
+        transparent 82%);
+    box-shadow: 0 0 9px rgba(250, 192, 165, .3);
 }
 
 .card-edge-light--bottom::before {
-    bottom: -24px;
-    left: -12%;
-    width: 124%;
-    height: 65px;
+    bottom: -18px;
+    left: -10%;
+    width: 120%;
+    height: 47px;
     background: radial-gradient(ellipse at 50% 50%,
-        rgba(252, 192, 167, .28),
-        rgba(194, 102, 177, .13) 45%,
-        transparent 76%);
-    filter: blur(13px);
+        rgba(255, 212, 184, .28),
+        rgba(192, 109, 179, .1) 39%,
+        transparent 74%);
+    filter: blur(10px);
 }
 
 /* The lower corner catches light around its *curved* rim.
@@ -275,37 +275,37 @@
 .card-edge-light--corner {
     right: 0;
     bottom: 0;
-    width: 151px;
-    height: 148px;
+    width: 112px;
+    height: 112px;
     border-radius: 0 0 var(--auth-card-corner-radius, 42px) 0;
-    background: radial-gradient(ellipse at 99% 98%,
-        rgba(217, 111, 223, .28),
-        rgba(160, 65, 184, .12) 45%,
-        transparent 75%);
+    background: radial-gradient(ellipse at 100% 100%,
+        rgba(218, 117, 222, .16),
+        rgba(159, 68, 179, .065) 39%,
+        transparent 69%);
 }
 
 .card-edge-light--corner::before {
     inset: 0;
-    border-right: 1.5px solid rgba(248, 172, 231, .68);
-    border-bottom: 1.5px solid rgba(247, 177, 210, .65);
+    border-right: 1px solid rgba(244, 162, 222, .56);
+    border-bottom: 1px solid rgba(244, 177, 204, .52);
     border-radius: inherit;
     -webkit-mask-image: radial-gradient(
-        ellipse 155px 145px at 100% 100%, #000 0%, transparent 80%);
+        ellipse 110px 110px at 100% 100%, #000 0%, transparent 72%);
     mask-image: radial-gradient(
-        ellipse 155px 145px at 100% 100%, #000 0%, transparent 80%);
+        ellipse 110px 110px at 100% 100%, #000 0%, transparent 72%);
 }
 
 .card-edge-light--corner::after {
-    right: -13px;
-    bottom: -13px;
-    width: 137px;
-    height: 124px;
+    right: -9px;
+    bottom: -9px;
+    width: 89px;
+    height: 83px;
     border-radius: 45%;
-    background: radial-gradient(ellipse at 65% 60%,
-        rgba(227, 132, 227, .3),
-        rgba(160, 73, 193, .13) 37%,
-        transparent 75%);
-    filter: blur(17px);
+    background: radial-gradient(ellipse at 72% 70%,
+        rgba(229, 147, 226, .19),
+        rgba(160, 73, 193, .065) 34%,
+        transparent 72%);
+    filter: blur(12px);
 }
 .card-eyebrow {
     display: flex;
@@ -466,11 +466,11 @@
     .register-hero { padding-top: 15px; }
     .register-hero h1 {
         font-size: clamp(42px, 3.75vw, 56px);
-        margin-bottom: 17px;
+        margin-bottom: 15px;
     }
-    .hero-sub { font-size: 16px; line-height: 1.5; }
-    .hero-sub::after { margin-top: 14px; }
-    .feature-list { margin-top: 21px; gap: 13px; }
+    .hero-sub { font-size: 16px; line-height: 1.45; }
+    .hero-sub::after { margin-top: 10px; }
+    .feature-list { margin-top: 15px; gap: 11px; }
     .feature-icon { width: 45px; height: 45px; border-radius: 13px; }
     .feature-icon svg { width: 22px; height: 22px; }
     .feature-title { font-size: 15px; }
