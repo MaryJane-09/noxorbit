@@ -78,10 +78,18 @@ export default function AuthCosmos() {
                         <circle cx="764" cy="207" r="31" />
                     </clipPath>
                     <radialGradient id="nox-moving-gold">
-                        <stop stopColor="#fff2cc" stopOpacity=".8" />
-                        <stop offset=".18" stopColor="#ffda99" stopOpacity=".6" />
-                        <stop offset=".56" stopColor="#dc8fac" stopOpacity=".2" />
+                        <stop stopColor="#fff8df" stopOpacity="1" />
+                        <stop offset=".18" stopColor="#ffe4a9" stopOpacity=".93" />
+                        <stop offset=".46" stopColor="#ecb383" stopOpacity=".57" />
+                        <stop offset=".78" stopColor="#d77bb9" stopOpacity=".19" />
                         <stop offset="1" stopColor="#a45aaa" stopOpacity="0" />
+                    </radialGradient>
+                    <radialGradient id="nox-flare-halo">
+                        <stop stopColor="#fff7d8" stopOpacity=".9" />
+                        <stop offset=".17" stopColor="#f9d69b" stopOpacity=".7" />
+                        <stop offset=".46" stopColor="#d692ae" stopOpacity=".33" />
+                        <stop offset=".78" stopColor="#a858ab" stopOpacity=".12" />
+                        <stop offset="1" stopColor="#8f488f" stopOpacity="0" />
                     </radialGradient>
                     <radialGradient id="nox-orbit-ambient">
                         <stop stopColor="#e19ab5" stopOpacity=".27" />
@@ -143,21 +151,36 @@ export default function AuthCosmos() {
                         fill="none" stroke="#7b3f87" strokeWidth=".65"
                         opacity=".085" />
 
-                    {/* A diffuse lens-like glow travels part of the upper arc, then
-                        fades away and rests before starting again. No spinning line. */}
-                    <g className="auth-orbit-glimmer" opacity="0">
-                        <ellipse rx="31" ry="10" fill="url(#nox-moving-gold)"
-                            filter="url(#nox-soft-glow)" />
-                        <ellipse rx="16" ry="4" fill="url(#nox-moving-gold)"
-                            opacity=".75" />
-                        <animateMotion path={ORBIT_UPPER} rotate="auto"
-                            dur="17s" repeatCount="indefinite" calcMode="linear"
-                            keyPoints="0.19;0.19;0.73;0.73;0.19"
-                            keyTimes="0;0.18;0.62;0.78;1" />
-                        <animate attributeName="opacity" dur="17s"
+                    {/* A permanent focal flare keeps the orbit luminous even between
+                        movement cycles. The warm highlight follows the actual tangent
+                        of the upper curve; it is not a second rotating line. */}
+                    <g className="auth-orbit-beacon">
+                        <ellipse cx="699" cy="413" rx="97" ry="43"
+                            transform="rotate(-44 699 413)"
+                            fill="url(#nox-flare-halo)" opacity=".86" />
+                        <ellipse cx="699" cy="413" rx="53" ry="17"
+                            transform="rotate(-44 699 413)"
+                            fill="url(#nox-moving-gold)" opacity=".92" />
+                        <circle cx="699" cy="413" r="4.5" fill="#fff1c6"
+                            opacity=".8" filter="url(#nox-soft-glow)" />
+                        <circle cx="699" cy="413" r="1.5" fill="#fff5da"
+                            opacity=".95" />
+                    </g>
+
+                    {/* A soft bloom glides a short section of the visible arc.
+                        No dash, no circling the orbit, no long blackout between passes. */}
+                    <g className="auth-orbit-glimmer">
+                        <ellipse rx="43" ry="15" transform="rotate(-45)"
+                            fill="url(#nox-moving-gold)" opacity=".93" />
+                        <ellipse rx="21" ry="6" transform="rotate(-45)"
+                            fill="url(#nox-flare-halo)" opacity=".87" />
+                        <animateMotion
+                            path="M 743 374 C 726 389 712 402 699 413 C 684 430 671 447 650 472"
+                            dur="10s" repeatCount="indefinite" calcMode="linear" />
+                        <animate attributeName="opacity" dur="10s"
                             repeatCount="indefinite"
-                            values="0;0;.7;.65;0;0"
-                            keyTimes="0;.18;.38;.56;.7;1" />
+                            values="0;.95;.92;0;0"
+                            keyTimes="0;.25;.6;.82;1" />
                     </g>
                 </g>
                 <g className="auth-distant-moon">
