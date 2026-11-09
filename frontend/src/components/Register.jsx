@@ -112,6 +112,11 @@ export default function Register({ onLogin }) {
             if (response.ok) {
                 setMessage("")
                 setStep("completed")
+            } else if (data.error === "This OTP has expired") {
+                // The server is authoritative: never show a positive countdown
+                // once it has rejected the code as expired.
+                setSecondsLeft(0)
+                setMessage("")
             } else {
                 setMessage(data.error || "Verification failed")
             }
