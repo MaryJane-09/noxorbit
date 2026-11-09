@@ -34,6 +34,7 @@ export default function ForgotPassword({ onLogin }) {
         }
         setSending(true)
         setMessage("")
+        setNotice("")
         try {
             const response = await fetch(`${API}/forgot-password`, {
                 method: "POST",
@@ -42,6 +43,10 @@ export default function ForgotPassword({ onLogin }) {
             })
             const data = await response.json()
             if (response.ok) {
+                // A successful request doesn't guarantee delivery (or even
+                // confirm that an account exists); discard any previously
+                // entered code so it cannot be submitted by mistake.
+                setForm((current) => ({ ...current, code: "" }))
                 setSent(true)
                 setCooldown(RESEND_AFTER)
                 setNotice(data.message)
@@ -92,8 +97,8 @@ export default function ForgotPassword({ onLogin }) {
 
     let sendLabel = "Send code"
     if (sending) sendLabel = "Sending…"
-    else if (sent && cooldown > 0) sendLabel = `Sent ✓ · resend in ${cooldown}s`
-    else if (sent) sendLabel = "Resend code"
+    else if (sent && cooldown > 0) sendLabel = `Request received · retry in ${cooldown}s`
+    else if (sent) sendLabel = "Request another code"
 
     return (
         <AuthShell topbarText="Remembered it?" topbarLabel="Log in" onTopbar={onLogin}>
