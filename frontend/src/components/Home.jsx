@@ -88,8 +88,6 @@ export default function Home({ user, onLogout }) {
     useEffect(() => {
         const controller = new AbortController()
         async function load() {
-            setWorkspacesLoading(true)
-            setWorkspaceLoadError('')
             try {
                 const list = await fetchWorkspaces({ signal: controller.signal })
                 if (!controller.signal.aborted) setWorkspaces(list)
@@ -292,7 +290,11 @@ export default function Home({ user, onLogout }) {
                     {workspaceLoadError && (
                         <div className="dashboard-notice" role="alert">
                             <span>{workspaceLoadError}</span>
-                            <button type="button" onClick={() => setReloadVersion((value) => value + 1)}>Try again</button>
+                            <button type="button" onClick={() => {
+                                setWorkspacesLoading(true)
+                                setWorkspaceLoadError('')
+                                setReloadVersion((value) => value + 1)
+                            }}>Try again</button>
                         </div>
                     )}
 
