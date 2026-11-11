@@ -65,5 +65,7 @@ A hosted terminal, financial data handling, and offline synchronization require 
 The dashboard, workspace membership API, dedicated Workspaces page,
 creation, switching, and owner editing are implemented. Authentication
 hardening is committed and needs regression/integration verification.
-Next: apply the projects migration, test the workspace-scoped project API,
-then connect a dedicated Projects page with real backend data.
+Project migration 005, membership-scoped Go project APIs, and the
+dedicated React Projects page have been implemented. Apply migration 005
+in Supabase and verify the real end-to-end creation/edit/archive flows.
+After validation, begin task assignments, deadlines, and Kanban boards.

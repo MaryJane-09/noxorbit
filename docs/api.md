@@ -156,8 +156,8 @@ backend unit tests already cover forbidden and missing-access responses.
 ## Project Management backend — Phase 1
 
 **Requires:** `backend/migrations/005_projects.sql` applied in Supabase
-after workspace migration 003. React project screens are not yet connected;
-these routes are backend-only until tested.
+after workspace migration 003. The React Projects page uses these routes;
+before applying migration 005, project requests will fail.
 
 ### GET /api/v1/workspaces/{workspace_id}/projects
 
@@ -211,3 +211,24 @@ these commands and the frontend lint/build on pushes to `main`.
 Password-reset database integration tests run only when explicitly given
 a **disposable test database** URL and acknowledgement. See the opt-in
 instructions in the security review documentation.
+
+## React Projects page (implemented, requires migration 005)
+
+Selecting **Projects** in the sidebar opens a dedicated `#projects` screen
+for the currently selected workspace, without cluttering Overview.
+
+- **New project** creates a real project; it appears only after backend success.
+- **Edit** changes a project's name and description for workspace members.
+- **Archive/Restore** is shown only to owners and enforced by the Go backend.
+- **Active/Archived** tabs show records returned by the API; no fake metrics.
+- Overview's Projects card displays the real active and archived project
+  counts after loading; errors are shown instead of invented data.
+- Changing the active workspace changes the project's data scope.
+- Projects continue to exist after refresh because they are in PostgreSQL.
+
+**Manual test:** Apply migration 005, restart the Go backend, pull the
+frontend, open Projects, create a project in Group A, switch to Group B,
+and verify the project is not displayed there. Edit and archive using the
+owner account, then refresh and confirm that changes persist.
+
+Actual project/task deadlines and board features are a separate stage.
