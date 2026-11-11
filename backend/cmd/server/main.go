@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/config"
 	"github.com/MaryJane-09/noxorbit/backend/internal/db"
@@ -16,9 +17,14 @@ func main() {
 	}
 	defer pool.Close()
 
-	server := router.New(pool)
+	server := &http.Server{
+		Addr:              config.AppConfig.ServerPort,
+		Handler:           router.New(pool),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       20 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       60 * time.Second,
+	}
 	log.Println("NoxOrbit server starting on", config.AppConfig.ServerPort)
-	// A failed listener or unexpected server stop must terminate the process
-	// with a nonzero exit status instead of only printing an error.
-	log.Fatal(http.ListenAndServe(config.AppConfig.ServerPort, server))
+	log.Fatal(server.ListenAndServe())
 }

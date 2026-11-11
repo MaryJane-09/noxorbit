@@ -50,7 +50,7 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository) htt
 		}
 
 		code := strings.TrimSpace(req.Code)
-		if len(code) != 6 {
+		if len(code) != otp.CodeLength {
 			w.WriteHeader(http.StatusBadRequest)
 			_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})
 			return
@@ -68,7 +68,10 @@ func VerifyOTPHandler(repo *user.UserRepository, otpRepo *otp.OTPRepository) htt
 				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "This OTP has expired"})
 			case errors.Is(err, otp.ErrTooManyAttempts):
 				w.WriteHeader(http.StatusTooManyRequests)
-				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Too many incorrect codes. Request a new one."})
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Too many incorrect codes. Request a new one.", Code: "otp_locked"})
+			case errors.Is(err, otp.ErrAlreadyUsed):
+				w.WriteHeader(http.StatusBadRequest)
+				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "This code has already been used.", Code: "otp_used"})
 			case errors.Is(err, otp.ErrInvalidCode):
 				w.WriteHeader(http.StatusBadRequest)
 				_ = json.NewEncoder(w).Encode(ErrorResponse{Error: "Incorrect OTP. No match found"})

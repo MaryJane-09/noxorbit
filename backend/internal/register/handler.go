@@ -16,6 +16,7 @@ import (
 
 type ErrorResponse struct {
 	Error string `json:"error"`
+	Code string `json:"code,omitempty"`
 }
 
 // RegisterHandler validates the submitted details and sends an email code.
@@ -44,7 +45,7 @@ func RegisterHandler(otpRepo *otp.OTPRepository, sender *email.EmailSender) http
 			return
 		}
 
-		code, err := otp.Generate(6)
+		code, err := otp.Generate(otp.CodeLength)
 		if err != nil {
 			log.Println("Generate registration code:", err)
 			w.WriteHeader(http.StatusInternalServerError)

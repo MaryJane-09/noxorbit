@@ -116,7 +116,7 @@ export default function Register({ onLogin }) {
             if (response.ok) {
                 setMessage("")
                 setStep("completed")
-            } else if (response.status === 429 && data.error?.includes("incorrect codes")) {
+            } else if (response.status === 429 && data.code === "otp_locked") {
                 setCodeLocked(true)
                 setMessage(data.error)
             } else if (data.error === "This OTP has expired") {
