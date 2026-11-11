@@ -13,6 +13,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
+	"github.com/MaryJane-09/noxorbit/backend/internal/task"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"github.com/MaryJane-09/noxorbit/backend/internal/workspace"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -61,6 +62,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	limits := ratelimit.New(pool)
 	workspaceHandler := workspace.NewHandler(workspace.NewRepository(pool))
 	projectHandler := project.NewHandler(project.NewRepository(pool))
+	taskHandler := task.NewHandler(task.NewRepository(pool))
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	// Fixed 15-minute IP quotas limit request floods before expensive work.
@@ -77,6 +79,10 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects", auth.RequireAuth(sessionRepo, projectHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}", auth.RequireAuth(sessionRepo, projectHandler.Detail))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/status", auth.RequireAuth(sessionRepo, projectHandler.Status))
+	// All task endpoints require a session; repository writes enforce the task role rules.
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks", auth.RequireAuth(sessionRepo, taskHandler.Collection))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}", auth.RequireAuth(sessionRepo, taskHandler.Detail))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}/status", auth.RequireAuth(sessionRepo, taskHandler.Status))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))
 	mux.Handle("/login", limits.LimitIP("login", 60, window, auth.LoginHandler(repo, sessionRepo, limits)))
