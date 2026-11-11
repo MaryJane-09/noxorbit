@@ -1297,3 +1297,81 @@
     .dashboard-spin { animation: none; }
     .dashboard-workspace-card { transition: none; }
 }
+
+
+/* Overview is intentionally compact once a real workspace exists.
+   Creation and editing live on the separate Workspaces page. */
+.dashboard-active-summary {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px 26px;
+    margin-bottom: 4px;
+    border: 1px solid rgba(244, 195, 151, .32);
+    border-radius: 17px;
+    background: linear-gradient(125deg, rgba(68, 39, 76, .86), rgba(37, 24, 46, .93));
+}
+.dashboard-active-summary-icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(240, 204, 153, .36);
+    border-radius: 14px;
+    background: rgba(242, 191, 131, .12);
+    color: #f1cd97;
+}
+.dashboard-active-summary-details {
+    flex: 1;
+    min-width: 0;
+}
+.dashboard-active-summary-details .dashboard-eyebrow {
+    margin-bottom: 8px;
+    font-size: 10px;
+}
+.dashboard-active-summary-details h2 {
+    margin: 0 0 4px;
+    color: #f9edf7;
+    font-family: var(--dash-display);
+    font-size: clamp(18px, 2vw, 23px);
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -.03em;
+    overflow-wrap: anywhere;
+}
+.dashboard-active-summary-details > p:last-child {
+    color: #d0bbd1;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+.dashboard-active-summary-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 14px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(246, 210, 155, .43);
+    border-radius: 10px;
+    background: rgba(247, 188, 111, .075);
+    color: #f8d8a0;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.dashboard-active-summary-action:hover {
+    background: rgba(247, 188, 111, .16);
+}
+
+@media (max-width: 680px) {
+    .dashboard-active-summary {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 20px;
+        gap: 13px;
+    }
+    .dashboard-active-summary-action {
+        width: 100%;
+        justify-content: center;
+    }
+}
