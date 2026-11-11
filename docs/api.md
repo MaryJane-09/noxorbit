@@ -63,10 +63,34 @@ Returns **200 OK** and the workspace if the requester belongs to it.
 Returns **404 Not Found** both for unknown IDs and for IDs of workspaces
 the user cannot access. Malformed UUIDs return **400 Bad Request**.
 
+### PATCH /api/v1/workspaces/{id}
+
+Update a workspace's name and purpose. Only an authenticated workspace
+**owner** may edit these settings. The owner permission is checked inside
+the PostgreSQL `UPDATE` statement—not just in the browser.
+
+Send `Content-Type: application/json` with both current/new settings:
+
+```json
+{
+  "name": "Renamed Study Group",
+  "purpose": "education"
+}
+```
+
+Returns **200 OK** with the updated workspace record and new `updated_at`.
+Returns **403 Forbidden** for a member without owner permissions and
+**404 Not Found** for an unknown or inaccessible workspace. The request
+does not accept a client-supplied owner ID, role, or member list.
+
+The existing `003_workspaces.sql` migration already contains the required
+columns. **No new migration is necessary.**
+
 ### Common behavior
 
 - **401:** Missing or invalid login session.
 - **400:** Invalid input or malformed workspace UUID.
+- **403:** Logged-in workspace member lacks owner permission for an edit.
 - **415:** POST content type is not `application/json`.
 - **500:** Database failure; details are only written to backend server logs.
 
@@ -76,38 +100,55 @@ frontend's visibility of a button or a workspace ID never grants access.
 
 ## Planned (not implemented yet)
 
-- Workspace invitations, editing, deletion, and persistent active-workspace preference
+- Workspace invitations, deletion, and persistent active-workspace preference
 - `GET/POST /api/v1/projects` and project-scoped tasks
 - Task updates, comments, activity, notification, and AI APIs
 
 ## React dashboard integration
 
-The dashboard now loads the signed-in user's workspaces using
-`GET /api/v1/workspaces`. The "Create workspace" dialog sends the validated
-name and selected purpose to `POST /api/v1/workspaces`. A workspace is
-displayed only after the backend returns the saved record.
+The dashboard now has **two separate screens**, selected by hash navigation:
 
-Users can choose which of **their loaded workspaces** to view from the
-dashboard. The current selection is kept in React state, not the database;
-reloading selects the newest workspace again. This is navigation context,
-not a new authorization grant. Every future project/task endpoint must
-still check the session's workspace membership independently.
+- `#overview` — personalized welcome, compact active workspace, and honest
+  project/task/deadline empty states. Before a user has a workspace,
+  onboarding still links to creation.
+- `#workspaces` — dedicated directory, one **New workspace** action,
+  current workspace indicator, `Open overview` switching, and owner-only
+  **Edit** settings dialog.
 
-If the API is unavailable, the dashboard displays an error with a Retry
-button instead of claiming the account has no workspaces. The projects,
-tasks, invitations, and deadlines features are **not implemented** and
-continue to show explanatory placeholders, never fabricated data.
+The frontend loads workspaces using `GET /api/v1/workspaces`, creates new
+workspaces through `POST /api/v1/workspaces`, and saves name/purpose edits
+via `PATCH /api/v1/workspaces/{id}`. The UI updates only after the backend
+returns the saved record. Users without owner permission do not see the
+Edit action; the Go backend independently enforces the same rule.
+
+Selecting `Open overview` switches the active workspace context in memory.
+Refreshing the app selects the newest workspace again, since a persisted
+active-workspace preference isn't implemented yet. This UI selection does
+not grant API permissions.
+
+If loading fails, the Workspaces screen displays the API error with a
+Retry action. Projects, tasks, invitations, and deadlines remain planned;
+no sample metrics or fake workspace records are displayed.
 
 ### Manual verification
 
 1. Run `go test ./backend/...` and `go vet ./backend/...` from the root.
-2. Start the Go backend, then start the React frontend with `npm run dev`.
-3. Log in, select **Create workspace**, give it a name and purpose, and submit.
-4. Confirm it appears under **Your workspaces** and as the current workspace.
-5. Refresh; the workspace should still be listed because it is in PostgreSQL.
-6. Create a second workspace and check you can switch between them.
-7. Optionally verify new rows in Supabase's `workspaces` and
-   `workspace_memberships` tables, without sharing personal login data.
+2. Restart the Go backend, then from `frontend` run `npm run lint`,
+   `npm run build`, and `npm run dev`.
+3. Sign in and open **Workspaces** in the sidebar. Confirm the current
+   Group A / Group B records appear after refreshing.
+4. Create a third workspace on the Workspaces page, then refresh; it
+   should remain in the list.
+5. Use **Open overview** on a different workspace; verify the active
+   workspace label and compact Overview summary update.
+6. As an owner, select **Edit**, rename the workspace or change purpose,
+   and save. Check the saved changes survive a refresh.
+7. Confirm Overview no longer contains the full workspace directory or
+   the large onboarding illustration after a workspace exists.
+8. Verify browser Back/Forward works between `#workspaces` and `#overview`.
 
-The frontend should also pass `npm run lint` and `npm run build`.
+For permission verification with a non-owner, use a separate *test*
+account with legitimate membership once invitations are supported. The
+backend unit tests already cover forbidden and missing-access responses.
 
+**No new Supabase SQL migration is required for this page and edit endpoint.**
