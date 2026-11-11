@@ -46,6 +46,9 @@ func testIsolatedPool(t *testing.T) *pgxpool.Pool {
 	}
 	cfg, err := pgxpool.ParseConfig(url)
 	if err != nil { t.Fatal(err) }
+	if cfg.ConnConfig.RuntimeParams == nil {
+		cfg.ConnConfig.RuntimeParams = make(map[string]string)
+	}
 	cfg.ConnConfig.RuntimeParams["search_path"] = schema
 	cfg.MaxConns = 12
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)
