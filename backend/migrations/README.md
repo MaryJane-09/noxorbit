@@ -58,9 +58,8 @@ against someone else's account or share real login credentials or OTP codes.
 
 ## Migration 003 — Workspaces and memberships (Phase 1)
 
-**Status:** Apply manually in the Supabase SQL Editor before implementing
-workspace repositories and HTTP routes. No application code currently uses
-these new tables.
+**Status:** Implemented. The Go workspace API depends on these tables;
+apply this migration before starting the workspace-enabled backend.
 
 1. Open the same Supabase project your Go backend uses.
 2. Optionally confirm `public.users.id` is a UUID:
@@ -110,3 +109,53 @@ workspace UI, HTTP routes, or workspace records.
 
 **Do not** run migration 003 against a production database without first
 reviewing it and confirming the expected existing `users` schema.
+
+## Migration 001 — Legacy password-data cleanup (review first)
+
+The previous pre-verification `pendings` table held plaintext passwords.
+The current registration flow no longer uses it. Check whether it remains:
+
+```sql
+SELECT to_regclass('public.pendings');
+```
+
+If this returns `pendings`, review and run the **existing**
+`backend/migrations/001_drop_legacy_pendings.sql` in Supabase SQL Editor.
+**This permanently deletes unfinished legacy registrations.** Do not
+export, share, or keep copies of the plaintext pending-password data.
+If it returns `NULL`, there is nothing to remove.
+
+## Migration 004 — Scheduled rate-limit housekeeping (optional)
+
+The `auth_rate_limits` table will accumulate stale hashed quota keys
+until cleaned up. The backend currently reads only fresh windows, but
+old rows still occupy storage.
+
+1. In Supabase, enable the `pg_cron` extension using the supported
+   Database Extensions/Cron feature for your project.
+2. Verify installation via
+   `SELECT extname FROM pg_extension WHERE extname = 'pg_cron';`.
+3. Review and run `004_auth_rate_limit_cleanup.sql` **once**.
+4. Check the scheduled job in `cron.job`.
+
+This is an operational job, not an application schema prerequisite. If
+you cannot enable Cron in your project, run the documented delete query
+periodically through a trusted administrative connection instead.
+
+## Migration 005 — Projects (Phase 1)
+
+Run **after migration 003** and before enabling the project backend routes:
+
+1. Review and run `backend/migrations/005_projects.sql` **once** in
+   Supabase SQL Editor. Migration 004 is optional; it need not run first.
+2. Verify the table and RLS settings:
+
+```sql
+SELECT to_regclass('public.projects');
+SELECT tablename, rowsecurity FROM pg_tables
+WHERE schemaname = 'public' AND tablename = 'projects';
+```
+
+Expected: `public.projects` exists and `rowsecurity` is `true`.
+No dummy projects are inserted. The backend enforces workspace membership
+in each project query and owner permission for archive/restore.

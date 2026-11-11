@@ -152,3 +152,62 @@ account with legitimate membership once invitations are supported. The
 backend unit tests already cover forbidden and missing-access responses.
 
 **No new Supabase SQL migration is required for this page and edit endpoint.**
+
+## Project Management backend — Phase 1
+
+**Requires:** `backend/migrations/005_projects.sql` applied in Supabase
+after workspace migration 003. React project screens are not yet connected;
+these routes are backend-only until tested.
+
+### GET /api/v1/workspaces/{workspace_id}/projects
+
+Lists real projects in a workspace the logged-in user belongs to.
+Includes active and archived records. A member with no projects receives
+`[]`; users outside the workspace receive **404**.
+
+### POST /api/v1/workspaces/{workspace_id}/projects
+
+Authenticated workspace members can create a project. Example:
+
+```json
+{"name":"Group presentation","description":"Plan our slides and review milestones."}
+```
+
+Name is required (1–100 characters); description is optional (up to 2000
+characters). Workspace ID is taken from the URL and member identity from
+the verified session. Returns **201 Created** with the saved record.
+
+### GET /api/v1/workspaces/{workspace_id}/projects/{project_id}
+
+Authenticated members can view a project only within their workspace.
+Non-members, unknown projects, and incorrect workspace/project ID pairs
+receive **404**, with no cross-workspace data exposed.
+
+### PATCH /api/v1/workspaces/{workspace_id}/projects/{project_id}
+
+Workspace members can edit the project's `name` and `description` using
+the same JSON shape as project creation. Unknown JSON fields are rejected.
+
+### PATCH /api/v1/workspaces/{workspace_id}/projects/{project_id}/status
+
+Only owners can archive or restore a project:
+
+```json
+{"status":"archived"}
+```
+
+Use `{"status":"active"}` to restore. Non-owner members receive **403**;
+non-members receive **404**.
+
+Every project is bound to a workspace by database foreign key, and all
+repository operations restrict SQL to memberships of that workspace.
+
+### Testing
+
+From the repository root run `go test ./backend/...` and
+`go vet ./backend/...`. The GitHub Actions checks workflow also executes
+these commands and the frontend lint/build on pushes to `main`.
+
+Password-reset database integration tests run only when explicitly given
+a **disposable test database** URL and acknowledgement. See the opt-in
+instructions in the security review documentation.

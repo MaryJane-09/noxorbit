@@ -62,4 +62,8 @@ A hosted terminal, financial data handling, and offline synchronization require 
 
 ## Immediate next step
 
-Implement **the dashboard shell and first-workspace experience**, then add the workspace backend and database design. Preserve the established NoxOrbit brand and existing authentication flows.
+The dashboard, workspace membership API, dedicated Workspaces page,
+creation, switching, and owner editing are implemented. Authentication
+hardening is committed and needs regression/integration verification.
+Next: apply the projects migration, test the workspace-scoped project API,
+then connect a dedicated Projects page with real backend data.
