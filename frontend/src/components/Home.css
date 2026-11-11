@@ -1017,52 +1017,13 @@
 }
 
 
-/* Workspace creation and selection — extends the approved dashboard only. */
+/* Workspace creation dialog and loading feedback; the directory has its own page. */
 .dashboard-workspace-indicator-text { min-width: 0; flex: 1; }
 .dashboard-workspace-indicator-text strong,
 .dashboard-workspace-indicator-text small {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-.dashboard-sidebar-create,
-.dashboard-workspaces-add {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border: 1px solid rgba(255, 214, 156, .34);
-    border-radius: 11px;
-    background: rgba(240, 190, 120, .08);
-    color: #f8dcae;
-    font-size: 12px;
-    font-weight: 750;
-    cursor: pointer;
-}
-.dashboard-sidebar-create { width: 100%; margin-top: 11px; }
-.dashboard-sidebar-create:hover:not(:disabled),
-.dashboard-workspaces-add:hover { background: rgba(240, 190, 120, .16); }
-
-.dashboard-nav-button {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    font-family: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-.dashboard-nav-button:hover:not(:disabled),
-.dashboard-nav-item:not(.dashboard-nav-item--planned):hover {
-    color: #ffe4b3;
-    background: rgba(242, 195, 141, .075);
-}
-.dashboard-sidebar-create:disabled,
-.dashboard-nav-button:disabled,
-.dashboard-feature-action:disabled {
-    opacity: .62;
-    cursor: not-allowed;
-    transform: none;
 }
 
 .dashboard-feature-secondary {
@@ -1104,70 +1065,6 @@
     font-size: 12px;
     font-weight: 750;
     cursor: pointer;
-}
-
-.dashboard-workspaces-section { margin-top: 34px; scroll-margin-top: 22px; }
-.dashboard-workspaces-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 15px;
-    margin-bottom: 19px;
-}
-.dashboard-workspaces-header h2 {
-    margin: 0;
-    font-family: var(--dash-display);
-    font-size: clamp(22px, 2.1vw, 28px);
-    font-weight: 700;
-    letter-spacing: -.032em;
-}
-.dashboard-workspaces-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
-    gap: 13px;
-}
-.dashboard-workspace-card {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    min-width: 0;
-    padding: 17px;
-    border: 1px solid rgba(233, 192, 152, .23);
-    border-radius: 15px;
-    background: linear-gradient(155deg, rgba(58, 36, 67, .84), rgba(33, 21, 43, .95));
-    text-align: left;
-    color: #cebcd2;
-    cursor: pointer;
-    transition: background .18s ease, border-color .18s ease;
-}
-.dashboard-workspace-card:hover,
-.dashboard-workspace-card--active {
-    border-color: rgba(255, 216, 156, .61);
-    background: linear-gradient(150deg, rgba(85, 49, 88, .93), rgba(45, 27, 55, .97));
-}
-.dashboard-workspace-card--active { color: #ffdfa1; }
-.dashboard-workspace-card-icon {
-    display: grid;
-    flex: 0 0 auto;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border: 1px solid rgba(255, 213, 155, .28);
-    border-radius: 12px;
-    color: #ffe0a3;
-    background: rgba(244, 186, 125, .11);
-}
-.dashboard-workspace-card-copy { display: grid; flex: 1; gap: 5px; min-width: 0; }
-.dashboard-workspace-card-copy strong {
-    overflow-wrap: anywhere;
-    color: #f9eef7;
-    font-size: 13px;
-    font-weight: 800;
-}
-.dashboard-workspace-card-copy small {
-    color: #d0bcd3;
-    font-size: 11px;
-    text-transform: capitalize;
 }
 
 .dashboard-workspace-dialog {
@@ -1288,14 +1185,11 @@
 @keyframes dashboard-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 680px) {
-    .dashboard-workspaces-header { align-items: flex-start; }
-    .dashboard-workspaces-add { flex: 0 0 auto; }
     .dashboard-workspace-dialog { padding: 23px; }
     .dashboard-dialog-actions { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
     .dashboard-spin { animation: none; }
-    .dashboard-workspace-card { transition: none; }
 }
 
 
