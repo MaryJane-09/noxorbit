@@ -1,4 +1,4 @@
-# Authentication security migration (Supabase)
+# NoxOrbit Database Migrations (Supabase)
 
 The NoxOrbit backend uses Supabase PostgreSQL to keep OTP attempt counts and
 request quotas consistent across concurrent requests and server restarts.
@@ -55,3 +55,58 @@ WHERE window_started_at < NOW() - INTERVAL '1 day';
 
 Use a development or test account when checking failed attempts. Never test
 against someone else's account or share real login credentials or OTP codes.
+
+## Migration 003 — Workspaces and memberships (Phase 1)
+
+**Status:** Apply manually in the Supabase SQL Editor before implementing
+workspace repositories and HTTP routes. No application code currently uses
+these new tables.
+
+1. Open the same Supabase project your Go backend uses.
+2. Optionally confirm `public.users.id` is a UUID:
+
+```sql
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name = 'users'
+  AND column_name = 'id';
+```
+
+The expected `data_type` is `uuid`. If not, **do not run migration 003**
+until the mismatch is investigated.
+
+3. Open and review `backend/migrations/003_workspaces.sql`, then run the
+   full file **once** in a new Supabase SQL Editor query.
+4. Verify that both tables and their key columns exist:
+
+```sql
+SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name IN ('workspaces', 'workspace_memberships')
+ORDER BY table_name, ordinal_position;
+
+SELECT tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public'
+  AND tablename IN ('workspaces', 'workspace_memberships');
+```
+
+Expect `workspaces` and `workspace_memberships`, with `rowsecurity = true`
+for both. Neither table should contain records immediately after creation.
+
+**Why no `IF NOT EXISTS`?** This is a one-time schema change. If either
+table already exists, the migration should fail clearly instead of silently
+accepting an incompatible structure. The surrounding `BEGIN`/`COMMIT`
+keeps the two-table creation atomic.
+
+**Security note:** The migration blocks direct access through Supabase's
+standard anonymous/authenticated Data API roles using RLS without policies
+and revoked privileges. The backend uses its own trusted PostgreSQL
+connection, and future Go handlers must independently enforce workspace
+membership and ownership. This migration does not create any frontend
+workspace UI, HTTP routes, or workspace records.
+
+**Do not** run migration 003 against a production database without first
+reviewing it and confirming the expected existing `users` schema.
