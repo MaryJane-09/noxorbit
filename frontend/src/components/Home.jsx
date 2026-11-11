@@ -291,7 +291,20 @@ export default function Home({ user, onLogout }) {
                     </div>
                 </header>
 
-                <main className="dashboard-main" id="dashboard-overview">
+                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : 'dashboard-workspaces'}>
+                    {page === 'workspaces' ? (
+                        <WorkspacesPage
+                            workspaces={workspaces}
+                            activeWorkspace={activeWorkspace}
+                            loading={workspacesLoading}
+                            loadError={workspaceLoadError}
+                            onCreate={openCreateDialog}
+                            onSelect={setSelectedWorkspaceId}
+                            onUpdate={handleUpdateWorkspace}
+                            onBackToOverview={() => goToPage('overview')}
+                        />
+                    ) : (
+                        <>
                     <div className="dashboard-welcome">
                         <div>
                             <p className="dashboard-eyebrow"><span className="dashboard-live-dot" /> {hasWorkspace ? 'YOUR TEAM SPACE' : 'THE BEGINNING OF SOMETHING GREAT'}</p>
@@ -314,6 +327,21 @@ export default function Home({ user, onLogout }) {
                         </div>
                     )}
 
+                    {hasWorkspace && (
+                        <section className="dashboard-active-summary" aria-label="Current workspace">
+                            <span className="dashboard-active-summary-icon"><Layers3 size={25} aria-hidden="true" /></span>
+                            <div className="dashboard-active-summary-details">
+                                <p className="dashboard-eyebrow">CURRENT WORKSPACE</p>
+                                <h2>{activeWorkspace.name}</h2>
+                                <p>{purposeLabel(activeWorkspace.purpose)} · {activeWorkspace.role === 'owner' ? 'Owner' : 'Member'}</p>
+                            </div>
+                            <button type="button" className="dashboard-active-summary-action" onClick={() => goToPage('workspaces')}>
+                                Manage workspaces <ArrowRight size={17} aria-hidden="true" />
+                            </button>
+                        </section>
+                    )}
+
+                    {!hasWorkspace && (
                     <section className="dashboard-feature" aria-labelledby="dashboard-feature-title">
                         <div className="dashboard-feature-copy">
                             <p className="dashboard-feature-overline"><Compass size={16} aria-hidden="true" /> {hasWorkspace ? 'YOUR WORKSPACE IS READY' : 'YOUR WORK BEGINS HERE'}</p>
@@ -321,7 +349,7 @@ export default function Home({ user, onLogout }) {
                             <p>{hasWorkspace
                                 ? `${activeWorkspace.name} is ready for your team. Projects and task management are coming in our next development steps.`
                                 : "Create a shared home for your team's work. Projects, tasks, and deadlines will be easier to follow when everything is connected."}</p>
-                            <button type="button" className="dashboard-feature-action" onClick={openCreateDialog}
+                            <button type="button" className="dashboard-feature-action" onClick={() => goToPage('workspaces')}
                                 disabled={workspacesLoading || Boolean(workspaceLoadError)}>
                                 {workspacesLoading ? 'Loading your workspaces…' : hasWorkspace ? 'Create another workspace' : 'Create your first workspace'}
                                 <ArrowRight size={18} aria-hidden="true" />
@@ -378,40 +406,9 @@ export default function Home({ user, onLogout }) {
                             <span className="dashboard-collab-spark dashboard-collab-spark--two" />
                         </div>
                     </section>
-
-                    {hasWorkspace && (
-                        <section className="dashboard-workspaces-section" id="dashboard-workspaces" aria-labelledby="dashboard-workspaces-title">
-                            <div className="dashboard-workspaces-header">
-                                <div>
-                                    <p className="dashboard-eyebrow">YOUR WORKSPACES</p>
-                                    <h2 id="dashboard-workspaces-title">Choose where to work.</h2>
-                                </div>
-                                <button type="button" className="dashboard-workspaces-add" onClick={openCreateDialog}>
-                                    <Plus size={17} aria-hidden="true" /> New workspace
-                                </button>
-                            </div>
-                            <div className="dashboard-workspaces-list">
-                                {workspaces.map((space) => (
-                                    <button
-                                        key={space.id}
-                                        type="button"
-                                        className={`dashboard-workspace-card${activeWorkspace.id === space.id ? ' dashboard-workspace-card--active' : ''}`}
-                                        aria-pressed={activeWorkspace.id === space.id}
-                                        onClick={() => setSelectedWorkspaceId(space.id)}
-                                    >
-                                        <span className="dashboard-workspace-card-icon"><Layers3 size={20} aria-hidden="true" /></span>
-                                        <span className="dashboard-workspace-card-copy">
-                                            <strong>{space.name}</strong>
-                                            <small>{purposeLabel(space.purpose)} · {space.role}</small>
-                                        </span>
-                                        {activeWorkspace.id === space.id ? <Check size={18} aria-hidden="true" /> : <ChevronRight size={18} aria-hidden="true" />}
-                                    </button>
-                                ))}
-                            </div>
-                        </section>
                     )}
 
-                    {guideOpen && (
+                    {!hasWorkspace && guideOpen && (
                         <section className="dashboard-guide" id="dashboard-guide" aria-labelledby="dashboard-guide-title">
                             <div className="dashboard-guide-head">
                                 <div>
@@ -478,6 +475,8 @@ export default function Home({ user, onLogout }) {
                         <Users size={19} aria-hidden="true" />
                         <span>{hasWorkspace ? 'Your workspace is ready. Projects, tasks, and invitations are the next features we will connect.' : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
                     </div>
+                        </>
+                    )}
                 </main>
             </div>
 
