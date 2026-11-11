@@ -41,7 +41,7 @@ func TestInspectCode(t *testing.T) {
 		{
 			name: "consumed code cannot be reused",
 			sent: "abc234", stored: "abc234", expires: unexpired,
-			verified: true, expectedError: ErrTooManyAttempts,
+			verified: true, expectedError: ErrAlreadyUsed,
 		},
 		{
 			name: "expired code rejected",

@@ -6,6 +6,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gofrs/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -16,6 +18,7 @@ var (
 	ErrInvalidCode     = errors.New("incorrect verification code")
 	ErrTooManyAttempts = errors.New("too many verification attempts")
 	ErrCooldown        = errors.New("wait before requesting another code")
+	ErrAlreadyUsed     = errors.New("verification code already used")
 )
 
 type OTPRepository struct {
@@ -106,7 +109,10 @@ func inspectCode(submitted, stored string, expiresAt time.Time, verified bool, a
 	if !now.Before(expiresAt) {
 		return false, ErrExpired
 	}
-	if verified || attempts >= MaxAttempts {
+	if verified {
+		return false, ErrAlreadyUsed
+	}
+	if attempts >= MaxAttempts {
 		return false, ErrTooManyAttempts
 	}
 	if subtle.ConstantTimeCompare([]byte(submitted), []byte(stored)) != 1 {
@@ -132,4 +138,75 @@ func (r *OTPRepository) Delete(email, purpose string) error {
 	_, err := r.pool.Exec(ctx, `DELETE FROM otps
 		WHERE email = $1 AND purpose = $2`, email, purpose)
 	return err
+}
+
+// ResetPassword performs OTP validation, password replacement, session
+// revocation, and OTP consumption within one PostgreSQL transaction.
+// Invalid guesses are committed separately so the five-guess cap survives
+// even though they return an error. A failure on a valid code rolls back
+// all changes, leaving both the code and previous sessions intact.
+func (r *OTPRepository) ResetPassword(ctx context.Context, email, submitted, newPassword string) error {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+
+	var stored string
+	var expiry time.Time
+	var used bool
+	var attempts int
+	err = tx.QueryRow(ctx, `SELECT code, expires_at, verified, attempts
+		FROM otps WHERE email = $1 AND purpose = $2 FOR UPDATE`,
+		email, PurposeReset).Scan(&stored, &expiry, &used, &attempts)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+
+	wrong, verdict := inspectCode(submitted, stored, expiry, used, attempts, time.Now())
+	if verdict != nil && !wrong {
+		return verdict
+	}
+	if wrong {
+		_, err = tx.Exec(ctx, `UPDATE otps SET attempts = $3
+			WHERE email = $1 AND purpose = $2`, email, PurposeReset, attempts+1)
+		if err != nil {
+			return err
+		}
+		if err := tx.Commit(ctx); err != nil {
+			return err
+		}
+		return verdict
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	var userID uuid.UUID
+	err = tx.QueryRow(ctx, `UPDATE users SET password = $1
+		WHERE email = $2 RETURNING id`, string(hash), email).Scan(&userID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+
+	if _, err := tx.Exec(ctx, `DELETE FROM sessions WHERE user_id = $1`, userID); err != nil {
+		return err
+	}
+	tag, err := tx.Exec(ctx, `DELETE FROM otps WHERE email = $1 AND purpose = $2`,
+		email, PurposeReset)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() != 1 {
+		return errors.New("reset code disappeared during transaction")
+	}
+	return tx.Commit(ctx)
 }

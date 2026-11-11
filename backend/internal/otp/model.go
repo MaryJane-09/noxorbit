@@ -7,6 +7,7 @@ const (
 	ExpiryTime    = Time * time.Minute
 	IssueCooldown = time.Minute
 	MaxAttempts   = 5
+	CodeLength    = 6
 )
 
 const (
