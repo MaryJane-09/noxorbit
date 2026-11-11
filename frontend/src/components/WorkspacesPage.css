@@ -1,0 +1,203 @@
+
+/* The workspace directory is intentionally a separate dashboard screen.
+   Brand treatments reuse the settled plum and champagne-gold palette. */
+.workspace-manager { padding-top: 10px; }
+.workspace-manager-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    padding-bottom: 34px;
+    border-bottom: 1px solid var(--dash-line);
+}
+.workspace-manager-heading .dashboard-eyebrow { margin-bottom: 14px; }
+.workspace-manager-heading h1 {
+    margin: 0 0 12px;
+    font: 700 clamp(31px, 4vw, 48px) / 1.2 var(--dash-display);
+    letter-spacing: -.05em;
+    color: #f6edf5;
+}
+.workspace-manager-heading-dot { color: var(--dash-gold-rich); }
+.workspace-manager-heading p:not(.dashboard-eyebrow) {
+    max-width: 530px;
+    margin: 0;
+    color: var(--dash-muted);
+    font-size: 13px;
+    line-height: 1.75;
+}
+.workspace-manager-create { margin: 0; white-space: nowrap; }
+.workspace-manager-section { margin-top: 33px; }
+.workspace-manager-section-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 21px;
+}
+.workspace-manager-section-top h2 {
+    font: 700 clamp(20px, 2vw, 26px)/1.3 var(--dash-display);
+    letter-spacing: -.04em;
+    margin: 0 0 7px;
+}
+.workspace-manager-section-top p {
+    font-size: 12px;
+    color: var(--dash-muted);
+}
+.workspace-manager-count {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 11px;
+    border: 1px solid rgba(237, 195, 144, .25);
+    border-radius: 100px;
+    color: #e8cda7;
+    background: rgba(255, 209, 149, .055);
+    font-size: 11px;
+    white-space: nowrap;
+}
+.workspace-manager-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 17px;
+}
+.workspace-manager-card {
+    min-width: 0;
+    padding: 24px;
+    border-radius: 17px;
+    border: 1px solid rgba(239, 194, 153, .26);
+    background: linear-gradient(152deg, #302039, #201628);
+    transition: border-color .16s ease, background .16s ease;
+}
+.workspace-manager-card--active {
+    border-color: rgba(251, 214, 159, .55);
+    background: linear-gradient(152deg, #412847, #27192f);
+}
+.workspace-manager-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+.workspace-manager-card-icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(245, 205, 149, .3);
+    border-radius: 13px;
+    color: #f3cc8d;
+    background: rgba(249, 197, 140, .1);
+}
+.workspace-manager-active {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 9px;
+    border: 1px solid rgba(250, 213, 163, .28);
+    border-radius: 100px;
+    color: #ffdea1;
+    font-size: 10px;
+    font-weight: 800;
+}
+.workspace-manager-card h3 {
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+    font: 700 20px/1.4 var(--dash-display);
+    color: #fff2fa;
+    letter-spacing: -.03em;
+}
+.workspace-manager-meta {
+    color: #c9b2cb;
+    font-size: 12px;
+    text-transform: capitalize;
+}
+.workspace-manager-meta span { padding: 0 5px; }
+.workspace-manager-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 13px;
+    padding-top: 19px;
+    margin-top: 27px;
+    border-top: 1px solid rgba(242, 195, 152, .17);
+}
+.workspace-manager-open,
+.workspace-manager-edit {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.workspace-manager-open {
+    border: 1px solid rgba(255, 224, 165, .5);
+    background: rgba(242, 194, 127, .13);
+    color: #ffe0a6;
+}
+.workspace-manager-open:hover { background: rgba(242, 194, 127, .23); }
+.workspace-manager-edit {
+    border: 1px solid rgba(246, 203, 159, .24);
+    background: transparent;
+    color: #dcc6d7;
+}
+.workspace-manager-edit:hover { border-color: rgba(246, 203, 159, .54); }
+.workspace-manager-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    padding: 38px 23px;
+    border: 1px dashed rgba(241, 200, 157, .4);
+    border-radius: 18px;
+    background: rgba(71, 40, 83, .27);
+    color: #e4cee1;
+    text-align: center;
+}
+.workspace-manager-empty-icon {
+    display: grid;
+    place-items: center;
+    width: 58px;
+    height: 58px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(242, 196, 145, .35);
+    border-radius: 17px;
+    background: rgba(242, 196, 145, .08);
+    color: #f6d59b;
+}
+.workspace-manager-empty h3 { margin: 0 0 8px; font-size: 20px; }
+.workspace-manager-empty p {
+    max-width: 360px;
+    margin: 0 0 22px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+.workspace-manager-help {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 22px 0;
+    margin-top: 29px;
+    border-top: 1px solid var(--dash-line);
+    color: #c3b0c8;
+    font-size: 12px;
+    line-height: 1.65;
+}
+.workspace-manager-help svg { flex: 0 0 auto; color: #e5bd81; }
+
+@media (max-width: 680px) {
+    .workspace-manager-heading { flex-direction: column; align-items: flex-start; }
+    .workspace-manager-heading h1 { font-size: 36px; }
+    .workspace-manager-section-top { flex-wrap: wrap; }
+    .workspace-manager-create { align-self: stretch; }
+    .workspace-manager-card { padding: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-manager-card { transition: none; }
+}
