@@ -63,7 +63,6 @@ func New(pool *pgxpool.Pool) http.Handler {
 	// These use the TCP peer, not untrusted forwarded headers.
 	const window = 15 * time.Minute
 	mux.Handle("/register", limits.LimitIP("register", 12, window, register.RegisterHandler(otpRepo, &sender)))
-	mux.HandleFunc("/users", auth.RequireAuth(sessionRepo, user.UsersHandler(repo)))
 	mux.HandleFunc("/me", auth.RequireAuth(sessionRepo, auth.MeHandler(repo)))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))

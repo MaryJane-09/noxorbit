@@ -82,26 +82,6 @@ func (r *UserRepository) FindByEmail(email string) (User, error) {
 
 }
 
-func (r *UserRepository) GetAllUsers() []UserResponse {
-	ctx := context.Background()
-	rows, err := r.pool.Query(ctx, `SELECT name, email FROM users `)
-	if err != nil {
-		return []UserResponse{}
-	}
-	defer rows.Close()
-	var users []UserResponse
-
-	for rows.Next() {
-		var u UserResponse
-		err = rows.Scan(&u.Name, &u.Email)
-		if err != nil {
-			return users
-		}
-		users = append(users, u)
-	}
-	return users
-}
-
 func (r *UserRepository) UpdatePassword(id uuid.UUID, newPassword string) error {
 	ctx := context.Background()
 	hashed, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
