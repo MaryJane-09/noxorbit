@@ -10,7 +10,7 @@ type Config struct {
 	ServerPort       string
 	GmailAddress     string
 	GmailAppPassword string
-	DatabaseURL string
+	DatabaseURL      string
 }
 
 var AppConfig = Config{

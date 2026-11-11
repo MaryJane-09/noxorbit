@@ -18,9 +18,7 @@ import (
 	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
-
 
 //go:embed templates/code.html
 var codeHTML string
@@ -48,17 +46,10 @@ func (c codeEmail) text() string {
 }
 
 type EmailSender struct {
-	pool             *pgxpool.Pool
 	GmailAddress     string
 	GmailAppPassword string
 	SMTPHost         string
 	SMTPPort         string
-}
-
-func NewRepository(pool *pgxpool.Pool) *EmailSender {
-	return &EmailSender{
-		pool: pool,
-	}
 }
 
 func (s EmailSender) SendVerification(name, to, code string) error {

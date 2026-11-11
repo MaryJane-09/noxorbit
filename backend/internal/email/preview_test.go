@@ -15,6 +15,7 @@ func TestWritePreview(t *testing.T) {
 		Name:      "MaryJane",
 		Intro:     "Use the code below to finish creating your Noxorbit account.",
 		Code:      "k7Xp3Q",
+		CodeLabel: "YOUR EMAIL VERIFICATION CODE",
 		Minutes:   5,
 		Footer:    "If you did not create a Noxorbit account, you can safely ignore this email.",
 		Preheader: "Use your code to finish creating your Noxorbit account.",

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -11,18 +10,15 @@ import (
 )
 
 func main() {
-
-	fmt.Println("Nexus server running on port", config.AppConfig.ServerPort)
-	fmt.Println("Gmail address loaded:", config.AppConfig.GmailAddress != "")
-	fmt.Println("App password loaded:", config.AppConfig.GmailAppPassword != "")
-	fmt.Println("Database_URL loaded:", config.AppConfig.DatabaseURL != "")
 	pool, err := db.Connect()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Connect to database: ", err)
 	}
+	defer pool.Close()
+
 	server := router.New(pool)
-	err = http.ListenAndServe(config.AppConfig.ServerPort, server)
-	if err != nil {
-		fmt.Println("Failed to start HTTP server: ", err)
-	}
+	log.Println("NoxOrbit server starting on", config.AppConfig.ServerPort)
+	// A failed listener or unexpected server stop must terminate the process
+	// with a nonzero exit status instead of only printing an error.
+	log.Fatal(http.ListenAndServe(config.AppConfig.ServerPort, server))
 }

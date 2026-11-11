@@ -93,7 +93,7 @@ func ResetPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepository
 			Code        string `json:"code"`
 			NewPassword string `json:"newPassword"`
 		}
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&req); err != nil {
 			writeError(w, http.StatusBadRequest, "Invalid request")
 			return
 		}
