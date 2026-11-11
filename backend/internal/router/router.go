@@ -74,6 +74,6 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))
 	mux.Handle("/login", limits.LimitIP("login", 60, window, auth.LoginHandler(repo, sessionRepo, limits)))
 	mux.Handle("/forgot-password", limits.LimitIP("forgot-password", 12, window, auth.ForgotPasswordHandler(repo, otpRepo, &sender)))
-	mux.Handle("/reset-password", limits.LimitIP("reset-password", 40, window, auth.ResetPasswordHandler(repo, otpRepo, sessionRepo)))
+	mux.Handle("/reset-password", limits.LimitIP("reset-password", 40, window, auth.ResetPasswordHandler(otpRepo)))
 	return corsMiddleware(mux)
 }

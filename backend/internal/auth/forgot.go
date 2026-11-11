@@ -1,17 +1,16 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
-	"net/mail"
 	"strings"
 	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
-	"github.com/MaryJane-09/noxorbit/backend/internal/session"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
 	"github.com/MaryJane-09/noxorbit/backend/internal/validate"
 )
@@ -34,7 +33,7 @@ func ForgotPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepositor
 			return
 		}
 		addr := strings.ToLower(strings.TrimSpace(req.Email))
-		if _, err := mail.ParseAddress(addr); err != nil {
+		if err := validate.ValidateEmail(addr); err != nil {
 			writeError(w, http.StatusBadRequest, "Enter a valid email address")
 			return
 		}
@@ -57,7 +56,7 @@ func sendResetCode(users *user.UserRepository, otpRepo *otp.OTPRepository, sende
 	}
 
 
-	code, err := otp.Generate(6)
+	code, err := otp.Generate(otp.CodeLength)
 	if err != nil {
 		log.Println(err)
 		return
@@ -80,7 +79,13 @@ func sendResetCode(users *user.UserRepository, otpRepo *otp.OTPRepository, sende
 	}
 }
 
-func ResetPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepository, sessions *session.SessionRepository) http.HandlerFunc {
+// passwordResetter keeps the HTTP policy testable without live PostgreSQL.
+// The OTP repository carries out successful resets in one transaction.
+type passwordResetter interface {
+	ResetPassword(ctx context.Context, email, code, newPassword string) error
+}
+
+func ResetPasswordHandler(resetter passwordResetter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			writeError(w, http.StatusMethodNotAllowed, "Method not allowed")
@@ -97,52 +102,33 @@ func ResetPasswordHandler(users *user.UserRepository, otpRepo *otp.OTPRepository
 			writeError(w, http.StatusBadRequest, "Invalid request")
 			return
 		}
+
 		addr := strings.ToLower(strings.TrimSpace(req.Email))
 		code := strings.TrimSpace(req.Code)
-
 		if err := validate.ValidatePassword(req.NewPassword); err != nil {
 			writeError(w, http.StatusBadRequest, err.Error())
 			return
 		}
-
-		// OTP verification is atomic: five wrong guesses lock the code,
-		// and a successful match consumes it before resetting the password.
-		if err := otpRepo.Verify(addr, otp.PurposeReset, code); err != nil {
-			switch {
-			case errors.Is(err, otp.ErrTooManyAttempts):
-				writeError(w, http.StatusTooManyRequests, "Too many incorrect codes. Request a new one.")
-			case errors.Is(err, otp.ErrInvalidCode), errors.Is(err, otp.ErrNotFound), errors.Is(err, otp.ErrExpired):
-				writeError(w, http.StatusBadRequest, invalidCodeMessage)
-			default:
-				log.Println("Verify reset code:", err)
-				writeError(w, http.StatusInternalServerError, "Something went wrong")
-			}
+		if err := validate.ValidateEmail(addr); err != nil || len(code) != otp.CodeLength {
+			writeError(w, http.StatusBadRequest, invalidCodeMessage)
 			return
 		}
 
-		u, err := users.FindByEmail(addr)
-		if err != nil {
-			if errors.Is(err, user.ErrNotFound) {
-				writeError(w, http.StatusBadRequest, invalidCodeMessage)
-				return
-			}
-			log.Println(err)
+		err := resetter.ResetPassword(r.Context(), addr, code, req.NewPassword)
+		switch {
+		case err == nil:
+			writeJSON(w, http.StatusOK, map[string]string{"message": "Password updated"})
+		case errors.Is(err, otp.ErrTooManyAttempts),
+			errors.Is(err, otp.ErrAlreadyUsed),
+			errors.Is(err, otp.ErrInvalidCode),
+			errors.Is(err, otp.ErrExpired),
+			errors.Is(err, otp.ErrNotFound):
+			// Uniform public response prevents different OTP states from
+			// revealing whether a password-reset code/account exists.
+			writeError(w, http.StatusBadRequest, invalidCodeMessage)
+		default:
+			log.Println("Reset password:", err)
 			writeError(w, http.StatusInternalServerError, "Something went wrong")
-			return
 		}
-
-		if err := users.UpdatePassword(u.Id, req.NewPassword); err != nil {
-			log.Println(err)
-			writeError(w, http.StatusInternalServerError, "Something went wrong")
-			return
-		}
-		if err := sessions.DeleteAllForUser(u.Id); err != nil {
-			log.Println(err)
-			writeError(w, http.StatusInternalServerError, "Something went wrong")
-			return
-		}
-		_ = otpRepo.Delete(addr, otp.PurposeReset)
-
-		writeJSON(w, http.StatusOK, map[string]string{"message": "Password updated"})
 	}
 }
