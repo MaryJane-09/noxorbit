@@ -1,29 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     ArrowRight,
     ArrowUpRight,
+    Check,
     CheckCheck,
     CalendarDays,
     ChevronRight,
     Compass,
     FolderKanban,
     LayoutDashboard,
+    LoaderCircle,
     Layers3,
     Lightbulb,
     ListTodo,
     LogOut,
     Menu,
+    Plus,
     Sparkles,
     Users,
     X,
 } from 'lucide-react'
-import { API } from '../api'
+import { API, createWorkspace, fetchWorkspaces } from '../api'
 import './Home.css'
 
-// Sections that need workspace data are intentionally informational for now.
-// They will become links only after their authenticated APIs exist.
+// These sections will become interactive when their APIs exist.
 const PLANNED_SECTIONS = [
-    { name: 'Workspaces', icon: Layers3 },
     { name: 'Projects', icon: FolderKanban },
     { name: 'My tasks', icon: ListTodo },
     { name: 'Activity', icon: CalendarDays },
@@ -52,12 +53,101 @@ function initialLetters(name) {
     return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] || 'N').slice(0, 2)).toUpperCase()
 }
 
+const WORKSPACE_PURPOSES = [
+    { value: 'general', label: 'General', detail: 'A flexible space for any team.' },
+    { value: 'education', label: 'Education', detail: 'Study groups, coursework, and clubs.' },
+    { value: 'development', label: 'Development', detail: 'Software projects and developer teams.' },
+    { value: 'business', label: 'Business', detail: 'Teams, plans, and shared goals.' },
+]
+
+function purposeLabel(purpose) {
+    return WORKSPACE_PURPOSES.find((choice) => choice.value === purpose)?.label || 'General'
+}
+
 export default function Home({ user, onLogout }) {
     const [loggingOut, setLoggingOut] = useState(false)
     const [error, setError] = useState('')
     const [guideOpen, setGuideOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [workspaces, setWorkspaces] = useState([])
+    const [workspacesLoading, setWorkspacesLoading] = useState(true)
+    const [workspaceLoadError, setWorkspaceLoadError] = useState('')
+    const [reloadVersion, setReloadVersion] = useState(0)
+    const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(null)
+    const [createDialogOpen, setCreateDialogOpen] = useState(false)
+    const [creatingWorkspace, setCreatingWorkspace] = useState(false)
+    const [createError, setCreateError] = useState('')
+    const [workspaceName, setWorkspaceName] = useState('')
+    const [workspacePurpose, setWorkspacePurpose] = useState('general')
+    const dialogRef = useRef(null)
+    const nameInputRef = useRef(null)
     const displayName = (user.name || '').trim().split(/\s+/)[0] || 'there'
+    const activeWorkspace = workspaces.find((space) => space.id === selectedWorkspaceId) || workspaces[0] || null
+    const hasWorkspace = Boolean(activeWorkspace)
+
+    useEffect(() => {
+        const controller = new AbortController()
+        async function load() {
+            setWorkspacesLoading(true)
+            setWorkspaceLoadError('')
+            try {
+                const list = await fetchWorkspaces({ signal: controller.signal })
+                if (!controller.signal.aborted) setWorkspaces(list)
+            } catch (loadError) {
+                if (!controller.signal.aborted) {
+                    setWorkspaceLoadError(loadError.message || 'Could not load your workspaces.')
+                }
+            } finally {
+                if (!controller.signal.aborted) setWorkspacesLoading(false)
+            }
+        }
+        load()
+        return () => controller.abort()
+    }, [reloadVersion])
+
+    useEffect(() => {
+        const dialog = dialogRef.current
+        if (!dialog) return
+        if (createDialogOpen && !dialog.open) {
+            dialog.showModal()
+            nameInputRef.current?.focus()
+        } else if (!createDialogOpen && dialog.open) {
+            dialog.close()
+        }
+    }, [createDialogOpen])
+
+    function openCreateDialog() {
+        setMenuOpen(false)
+        setCreateError('')
+        setWorkspaceName('')
+        setWorkspacePurpose('general')
+        setCreateDialogOpen(true)
+    }
+
+    async function handleCreateWorkspace(event) {
+        event.preventDefault()
+        if (creatingWorkspace) return
+        const name = workspaceName.trim()
+        if (!name || [...name].length > 100) {
+            setCreateError('Use a workspace name between 1 and 100 characters.')
+            return
+        }
+
+        setCreatingWorkspace(true)
+        setCreateError('')
+        try {
+            const created = await createWorkspace({ name, purpose: workspacePurpose })
+            // These records come from PostgreSQL via the Go backend, never demo state.
+            setWorkspaces((current) => [created, ...current.filter((space) => space.id !== created.id)])
+            setSelectedWorkspaceId(created.id)
+            setCreateDialogOpen(false)
+            setGuideOpen(false)
+        } catch (createFailure) {
+            setCreateError(createFailure.message || 'Could not create the workspace.')
+        } finally {
+            setCreatingWorkspace(false)
+        }
+    }
 
     async function handleLogout() {
         setLoggingOut(true)
