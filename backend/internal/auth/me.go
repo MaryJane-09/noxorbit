@@ -32,6 +32,6 @@ func MeHandler(users *user.UserRepository) http.HandlerFunc {
 			return
 		}
 
-		writeJSON(w, http.StatusOK, user.UserResponse{Name: u.Name, Email: u.Email})
+		writeJSON(w, http.StatusOK, user.UserResponse{ID: &u.Id, Name: u.Name, Email: u.Email})
 	}
 }

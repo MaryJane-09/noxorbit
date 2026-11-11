@@ -321,6 +321,7 @@ export default function Home({ user, onLogout }) {
                         />
                     ) : page === 'projects' ? (
                         <ProjectsPage
+                            user={user}
                             activeWorkspace={activeWorkspace}
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')}
