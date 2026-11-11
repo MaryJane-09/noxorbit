@@ -129,3 +129,48 @@ export function changeProjectStatus(workspaceID, projectID, status) {
     body: { status },
   });
 }
+
+
+// Tasks are always nested under their parent project and workspace.
+function tasksURL(workspaceID, projectID, taskID = "") {
+  const base = `${projectsURL(workspaceID, projectID)}/tasks`;
+  return taskID ? `${base}/${encodeURIComponent(taskID)}` : base;
+}
+
+export async function fetchTasks(workspaceID, projectID, { signal } = {}) {
+  const tasks = await projectRequest(tasksURL(workspaceID, projectID), { signal });
+  if (!Array.isArray(tasks)) throw new Error("The server returned an invalid task list.");
+  return tasks;
+}
+
+export function createTask(workspaceID, projectID, details) {
+  return projectRequest(tasksURL(workspaceID, projectID), {
+    method: "POST", body: details,
+  });
+}
+
+export function updateTask(workspaceID, projectID, taskID, details) {
+  return projectRequest(tasksURL(workspaceID, projectID, taskID), {
+    method: "PATCH", body: details,
+  });
+}
+
+export function changeTaskStatus(workspaceID, projectID, taskID, status) {
+  return projectRequest(`${tasksURL(workspaceID, projectID, taskID)}/status`, {
+    method: "PATCH", body: { status },
+  });
+}
+
+export async function deleteTask(workspaceID, projectID, taskID) {
+  // DELETE returns 204 No Content, so it must not be parsed as JSON.
+  let response;
+  try {
+    response = await fetch(tasksURL(workspaceID, projectID, taskID), {
+      method: "DELETE", credentials: "include",
+    });
+  } catch {
+    throw new Error("Cannot reach the NoxOrbit server. Check that your Go backend is running.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
