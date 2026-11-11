@@ -50,18 +50,27 @@ func LoginHandler(users *user.UserRepository, sessions *session.SessionRepositor
 		}
 		req.Email = strings.ToLower(strings.TrimSpace(req.Email))
 
-		// Count all attempts (including successful ones) before bcrypt.
-		// The per-email quota complements the router's per-IP quota.
-		allowed, err := limits.Allow(r.Context(), "login:email:"+req.Email, 12, 15*time.Minute)
-		if err != nil {
-			log.Println("Rate limiter failed:", err)
-			writeError(w, http.StatusServiceUnavailable, "Service temporarily unavailable")
-			return
-		}
-		if !allowed {
-			w.Header().Set("Retry-After", "900")
-			writeError(w, http.StatusTooManyRequests, "Too many login attempts. Please try again later.")
-			return
+		// The strict email + peer bucket limits local guessing; a much
+		// looser email-wide bucket limits distributed attempts. Global
+		// email caps can still cause lockouts and should be monitored.
+		for _, bucket := range []struct {
+			key string
+			max int
+		}{
+			{key: "login:email-ip:" + req.Email + ":" + ratelimit.ClientIP(r), max: 10},
+			{key: "login:email:" + req.Email, max: 100},
+		} {
+			allowed, err := limits.Allow(r.Context(), bucket.key, bucket.max, 15*time.Minute)
+			if err != nil {
+				log.Println("Rate limiter failed:", err)
+				writeError(w, http.StatusServiceUnavailable, "Service temporarily unavailable")
+				return
+			}
+			if !allowed {
+				w.Header().Set("Retry-After", "900")
+				writeError(w, http.StatusTooManyRequests, "Too many login attempts. Please try again later.")
+				return
+			}
 		}
 
 		u, err := users.FindByEmail(req.Email)

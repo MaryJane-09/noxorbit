@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"log"
 	"net"
+	"net/netip"
 	"net/http"
 	"strconv"
 	"time"
@@ -57,10 +58,19 @@ func (s *Store) Allow(ctx context.Context, key string, max int, window time.Dura
 // real client IP at the deployment proxy rather than accepting spoofed values.
 func ClientIP(r *http.Request) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err == nil {
+	if err != nil {
+		host = r.RemoteAddr
+	}
+	addr, parseErr := netip.ParseAddr(host)
+	if parseErr != nil {
 		return host
 	}
-	return r.RemoteAddr
+	addr = addr.Unmap()
+	if addr.Is6() {
+		// Group IPv6 clients by /64 to prevent inexpensive address rotation.
+		return netip.PrefixFrom(addr, 64).Masked().String()
+	}
+	return addr.String()
 }
 
 // LimitIP applies a separate quota to each HTTP endpoint and TCP peer.
