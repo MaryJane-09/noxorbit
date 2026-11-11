@@ -13,6 +13,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
 	"github.com/MaryJane-09/noxorbit/backend/internal/user"
+	"github.com/MaryJane-09/noxorbit/backend/internal/workspace"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -57,6 +58,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	otpRepo := otp.NewRepository(pool)
 	sessionRepo := session.NewRepository(pool)
 	limits := ratelimit.New(pool)
+	workspaceHandler := workspace.NewHandler(workspace.NewRepository(pool))
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	// Fixed 15-minute IP quotas limit request floods before expensive work.
@@ -64,6 +66,10 @@ func New(pool *pgxpool.Pool) http.Handler {
 	const window = 15 * time.Minute
 	mux.Handle("/register", limits.LimitIP("register", 12, window, register.RegisterHandler(otpRepo, &sender)))
 	mux.HandleFunc("/me", auth.RequireAuth(sessionRepo, auth.MeHandler(repo)))
+	// Only authenticated users can create or list their own workspaces.
+	// The repository enforces the per-user membership filter.
+	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
+	mux.HandleFunc("GET /api/v1/workspaces/{id}", auth.RequireAuth(sessionRepo, workspaceHandler.Detail))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))
 	mux.Handle("/login", limits.LimitIP("login", 60, window, auth.LoginHandler(repo, sessionRepo, limits)))

@@ -14,6 +14,12 @@ type contextKey string
 
 const userIDKey contextKey = "userID"
 
+// WithUserID stores a trusted authenticated user's ID in a request context.
+// Use only after session verification (or in handler unit tests).
+func WithUserID(ctx context.Context, id uuid.UUID) context.Context {
+	return context.WithValue(ctx, userIDKey, id)
+}
+
 func UserIDFromContext(ctx context.Context) (uuid.UUID, bool) {
 	id, ok := ctx.Value(userIDKey).(uuid.UUID)
 	return id, ok
@@ -38,7 +44,7 @@ func RequireAuth(sessions *session.SessionRepository, next http.HandlerFunc) htt
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), userIDKey, userID)
+		ctx := WithUserID(r.Context(), userID)
 		next(w, r.WithContext(ctx))
 	}
 }
