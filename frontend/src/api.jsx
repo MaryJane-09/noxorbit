@@ -74,3 +74,58 @@ export async function updateWorkspace(id, { name, purpose }) {
   }
   return workspaceResponse(response);
 }
+
+
+// Projects are always scoped by a workspace UUID and validated by the Go API.
+function projectsURL(workspaceID, projectID = "") {
+  const base = `${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/projects`;
+  return projectID ? `${base}/${encodeURIComponent(projectID)}` : base;
+}
+
+async function projectRequest(url, { method = "GET", body, signal } = {}) {
+  let response;
+  try {
+    response = await fetch(url, {
+      method,
+      credentials: "include",
+      ...(body === undefined ? {} : {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }),
+      signal,
+    });
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    throw new Error("Cannot reach the NoxOrbit server. Check that your Go backend is running.");
+  }
+  return workspaceResponse(response);
+}
+
+export async function fetchProjects(workspaceID, { signal } = {}) {
+  const projects = await projectRequest(projectsURL(workspaceID), { signal });
+  if (!Array.isArray(projects)) {
+    throw new Error("The server returned an invalid project list.");
+  }
+  return projects;
+}
+
+export function createProject(workspaceID, { name, description }) {
+  return projectRequest(projectsURL(workspaceID), {
+    method: "POST",
+    body: { name, description },
+  });
+}
+
+export function updateProject(workspaceID, projectID, { name, description }) {
+  return projectRequest(projectsURL(workspaceID, projectID), {
+    method: "PATCH",
+    body: { name, description },
+  });
+}
+
+export function changeProjectStatus(workspaceID, projectID, status) {
+  return projectRequest(`${projectsURL(workspaceID, projectID)}/status`, {
+    method: "PATCH",
+    body: { status },
+  });
+}
