@@ -21,11 +21,11 @@ import {
 } from 'lucide-react'
 import { API, createWorkspace, fetchWorkspaces, updateWorkspace } from '../api'
 import WorkspacesPage from './WorkspacesPage'
+import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
 
 // These sections will become interactive when their APIs exist.
 const PLANNED_SECTIONS = [
-    { name: 'Projects', icon: FolderKanban },
     { name: 'My tasks', icon: ListTodo },
     { name: 'Activity', icon: CalendarDays },
 ]
@@ -65,7 +65,9 @@ function purposeLabel(purpose) {
 }
 
 function pageFromHash() {
-    return window.location.hash === '#workspaces' ? 'workspaces' : 'overview'
+    if (window.location.hash === '#workspaces') return 'workspaces'
+    if (window.location.hash === '#projects') return 'projects'
+    return 'overview'
 }
 
 export default function Home({ user, onLogout }) {
@@ -252,6 +254,13 @@ export default function Home({ user, onLogout }) {
                         <span>Workspaces</span>
                         {page === 'workspaces' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
+                    <a href="#projects" className={`dashboard-nav-item${page === 'projects' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'projects' ? 'page' : undefined}
+                        onClick={() => goToPage('projects')}>
+                        <FolderKanban size={19} aria-hidden="true" />
+                        <span>Projects</span>
+                        {page === 'projects' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
                     {PLANNED_SECTIONS.map(({ name, icon: Icon }) => (
                         <span className="dashboard-nav-item dashboard-nav-item--planned" key={name} title="Available when workspace features are connected">
                             <Icon size={19} aria-hidden="true" />
@@ -289,7 +298,7 @@ export default function Home({ user, onLogout }) {
                         </button>
                         <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>{page === 'workspaces' ? 'Workspaces' : 'Overview'}</strong>
+                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <span>Signed in</span>
@@ -297,7 +306,7 @@ export default function Home({ user, onLogout }) {
                     </div>
                 </header>
 
-                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : 'dashboard-workspaces'}>
+                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : 'dashboard-projects'}>
                     {page === 'workspaces' ? (
                         <WorkspacesPage
                             workspaces={workspaces}
@@ -309,6 +318,12 @@ export default function Home({ user, onLogout }) {
                             onSelect={setSelectedWorkspaceId}
                             onUpdate={handleUpdateWorkspace}
                             onBackToOverview={() => goToPage('overview')}
+                        />
+                    ) : page === 'projects' ? (
+                        <ProjectsPage
+                            activeWorkspace={activeWorkspace}
+                            workspacesLoading={workspacesLoading}
+                            onOpenWorkspaces={() => goToPage('workspaces')}
                         />
                     ) : (
                         <>
@@ -443,15 +458,8 @@ export default function Home({ user, onLogout }) {
                     </div>
 
                     <div className="dashboard-overview-grid">
-                        <section className="dashboard-empty-card" aria-labelledby="dashboard-projects-heading">
-                            <div className="dashboard-empty-top">
-                                <span className="dashboard-tile-icon"><FolderKanban size={23} aria-hidden="true" /></span>
-                                <ArrowUpRight size={19} aria-hidden="true" />
-                            </div>
-                            <h3 id="dashboard-projects-heading">Projects</h3>
-                            <p>{hasWorkspace ? 'Projects will appear here when project creation is connected.' : 'Your projects will find their home here once you create a workspace.'}</p>
-                            <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
-                        </section>
+                        <ProjectOverviewCard workspaceID={activeWorkspace?.id}
+                            onOpen={() => goToPage('projects')} />
 
                         <section className="dashboard-empty-card" aria-labelledby="dashboard-tasks-heading">
                             <div className="dashboard-empty-top">
@@ -459,7 +467,7 @@ export default function Home({ user, onLogout }) {
                                 <ArrowUpRight size={19} aria-hidden="true" />
                             </div>
                             <h3 id="dashboard-tasks-heading">My tasks</h3>
-                            <p>{hasWorkspace ? 'Tasks will appear here when project and task management is available.' : "Know what you're responsible for and what deserves your attention."}</p>
+                            <p>{hasWorkspace ? 'Tasks will appear here once task management is connected.' : "Know what you're responsible for and what deserves your attention."}</p>
                             <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
                         </section>
 
@@ -476,7 +484,7 @@ export default function Home({ user, onLogout }) {
 
                     <div className="dashboard-footer-hint">
                         <Users size={19} aria-hidden="true" />
-                        <span>{hasWorkspace ? 'Your workspace is ready. Projects, tasks, and invitations are the next features we will connect.' : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
+                        <span>{hasWorkspace ? 'Your projects are ready to organize. Tasks, deadlines, and invitations are the next features we'll connect.' : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
                     </div>
                         </>
                     )}
