@@ -361,6 +361,38 @@ export default function Home({ user, onLogout }) {
                         </div>
                     </section>
 
+                    {hasWorkspace && (
+                        <section className="dashboard-workspaces-section" id="dashboard-workspaces" aria-labelledby="dashboard-workspaces-title">
+                            <div className="dashboard-workspaces-header">
+                                <div>
+                                    <p className="dashboard-eyebrow">YOUR WORKSPACES</p>
+                                    <h2 id="dashboard-workspaces-title">Choose where to work.</h2>
+                                </div>
+                                <button type="button" className="dashboard-workspaces-add" onClick={openCreateDialog}>
+                                    <Plus size={17} aria-hidden="true" /> New workspace
+                                </button>
+                            </div>
+                            <div className="dashboard-workspaces-list">
+                                {workspaces.map((space) => (
+                                    <button
+                                        key={space.id}
+                                        type="button"
+                                        className={`dashboard-workspace-card${activeWorkspace.id === space.id ? ' dashboard-workspace-card--active' : ''}`}
+                                        aria-pressed={activeWorkspace.id === space.id}
+                                        onClick={() => setSelectedWorkspaceId(space.id)}
+                                    >
+                                        <span className="dashboard-workspace-card-icon"><Layers3 size={20} aria-hidden="true" /></span>
+                                        <span className="dashboard-workspace-card-copy">
+                                            <strong>{space.name}</strong>
+                                            <small>{purposeLabel(space.purpose)} · {space.role}</small>
+                                        </span>
+                                        {activeWorkspace.id === space.id ? <Check size={18} aria-hidden="true" /> : <ChevronRight size={18} aria-hidden="true" />}
+                                    </button>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
                     {guideOpen && (
                         <section className="dashboard-guide" id="dashboard-guide" aria-labelledby="dashboard-guide-title">
                             <div className="dashboard-guide-head">
@@ -387,9 +419,9 @@ export default function Home({ user, onLogout }) {
                     <div className="dashboard-section-heading">
                         <div>
                             <p className="dashboard-eyebrow">YOUR WORKSPACE AT A GLANCE</p>
-                            <h2>Everything in its place.</h2>
+                            <h2>{hasWorkspace ? 'Ready for what comes next.' : 'Everything in its place.'}</h2>
                         </div>
-                        <span>Ready when you are</span>
+                        <span>{hasWorkspace ? activeWorkspace.name : 'Ready when you are'}</span>
                     </div>
 
                     <div className="dashboard-overview-grid">
@@ -399,8 +431,8 @@ export default function Home({ user, onLogout }) {
                                 <ArrowUpRight size={19} aria-hidden="true" />
                             </div>
                             <h3 id="dashboard-projects-heading">Projects</h3>
-                            <p>Your projects will find their home here once you create a workspace.</p>
-                            <span className="dashboard-empty-status">Not set up yet</span>
+                            <p>{hasWorkspace ? 'Projects will appear here when project creation is connected.' : 'Your projects will find their home here once you create a workspace.'}</p>
+                            <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
                         </section>
 
                         <section className="dashboard-empty-card" aria-labelledby="dashboard-tasks-heading">
@@ -409,8 +441,8 @@ export default function Home({ user, onLogout }) {
                                 <ArrowUpRight size={19} aria-hidden="true" />
                             </div>
                             <h3 id="dashboard-tasks-heading">My tasks</h3>
-                            <p>Know what you're responsible for and what deserves your attention.</p>
-                            <span className="dashboard-empty-status">Not set up yet</span>
+                            <p>{hasWorkspace ? 'Tasks will appear here when project and task management is available.' : "Know what you're responsible for and what deserves your attention."}</p>
+                            <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
                         </section>
 
                         <section className="dashboard-empty-card" aria-labelledby="dashboard-deadlines-heading">
@@ -419,14 +451,14 @@ export default function Home({ user, onLogout }) {
                                 <ArrowUpRight size={19} aria-hidden="true" />
                             </div>
                             <h3 id="dashboard-deadlines-heading">Upcoming deadlines</h3>
-                            <p>Your important dates will appear here when tasks are connected.</p>
-                            <span className="dashboard-empty-status">Not set up yet</span>
+                            <p>Your important dates will appear here when tasks and deadlines are connected.</p>
+                            <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
                         </section>
                     </div>
 
                     <div className="dashboard-footer-hint">
                         <Users size={19} aria-hidden="true" />
-                        <span>Better teams build bigger dreams. Your workspace is where yours will take shape.</span>
+                        <span>{hasWorkspace ? 'Your workspace is ready. Projects, tasks, and invitations are the next features we will connect.' : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
                     </div>
                 </main>
             </div>
