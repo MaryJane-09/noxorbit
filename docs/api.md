@@ -76,9 +76,38 @@ frontend's visibility of a button or a workspace ID never grants access.
 
 ## Planned (not implemented yet)
 
-- Workspace invitations, switching, editing, and deletion
+- Workspace invitations, editing, deletion, and persistent active-workspace preference
 - `GET/POST /api/v1/projects` and project-scoped tasks
 - Task updates, comments, activity, notification, and AI APIs
 
-The dashboard currently shows an honest empty state. Its Create Workspace
-flow will be connected after the workspace API is tested.
+## React dashboard integration
+
+The dashboard now loads the signed-in user's workspaces using
+`GET /api/v1/workspaces`. The "Create workspace" dialog sends the validated
+name and selected purpose to `POST /api/v1/workspaces`. A workspace is
+displayed only after the backend returns the saved record.
+
+Users can choose which of **their loaded workspaces** to view from the
+dashboard. The current selection is kept in React state, not the database;
+reloading selects the newest workspace again. This is navigation context,
+not a new authorization grant. Every future project/task endpoint must
+still check the session's workspace membership independently.
+
+If the API is unavailable, the dashboard displays an error with a Retry
+button instead of claiming the account has no workspaces. The projects,
+tasks, invitations, and deadlines features are **not implemented** and
+continue to show explanatory placeholders, never fabricated data.
+
+### Manual verification
+
+1. Run `go test ./backend/...` and `go vet ./backend/...` from the root.
+2. Start the Go backend, then start the React frontend with `npm run dev`.
+3. Log in, select **Create workspace**, give it a name and purpose, and submit.
+4. Confirm it appears under **Your workspaces** and as the current workspace.
+5. Refresh; the workspace should still be listed because it is in PostgreSQL.
+6. Create a second workspace and check you can switch between them.
+7. Optionally verify new rows in Supabase's `workspaces` and
+   `workspace_memberships` tables, without sharing personal login data.
+
+The frontend should also pass `npm run lint` and `npm run build`.
+
