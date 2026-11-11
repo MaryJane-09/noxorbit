@@ -15,3 +15,10 @@
   position: relative;
   z-index: 1;
 }
+
+/* The settled intro remains mounted for auth, but must not cover the
+   authenticated workspace navigation or duplicate the dashboard brand. */
+.app-shell--dashboard .cinematic-intro,
+.app-shell--dashboard .app-background {
+  display: none;
+}

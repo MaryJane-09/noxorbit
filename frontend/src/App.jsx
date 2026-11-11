@@ -38,7 +38,7 @@ function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${user && introDone ? " app-shell--dashboard" : ""}`}>
       <div className="app-background" />
       <Intro onComplete={() => setIntroDone(true)} />
       <div className="app-content">{screen}</div>
