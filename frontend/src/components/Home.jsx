@@ -484,7 +484,7 @@ export default function Home({ user, onLogout }) {
 
                     <div className="dashboard-footer-hint">
                         <Users size={19} aria-hidden="true" />
-                        <span>{hasWorkspace ? 'Your projects are ready to organize. Tasks, deadlines, and invitations are the next features we'll connect.' : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
+                        <span>{hasWorkspace ? "Your projects are ready to organize. Tasks, deadlines, and invitations are the next features we'll connect." : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
                     </div>
                         </>
                     )}
