@@ -8,6 +8,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"strings"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/gofrs/uuid"
@@ -156,7 +157,12 @@ func (h *Handler) Detail(w http.ResponseWriter, r *http.Request) {
 		respondError(w, http.StatusBadRequest, "Invalid workspace request")
 		return
 	}
-	// The edit form submits the entire name/purpose settings pair.
+	// Editing requires both fields so an omitted purpose cannot silently
+	// reset an existing workspace to the "general" default.
+	if strings.TrimSpace(input.Purpose) == "" {
+		respondError(w, http.StatusBadRequest, "Workspace purpose is required")
+		return
+	}
 	input, err = NormalizeCreate(input)
 	if err != nil {
 		respondError(w, http.StatusBadRequest, err.Error())

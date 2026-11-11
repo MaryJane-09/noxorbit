@@ -200,6 +200,7 @@ func TestUpdateWorkspaceRequiresOwnerAndValidInput(t *testing.T) {
 	for _, badBody := range []string{
 		`{"name":" "}`,
 		`{"name":"Team","purpose":"unknown"}`,
+		`{"name":"Team"}`,
 		`{"name":"Team","user_id":"spoof"}`,
 		`{"name":"Team"} {"name":"Other"}`,
 	} {
