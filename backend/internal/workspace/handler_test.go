@@ -17,6 +17,7 @@ type fakeStore struct {
 	create func(context.Context, uuid.UUID, string, string) (Workspace, error)
 	list func(context.Context, uuid.UUID) ([]Workspace, error)
 	get func(context.Context, uuid.UUID, uuid.UUID) (Workspace, error)
+	update func(context.Context, uuid.UUID, uuid.UUID, string, string) (Workspace, error)
 }
 
 func (f fakeStore) Create(ctx context.Context, ownerID uuid.UUID, name, purpose string) (Workspace, error) {
@@ -30,6 +31,11 @@ func (f fakeStore) ListForUser(ctx context.Context, id uuid.UUID) ([]Workspace, 
 func (f fakeStore) GetForUser(ctx context.Context, userID, workspaceID uuid.UUID) (Workspace, error) {
 	if f.get == nil { panic("unexpected GetForUser call") }
 	return f.get(ctx, userID, workspaceID)
+}
+
+func (f fakeStore) UpdateForOwner(ctx context.Context, userID, workspaceID uuid.UUID, name, purpose string) (Workspace, error) {
+	if f.update == nil { panic("unexpected UpdateForOwner call") }
+	return f.update(ctx, userID, workspaceID, name, purpose)
 }
 
 func fixtureID(t *testing.T, value string) uuid.UUID {
@@ -169,4 +175,68 @@ func TestWorkspaceErrorsNeverLeakDatabaseDetails(t *testing.T) {
 	if rec.Code != http.StatusInternalServerError || strings.Contains(rec.Body.String(), "database_secret") {
 		t.Fatalf("server error response: %d %s", rec.Code, rec.Body.String())
 	}
+}
+
+func TestUpdateWorkspaceRequiresOwnerAndValidInput(t *testing.T) {
+	uid := fixtureID(t, "14efcf1e-bb4d-43b1-a09d-ebed749d2fb7")
+	wid := fixtureID(t, "052f92b9-e53d-4499-b7f7-6d8c4b157cb1")
+	var called int
+	h := NewHandler(fakeStore{update: func(_ context.Context, userID, workspaceID uuid.UUID, name, purpose string) (Workspace, error) {
+		called++
+		if userID != uid || workspaceID != wid { t.Fatal("update must use session and route IDs") }
+		if name != "Renamed Team" || purpose != "business" { t.Fatalf("unexpected settings %q/%q", name, purpose) }
+		return Workspace{ID: wid, Name: name, Purpose: purpose, Role: "owner"}, nil
+	}})
+	makeRequest := func(body string) *http.Request {
+		req := signedIn(httptest.NewRequest(http.MethodPatch, "/api/v1/workspaces/"+wid.String(), strings.NewReader(body)), uid)
+		req.SetPathValue("id", wid.String())
+		req.Header.Set("Content-Type", "application/json")
+		return req
+	}
+	rec := httptest.NewRecorder()
+	h.Detail(rec, makeRequest(`{"name":"  Renamed Team  ","purpose":"BUSINESS"}`))
+	if rec.Code != http.StatusOK || called != 1 { t.Fatalf("owner edit = %d %s", rec.Code, rec.Body.String()) }
+
+	for _, badBody := range []string{
+		`{"name":" "}`,
+		`{"name":"Team","purpose":"unknown"}`,
+		`{"name":"Team","user_id":"spoof"}`,
+		`{"name":"Team"} {"name":"Other"}`,
+	} {
+		rec := httptest.NewRecorder()
+		h.Detail(rec, makeRequest(badBody))
+		if rec.Code != http.StatusBadRequest { t.Fatalf("bad body %s got %d", badBody, rec.Code) }
+	}
+	if called != 1 { t.Fatalf("invalid settings reached repository %d times", called-1) }
+}
+
+func TestUpdateWorkspaceMemberCannotRename(t *testing.T) {
+	uid := fixtureID(t, "14efcf1e-bb4d-43b1-a09d-ebed749d2fb7")
+	wid := fixtureID(t, "052f92b9-e53d-4499-b7f7-6d8c4b157cb1")
+	for _, tc := range []struct{ repoErr error; want int }{
+		{ErrForbidden, http.StatusForbidden},
+		{ErrNotFound, http.StatusNotFound},
+		{errors.New("hidden connection string"), http.StatusInternalServerError},
+	} {
+		h := NewHandler(fakeStore{update: func(context.Context, uuid.UUID, uuid.UUID, string, string) (Workspace, error) {
+			return Workspace{}, tc.repoErr
+		}})
+		req := signedIn(httptest.NewRequest(http.MethodPatch, "/api/v1/workspaces/"+wid.String(), strings.NewReader(`{"name":"Team","purpose":"general"}`)), uid)
+		req.SetPathValue("id", wid.String())
+		req.Header.Set("Content-Type", "application/json")
+		rec := httptest.NewRecorder()
+		h.Detail(rec, req)
+		if rec.Code != tc.want || strings.Contains(rec.Body.String(), "hidden connection string") {
+			t.Fatalf("update response status %d body %s", rec.Code, rec.Body.String())
+		}
+	}
+}
+
+func TestUpdateWorkspaceRequiresSession(t *testing.T) {
+	h := NewHandler(fakeStore{})
+	req := httptest.NewRequest(http.MethodPatch, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1", nil)
+	req.SetPathValue("id", "052f92b9-e53d-4499-b7f7-6d8c4b157cb1")
+	rec := httptest.NewRecorder()
+	h.Detail(rec, req)
+	if rec.Code != http.StatusUnauthorized { t.Fatalf("got %d, want 401", rec.Code) }
 }

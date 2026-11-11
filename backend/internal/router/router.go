@@ -32,7 +32,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 		origin := r.Header.Get("Origin")
 		if allowedOrigins[origin] {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 		}
@@ -69,7 +69,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	// Only authenticated users can create or list their own workspaces.
 	// The repository enforces the per-user membership filter.
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
-	mux.HandleFunc("GET /api/v1/workspaces/{id}", auth.RequireAuth(sessionRepo, workspaceHandler.Detail))
+	mux.HandleFunc("/api/v1/workspaces/{id}", auth.RequireAuth(sessionRepo, workspaceHandler.Detail))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))
 	mux.Handle("/login", limits.LimitIP("login", 60, window, auth.LoginHandler(repo, sessionRepo, limits)))

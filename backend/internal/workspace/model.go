@@ -13,6 +13,7 @@ var (
 	ErrInvalidName = errors.New("workspace name must contain 1 to 100 characters")
 	ErrInvalidPurpose = errors.New("workspace purpose must be general, education, development, or business")
 	ErrNotFound = errors.New("workspace not found")
+	ErrForbidden = errors.New("only the workspace owner can edit its settings")
 )
 
 type Workspace struct {

@@ -21,6 +21,7 @@ type Store interface {
 	Create(ctx context.Context, ownerID uuid.UUID, name, purpose string) (Workspace, error)
 	ListForUser(ctx context.Context, userID uuid.UUID) ([]Workspace, error)
 	GetForUser(ctx context.Context, userID, workspaceID uuid.UUID) (Workspace, error)
+	UpdateForOwner(ctx context.Context, userID, workspaceID uuid.UUID, name, purpose string) (Workspace, error)
 }
 
 type Handler struct {
@@ -103,11 +104,11 @@ func (h *Handler) Collection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Detail implements GET /api/v1/workspaces/{id}.
-// A valid UUID is not enough; membership is enforced by GetForUser's JOIN.
+// Detail implements GET and PATCH /api/v1/workspaces/{id}.
+// A valid UUID alone is never sufficient; all operations are membership-scoped.
 func (h *Handler) Detail(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		w.Header().Set("Allow", "GET")
+	if r.Method != http.MethodGet && r.Method != http.MethodPatch {
+		w.Header().Set("Allow", "GET, PATCH")
 		respondError(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
@@ -122,15 +123,56 @@ func (h *Handler) Detail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ws, err := h.store.GetForUser(r.Context(), userID, workspaceID)
-	if errors.Is(err, ErrNotFound) {
-		respondError(w, http.StatusNotFound, "Workspace not found")
+	if r.Method == http.MethodGet {
+		ws, err := h.store.GetForUser(r.Context(), userID, workspaceID)
+		if errors.Is(err, ErrNotFound) {
+			respondError(w, http.StatusNotFound, "Workspace not found")
+			return
+		}
+		if err != nil {
+			log.Println("Get workspace:", err)
+			respondError(w, http.StatusInternalServerError, "Could not load workspace")
+			return
+		}
+		respondJSON(w, http.StatusOK, ws)
 		return
 	}
+
+	contentType, _, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+	if err != nil || contentType != "application/json" {
+		respondError(w, http.StatusUnsupportedMediaType, "Content-Type must be application/json")
+		return
+	}
+	defer r.Body.Close()
+	decoder := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxCreateBodyBytes))
+	decoder.DisallowUnknownFields()
+	var input CreateRequest
+	if err := decoder.Decode(&input); err != nil {
+		respondError(w, http.StatusBadRequest, "Invalid workspace request")
+		return
+	}
+	var extra any
+	if err := decoder.Decode(&extra); !errors.Is(err, io.EOF) {
+		respondError(w, http.StatusBadRequest, "Invalid workspace request")
+		return
+	}
+	// The edit form submits the entire name/purpose settings pair.
+	input, err = NormalizeCreate(input)
 	if err != nil {
-		log.Println("Get workspace:", err)
-		respondError(w, http.StatusInternalServerError, "Could not load workspace")
+		respondError(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	respondJSON(w, http.StatusOK, ws)
+
+	ws, err := h.store.UpdateForOwner(r.Context(), userID, workspaceID, input.Name, input.Purpose)
+	switch {
+	case errors.Is(err, ErrNotFound):
+		respondError(w, http.StatusNotFound, "Workspace not found")
+	case errors.Is(err, ErrForbidden):
+		respondError(w, http.StatusForbidden, "Only the workspace owner can edit its settings")
+	case err != nil:
+		log.Println("Update workspace:", err)
+		respondError(w, http.StatusInternalServerError, "Could not update workspace")
+	default:
+		respondJSON(w, http.StatusOK, ws)
+	}
 }

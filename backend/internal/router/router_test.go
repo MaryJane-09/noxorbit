@@ -26,6 +26,7 @@ func TestWorkspaceRoutesRequireAuthentication(t *testing.T) {
 		{http.MethodGet, "/api/v1/workspaces"},
 		{http.MethodPost, "/api/v1/workspaces"},
 		{http.MethodGet, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1"},
+		{http.MethodPatch, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1"},
 	} {
 		req := httptest.NewRequest(tc.method, tc.path, nil)
 		rec := httptest.NewRecorder()

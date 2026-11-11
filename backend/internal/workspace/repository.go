@@ -98,3 +98,37 @@ func (r *Repository) GetForUser(ctx context.Context, userID, workspaceID uuid.UU
 	}
 	return w, nil
 }
+
+// UpdateForOwner changes only workspaces for which the authenticated user
+// has an owner membership. The authorization check is part of the UPDATE
+// statement, so a client-provided workspace ID alone never grants editing.
+func (r *Repository) UpdateForOwner(ctx context.Context, userID, workspaceID uuid.UUID, name, purpose string) (Workspace, error) {
+	var w Workspace
+	err := r.pool.QueryRow(ctx, `
+		UPDATE public.workspaces AS w
+		SET name = $1, purpose = $2, updated_at = NOW()
+		WHERE w.id = $3
+		  AND EXISTS (
+			SELECT 1 FROM public.workspace_memberships AS m
+			WHERE m.workspace_id = w.id AND m.user_id = $4 AND m.role = 'owner'
+		  )
+		RETURNING w.id, w.name, w.purpose, w.created_at, w.updated_at
+	`, name, purpose, workspaceID, userID).Scan(&w.ID, &w.Name, &w.Purpose, &w.CreatedAt, &w.UpdatedAt)
+	if errors.Is(err, pgx.ErrNoRows) {
+		// Avoid exposing workspaces to users who are not members. Members
+		// without the owner role receive a clear permission error.
+		visible, lookupErr := r.GetForUser(ctx, userID, workspaceID)
+		if lookupErr != nil {
+			return Workspace{}, lookupErr
+		}
+		if visible.Role != "owner" {
+			return Workspace{}, ErrForbidden
+		}
+		return Workspace{}, ErrNotFound
+	}
+	if err != nil {
+		return Workspace{}, err
+	}
+	w.Role = "owner"
+	return w, nil
+}
