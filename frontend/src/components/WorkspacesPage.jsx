@@ -28,6 +28,7 @@ export default function WorkspacesPage({
     loading,
     loadError,
     onCreate,
+    onRetry,
     onSelect,
     onUpdate,
     onBackToOverview,
@@ -103,6 +104,16 @@ export default function WorkspacesPage({
                     <div className="workspace-manager-empty" role="status">
                         <LoaderCircle size={26} className="dashboard-spin" aria-hidden="true" />
                         <p>Loading your workspaces…</p>
+                    </div>
+                )}
+
+                {!loading && loadError && (
+                    <div className="workspace-manager-empty" role="alert">
+                        <h3>Could not load your workspaces.</h3>
+                        <p>{loadError}</p>
+                        <button type="button" className="dashboard-feature-action" onClick={onRetry}>
+                            Try again <ArrowRight size={17} aria-hidden="true" />
+                        </button>
                     </div>
                 )}
 
