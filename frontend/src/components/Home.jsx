@@ -197,11 +197,20 @@ export default function Home({ user, onLogout }) {
                     <p className="dashboard-sidebar-label">CURRENT WORKSPACE</p>
                     <div className="dashboard-workspace-indicator-body">
                         <span className="dashboard-workspace-icon"><Layers3 size={19} /></span>
-                        <span>
-                            <strong>No workspace yet</strong>
-                            <small>Your first one is next</small>
+                        <span className="dashboard-workspace-indicator-text">
+                            <strong title={activeWorkspace?.name}>
+                                {workspacesLoading && !hasWorkspace ? 'Loading workspaces…'
+                                    : activeWorkspace?.name || (workspaceLoadError ? 'Could not load' : 'No workspace yet')}
+                            </strong>
+                            <small>{activeWorkspace ? `${purposeLabel(activeWorkspace.purpose)} · ${activeWorkspace.role}`
+                                : workspaceLoadError ? 'Retry from your dashboard' : 'Your first one is next'}</small>
                         </span>
                     </div>
+                    <button type="button" className="dashboard-sidebar-create" onClick={openCreateDialog}
+                        disabled={workspacesLoading || Boolean(workspaceLoadError)}>
+                        <Plus size={15} aria-hidden="true" />
+                        {hasWorkspace ? 'New workspace' : 'Create workspace'}
+                    </button>
                 </div>
 
                 <nav className="dashboard-nav" aria-label="Primary">
@@ -211,6 +220,18 @@ export default function Home({ user, onLogout }) {
                         <span>Overview</span>
                         <span className="dashboard-nav-active-mark" aria-hidden="true" />
                     </a>
+                    {hasWorkspace ? (
+                        <a href="#dashboard-workspaces" className="dashboard-nav-item" onClick={() => setMenuOpen(false)}>
+                            <Layers3 size={19} aria-hidden="true" />
+                            <span>Workspaces</span>
+                        </a>
+                    ) : (
+                        <button type="button" className="dashboard-nav-item dashboard-nav-button" onClick={openCreateDialog}
+                            disabled={workspacesLoading || Boolean(workspaceLoadError)}>
+                            <Layers3 size={19} aria-hidden="true" />
+                            <span>Workspaces</span>
+                        </button>
+                    )}
                     {PLANNED_SECTIONS.map(({ name, icon: Icon }) => (
                         <span className="dashboard-nav-item dashboard-nav-item--planned" key={name} title="Available when workspace features are connected">
                             <Icon size={19} aria-hidden="true" />
@@ -246,7 +267,7 @@ export default function Home({ user, onLogout }) {
                         <button className="dashboard-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation" aria-expanded={menuOpen}>
                             <Menu size={22} />
                         </button>
-                        <span>YOUR SPACE</span>
+                        <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
                         <strong>Overview</strong>
                     </div>
@@ -259,23 +280,39 @@ export default function Home({ user, onLogout }) {
                 <main className="dashboard-main" id="dashboard-overview">
                     <div className="dashboard-welcome">
                         <div>
-                            <p className="dashboard-eyebrow"><span className="dashboard-live-dot" /> THE BEGINNING OF SOMETHING GREAT</p>
-                            <h1>Welcome to your space, <span>{displayName}.</span></h1>
-                            <p>A clearer way to bring your people, projects, and ideas together.</p>
+                            <p className="dashboard-eyebrow"><span className="dashboard-live-dot" /> {hasWorkspace ? 'YOUR TEAM SPACE' : 'THE BEGINNING OF SOMETHING GREAT'}</p>
+                            <h1>{hasWorkspace ? 'Welcome back' : 'Welcome to your space'}, <span>{displayName}.</span></h1>
+                            <p>{hasWorkspace ? `You're viewing ${activeWorkspace.name}. Everything your team builds will start here.` : 'A clearer way to bring your people, projects, and ideas together.'}</p>
                         </div>
-                        <span className="dashboard-phase-tag">GETTING STARTED <span> / 01</span></span>
+                        {!hasWorkspace && !workspacesLoading && !workspaceLoadError && (
+                            <span className="dashboard-phase-tag">GETTING STARTED <span> / 01</span></span>
+                        )}
                     </div>
+
+                    {workspaceLoadError && (
+                        <div className="dashboard-notice" role="alert">
+                            <span>{workspaceLoadError}</span>
+                            <button type="button" onClick={() => setReloadVersion((value) => value + 1)}>Try again</button>
+                        </div>
+                    )}
 
                     <section className="dashboard-feature" aria-labelledby="dashboard-feature-title">
                         <div className="dashboard-feature-copy">
-                            <p className="dashboard-feature-overline"><Compass size={16} aria-hidden="true" /> YOUR WORK BEGINS HERE</p>
-                            <h2 id="dashboard-feature-title">One place for<br /><em>what comes next.</em></h2>
-                            <p>Create a shared home for your team's work. Projects, tasks, and deadlines will be easier to follow when everything is connected.</p>
-                            <button type="button" className="dashboard-feature-action" onClick={() => setGuideOpen((open) => !open)} aria-expanded={guideOpen} aria-controls="dashboard-guide">
-                                {guideOpen ? 'Hide your starting guide' : 'See how to get started'}
+                            <p className="dashboard-feature-overline"><Compass size={16} aria-hidden="true" /> {hasWorkspace ? 'YOUR WORKSPACE IS READY' : 'YOUR WORK BEGINS HERE'}</p>
+                            <h2 id="dashboard-feature-title">{hasWorkspace ? <>A shared space.<br /><em>Now build together.</em></> : <>One place for<br /><em>what comes next.</em></>}</h2>
+                            <p>{hasWorkspace
+                                ? `${activeWorkspace.name} is ready for your team. Projects and task management are coming in our next development steps.`
+                                : "Create a shared home for your team's work. Projects, tasks, and deadlines will be easier to follow when everything is connected."}</p>
+                            <button type="button" className="dashboard-feature-action" onClick={openCreateDialog}
+                                disabled={workspacesLoading || Boolean(workspaceLoadError)}>
+                                {workspacesLoading ? 'Loading your workspaces…' : hasWorkspace ? 'Create another workspace' : 'Create your first workspace'}
                                 <ArrowRight size={18} aria-hidden="true" />
                             </button>
-                            <span className="dashboard-feature-caption">Workspace creation will be connected in the next development step.</span>
+                            <button type="button" className="dashboard-feature-secondary" onClick={() => setGuideOpen((open) => !open)}
+                                aria-expanded={guideOpen} aria-controls="dashboard-guide">
+                                {guideOpen ? 'Hide getting started guide' : 'See how NoxOrbit works'}
+                            </button>
+                            <span className="dashboard-feature-caption">Your workspaces are saved securely through the NoxOrbit backend.</span>
                         </div>
                         {/* A decorative map of collaboration, not fabricated workspace data.
                             No repeated logo or empty concentric circles. */}
