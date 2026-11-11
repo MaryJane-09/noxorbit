@@ -9,6 +9,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
+	"github.com/MaryJane-09/noxorbit/backend/internal/project"
 	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
 	"github.com/MaryJane-09/noxorbit/backend/internal/register"
 	"github.com/MaryJane-09/noxorbit/backend/internal/session"
@@ -59,6 +60,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	sessionRepo := session.NewRepository(pool)
 	limits := ratelimit.New(pool)
 	workspaceHandler := workspace.NewHandler(workspace.NewRepository(pool))
+	projectHandler := project.NewHandler(project.NewRepository(pool))
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	// Fixed 15-minute IP quotas limit request floods before expensive work.
@@ -70,6 +72,11 @@ func New(pool *pgxpool.Pool) http.Handler {
 	// The repository enforces the per-user membership filter.
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{id}", auth.RequireAuth(sessionRepo, workspaceHandler.Detail))
+	// All project routes are workspace-scoped; repositories enforce membership
+	// or owner permissions on the data read or mutation itself.
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects", auth.RequireAuth(sessionRepo, projectHandler.Collection))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}", auth.RequireAuth(sessionRepo, projectHandler.Detail))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/status", auth.RequireAuth(sessionRepo, projectHandler.Status))
 	mux.HandleFunc("/logout", auth.LogoutHandler(sessionRepo))
 	mux.Handle("/verify-otp", limits.LimitIP("verify-otp", 40, window, register.VerifyOTPHandler(repo, otpRepo)))
 	mux.Handle("/login", limits.LimitIP("login", 60, window, auth.LoginHandler(repo, sessionRepo, limits)))

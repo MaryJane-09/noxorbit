@@ -36,3 +36,21 @@ func TestWorkspaceRoutesRequireAuthentication(t *testing.T) {
 		}
 	}
 }
+
+func TestProjectRoutesRequireAuthentication(t *testing.T) {
+	handler := New(nil)
+	for _, tc := range []struct{ method, path string }{
+		{http.MethodGet, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1/projects"},
+		{http.MethodPost, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1/projects"},
+		{http.MethodGet, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1/projects/bba96e70-f1b2-478f-a4c3-6684fd7f26ee"},
+		{http.MethodPatch, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1/projects/bba96e70-f1b2-478f-a4c3-6684fd7f26ee"},
+		{http.MethodPatch, "/api/v1/workspaces/052f92b9-e53d-4499-b7f7-6d8c4b157cb1/projects/bba96e70-f1b2-478f-a4c3-6684fd7f26ee/status"},
+	} {
+		req := httptest.NewRequest(tc.method, tc.path, nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+		if rec.Code != http.StatusUnauthorized {
+			t.Fatalf("%s %s returned %d, want 401", tc.method, tc.path, rec.Code)
+		}
+	}
+}
