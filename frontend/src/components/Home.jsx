@@ -462,6 +462,66 @@ export default function Home({ user, onLogout }) {
                     </div>
                 </main>
             </div>
+
+            <dialog
+                ref={dialogRef}
+                className="dashboard-workspace-dialog"
+                aria-labelledby="dashboard-workspace-dialog-title"
+                onClose={() => setCreateDialogOpen(false)}
+                onCancel={(event) => { if (creatingWorkspace) event.preventDefault() }}
+                onClick={(event) => {
+                    if (event.target === event.currentTarget && !creatingWorkspace) setCreateDialogOpen(false)
+                }}
+            >
+                <div className="dashboard-dialog-header">
+                    <span className="dashboard-dialog-icon"><Layers3 size={23} aria-hidden="true" /></span>
+                    <button type="button" className="dashboard-dialog-close" aria-label="Close create workspace"
+                        onClick={() => setCreateDialogOpen(false)} disabled={creatingWorkspace}>
+                        <X size={20} aria-hidden="true" />
+                    </button>
+                </div>
+                <p className="dashboard-eyebrow">YOUR SPACE STARTS HERE</p>
+                <h2 id="dashboard-workspace-dialog-title">Create a workspace.</h2>
+                <p className="dashboard-dialog-description">Give your team a home. You can create more workspaces whenever you need them.</p>
+                <form onSubmit={handleCreateWorkspace} className="dashboard-workspace-form">
+                    <label htmlFor="dashboard-workspace-name">Workspace name</label>
+                    <input
+                        ref={nameInputRef}
+                        id="dashboard-workspace-name"
+                        type="text"
+                        name="name"
+                        autoComplete="off"
+                        value={workspaceName}
+                        onChange={(event) => setWorkspaceName(event.target.value)}
+                        placeholder="e.g. Study Group A"
+                        maxLength={100}
+                        required
+                        disabled={creatingWorkspace}
+                    />
+                    <label htmlFor="dashboard-workspace-purpose">What will you use it for?</label>
+                    <select
+                        id="dashboard-workspace-purpose"
+                        value={workspacePurpose}
+                        onChange={(event) => setWorkspacePurpose(event.target.value)}
+                        disabled={creatingWorkspace}
+                    >
+                        {WORKSPACE_PURPOSES.map((choice) => (
+                            <option key={choice.value} value={choice.value}>{choice.label}</option>
+                        ))}
+                    </select>
+                    <p className="dashboard-form-hint">{WORKSPACE_PURPOSES.find((choice) => choice.value === workspacePurpose)?.detail}</p>
+                    {createError && <p className="dashboard-form-error" role="alert">{createError}</p>}
+                    <div className="dashboard-dialog-actions">
+                        <button type="button" className="dashboard-dialog-cancel" disabled={creatingWorkspace}
+                            onClick={() => setCreateDialogOpen(false)}>Cancel</button>
+                        <button type="submit" className="dashboard-feature-action dashboard-dialog-submit"
+                            disabled={creatingWorkspace || !workspaceName.trim()}>
+                            {creatingWorkspace ? <><LoaderCircle size={17} className="dashboard-spin" aria-hidden="true" /> Creating…</>
+                                : <><Plus size={17} aria-hidden="true" /> Create workspace</>}
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     )
 }
