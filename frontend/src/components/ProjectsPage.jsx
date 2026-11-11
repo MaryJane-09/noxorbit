@@ -14,6 +14,7 @@ import {
     X,
 } from 'lucide-react'
 import { changeProjectStatus, createProject, fetchProjects, updateProject } from '../api'
+import TasksBoard from './TasksBoard'
 import './ProjectsPage.css'
 
 export function ProjectOverviewCard({ workspaceID, onOpen }) {
@@ -64,7 +65,8 @@ export function ProjectOverviewCard({ workspaceID, onOpen }) {
     )
 }
 
-export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpenWorkspaces }) {
+export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpenWorkspaces, user }) {
+    const [selectedProject, setSelectedProject] = useState(null)
     const [data, setData] = useState({ workspaceID: null, items: [], error: '' })
     const [reload, setReload] = useState(0)
     const [tab, setTab] = useState('active')
@@ -169,6 +171,13 @@ export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpe
     const visible = items.filter((project) => project.status === tab)
     const count = (status) => items.filter((project) => project.status === status).length
     const isOwner = activeWorkspace?.role === 'owner'
+    if (selectedProject && activeWorkspace && selectedProject.workspaceID === activeWorkspace.id) {
+        const currentProject = items.find((item) => item.id === selectedProject.id)
+        if (currentProject) {
+            return <TasksBoard key={`${activeWorkspace.id}:${currentProject.id}`} workspace={activeWorkspace}
+                project={currentProject} user={user} onBack={() => setSelectedProject(null)} />
+        }
+    }
 
     return (
         <div className="projects-page">
@@ -272,6 +281,9 @@ export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpe
                                             })}
                                         </span>
                                         <div className="projects-card-actions">
+                                            <button type="button" onClick={() => setSelectedProject({ id: project.id, workspaceID })}>
+                                                <ArrowRight size={16} /> Open board
+                                            </button>
                                             <button type="button" onClick={() => openEditor(project)}
                                                 aria-label={`Edit ${project.name}`}><Pencil size={16} /> Edit</button>
                                             {isOwner && (
