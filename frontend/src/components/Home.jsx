@@ -2,12 +2,14 @@ import { useState } from 'react'
 import {
     ArrowRight,
     ArrowUpRight,
+    CheckCheck,
     CalendarDays,
     ChevronRight,
     Compass,
     FolderKanban,
     LayoutDashboard,
     Layers3,
+    Lightbulb,
     ListTodo,
     LogOut,
     Menu,
@@ -93,7 +95,7 @@ export default function Home({ user, onLogout }) {
                         <img src="/noxorbit-mark.svg" alt="" />
                         <span className="dashboard-brand-copy">
                             <strong>NOXORBIT</strong>
-                            <small>YOUR SPACE TO BUILD</small>
+                            <small>CONNECT · COLLABORATE · ACHIEVE</small>
                         </span>
                     </a>
                     <button className="dashboard-sidebar-close" type="button" onClick={() => setMenuOpen(false)} aria-label="Close navigation">
@@ -185,13 +187,50 @@ export default function Home({ user, onLogout }) {
                             </button>
                             <span className="dashboard-feature-caption">Workspace creation will be connected in the next development step.</span>
                         </div>
-                        <div className="dashboard-orbit" aria-hidden="true">
-                            <span className="dashboard-orbit-outer" />
-                            <span className="dashboard-orbit-middle" />
-                            <span className="dashboard-orbit-inner" />
-                            <span className="dashboard-orbit-core"><img src="/noxorbit-mark.svg" alt="" /></span>
-                            <span className="dashboard-orbit-star dashboard-orbit-star--one" />
-                            <span className="dashboard-orbit-star dashboard-orbit-star--two" />
+                        {/* A decorative map of collaboration, not fabricated workspace data.
+                            No repeated logo or empty concentric circles. */}
+                        <div className="dashboard-collab-art" aria-hidden="true">
+                            <span className="dashboard-collab-aura" />
+                            <svg className="dashboard-collab-paths" viewBox="0 0 430 330" fill="none" focusable="false">
+                                <defs>
+                                    <linearGradient id="collab-path-light" x1="30" y1="40" x2="410" y2="310" gradientUnits="userSpaceOnUse">
+                                        <stop stopColor="#f4d59c" stopOpacity=".88" />
+                                        <stop offset=".5" stopColor="#c983ce" stopOpacity=".65" />
+                                        <stop offset="1" stopColor="#ffdaa1" stopOpacity=".9" />
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 103 74 C 116 105 138 109 174 128" stroke="url(#collab-path-light)" strokeWidth="1.5" />
+                                <path d="M 326 69 C 313 98 294 100 271 121" stroke="url(#collab-path-light)" strokeWidth="1.5" />
+                                <path d="M 276 226 C 300 251 327 252 343 263" stroke="url(#collab-path-light)" strokeWidth="1.5" />
+                                <circle cx="174" cy="128" r="3" fill="#f3cf93" />
+                                <circle cx="271" cy="121" r="3" fill="#f3cf93" />
+                                <circle cx="276" cy="226" r="3" fill="#f3cf93" />
+                            </svg>
+                            <div className="dashboard-collab-center">
+                                <div className="dashboard-collab-center-top">
+                                    <span>THE NOXORBIT WAY</span>
+                                    <Sparkles size={17} />
+                                </div>
+                                <div className="dashboard-collab-center-middle">
+                                    <span className="dashboard-collab-center-icon"><Layers3 size={26} /></span>
+                                    <strong>One shared<br />direction.</strong>
+                                </div>
+                                <p>A place for everything that matters.</p>
+                            </div>
+                            <div className="dashboard-collab-chip dashboard-collab-chip--ideas">
+                                <span className="dashboard-collab-chip-icon"><Lightbulb size={18} /></span>
+                                <span><strong>Ideas</strong><small>Take shape</small></span>
+                            </div>
+                            <div className="dashboard-collab-chip dashboard-collab-chip--people">
+                                <span className="dashboard-collab-chip-icon"><Users size={18} /></span>
+                                <span><strong>People</strong><small>Connect</small></span>
+                            </div>
+                            <div className="dashboard-collab-chip dashboard-collab-chip--progress">
+                                <span className="dashboard-collab-chip-icon"><CheckCheck size={18} /></span>
+                                <span><strong>Progress</strong><small>Moves forward</small></span>
+                            </div>
+                            <span className="dashboard-collab-spark dashboard-collab-spark--one" />
+                            <span className="dashboard-collab-spark dashboard-collab-spark--two" />
                         </div>
                     </section>
 
