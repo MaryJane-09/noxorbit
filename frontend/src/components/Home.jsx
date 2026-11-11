@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import {
     ArrowRight,
     ArrowUpRight,
-    Check,
     CheckCheck,
     CalendarDays,
     ChevronRight,
@@ -20,7 +19,8 @@ import {
     Users,
     X,
 } from 'lucide-react'
-import { API, createWorkspace, fetchWorkspaces } from '../api'
+import { API, createWorkspace, fetchWorkspaces, updateWorkspace } from '../api'
+import WorkspacesPage from './WorkspacesPage'
 import './Home.css'
 
 // These sections will become interactive when their APIs exist.
@@ -64,11 +64,16 @@ function purposeLabel(purpose) {
     return WORKSPACE_PURPOSES.find((choice) => choice.value === purpose)?.label || 'General'
 }
 
+function pageFromHash() {
+    return window.location.hash === '#workspaces' ? 'workspaces' : 'overview'
+}
+
 export default function Home({ user, onLogout }) {
     const [loggingOut, setLoggingOut] = useState(false)
     const [error, setError] = useState('')
     const [guideOpen, setGuideOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [page, setPage] = useState(pageFromHash)
     const [workspaces, setWorkspaces] = useState([])
     const [workspacesLoading, setWorkspacesLoading] = useState(true)
     const [workspaceLoadError, setWorkspaceLoadError] = useState('')
@@ -84,6 +89,25 @@ export default function Home({ user, onLogout }) {
     const displayName = (user.name || '').trim().split(/\s+/)[0] || 'there'
     const activeWorkspace = workspaces.find((space) => space.id === selectedWorkspaceId) || workspaces[0] || null
     const hasWorkspace = Boolean(activeWorkspace)
+
+    useEffect(() => {
+        const handleHashChange = () => setPage(pageFromHash())
+        window.addEventListener('hashchange', handleHashChange)
+        return () => window.removeEventListener('hashchange', handleHashChange)
+    }, [])
+
+    function goToPage(destination) {
+        window.location.hash = destination
+        setPage(destination)
+        setMenuOpen(false)
+        window.scrollTo(0, 0)
+    }
+
+    async function handleUpdateWorkspace(id, settings) {
+        const updated = await updateWorkspace(id, settings)
+        setWorkspaces((current) => current.map((space) => space.id === id ? updated : space))
+        return updated
+    }
 
     useEffect(() => {
         const controller = new AbortController()
@@ -179,7 +203,7 @@ export default function Home({ user, onLogout }) {
 
             <aside className={`dashboard-sidebar ${menuOpen ? 'dashboard-sidebar--open' : ''}`} aria-label="Dashboard sidebar">
                 <div className="dashboard-sidebar-top">
-                    <a className="dashboard-brand" href="#dashboard-overview" onClick={() => setMenuOpen(false)}>
+                    <a className="dashboard-brand" href="#overview" onClick={() => goToPage('overview')}>
                         <img src="/noxorbit-mark.svg" alt="" />
                         <span className="dashboard-brand-copy">
                             <strong>NOXORBIT</strong>
@@ -204,32 +228,24 @@ export default function Home({ user, onLogout }) {
                                 : workspaceLoadError ? 'Retry from your dashboard' : 'Your first one is next'}</small>
                         </span>
                     </div>
-                    <button type="button" className="dashboard-sidebar-create" onClick={openCreateDialog}
-                        disabled={workspacesLoading || Boolean(workspaceLoadError)}>
-                        <Plus size={15} aria-hidden="true" />
-                        {hasWorkspace ? 'New workspace' : 'Create workspace'}
-                    </button>
                 </div>
 
                 <nav className="dashboard-nav" aria-label="Primary">
                     <p className="dashboard-sidebar-label">WORKSPACE</p>
-                    <a href="#dashboard-overview" className="dashboard-nav-item dashboard-nav-item--active" aria-current="page" onClick={() => setMenuOpen(false)}>
-                        <LayoutDashboard size={19} />
+                    <a href="#overview" className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'overview' ? 'page' : undefined}
+                        onClick={() => goToPage('overview')}>
+                        <LayoutDashboard size={19} aria-hidden="true" />
                         <span>Overview</span>
-                        <span className="dashboard-nav-active-mark" aria-hidden="true" />
+                        {page === 'overview' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    {hasWorkspace ? (
-                        <a href="#dashboard-workspaces" className="dashboard-nav-item" onClick={() => setMenuOpen(false)}>
-                            <Layers3 size={19} aria-hidden="true" />
-                            <span>Workspaces</span>
-                        </a>
-                    ) : (
-                        <button type="button" className="dashboard-nav-item dashboard-nav-button" onClick={openCreateDialog}
-                            disabled={workspacesLoading || Boolean(workspaceLoadError)}>
-                            <Layers3 size={19} aria-hidden="true" />
-                            <span>Workspaces</span>
-                        </button>
-                    )}
+                    <a href="#workspaces" className={`dashboard-nav-item${page === 'workspaces' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'workspaces' ? 'page' : undefined}
+                        onClick={() => goToPage('workspaces')}>
+                        <Layers3 size={19} aria-hidden="true" />
+                        <span>Workspaces</span>
+                        {page === 'workspaces' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
                     {PLANNED_SECTIONS.map(({ name, icon: Icon }) => (
                         <span className="dashboard-nav-item dashboard-nav-item--planned" key={name} title="Available when workspace features are connected">
                             <Icon size={19} aria-hidden="true" />
@@ -267,7 +283,7 @@ export default function Home({ user, onLogout }) {
                         </button>
                         <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>Overview</strong>
+                        <strong>{page === 'workspaces' ? 'Workspaces' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <span>Signed in</span>
