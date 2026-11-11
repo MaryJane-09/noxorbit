@@ -103,6 +103,12 @@ export default function Home({ user, onLogout }) {
         window.scrollTo(0, 0)
     }
 
+    function retryWorkspaces() {
+        setWorkspacesLoading(true)
+        setWorkspaceLoadError('')
+        setReloadVersion((value) => value + 1)
+    }
+
     async function handleUpdateWorkspace(id, settings) {
         const updated = await updateWorkspace(id, settings)
         setWorkspaces((current) => current.map((space) => space.id === id ? updated : space))
@@ -299,6 +305,7 @@ export default function Home({ user, onLogout }) {
                             loading={workspacesLoading}
                             loadError={workspaceLoadError}
                             onCreate={openCreateDialog}
+                            onRetry={retryWorkspaces}
                             onSelect={setSelectedWorkspaceId}
                             onUpdate={handleUpdateWorkspace}
                             onBackToOverview={() => goToPage('overview')}
@@ -319,11 +326,7 @@ export default function Home({ user, onLogout }) {
                     {workspaceLoadError && (
                         <div className="dashboard-notice" role="alert">
                             <span>{workspaceLoadError}</span>
-                            <button type="button" onClick={() => {
-                                setWorkspacesLoading(true)
-                                setWorkspaceLoadError('')
-                                setReloadVersion((value) => value + 1)
-                            }}>Try again</button>
+                            <button type="button" onClick={retryWorkspaces}>Try again</button>
                         </div>
                     )}
 
