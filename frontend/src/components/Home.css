@@ -64,7 +64,7 @@
     margin: -6px -4px -6px -8px;
     flex: 0 0 auto;
     object-fit: contain;
-    filter: brightness(1.16) saturate(1.12) drop-shadow(0 0 6px rgba(248, 195, 117, .34));
+    filter: brightness(1.02) saturate(1.03) drop-shadow(0 0 2px rgba(226, 178, 106, .13));
 }
 
 .dashboard-brand-copy {
@@ -92,7 +92,7 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: brightness(1.16) saturate(1.12) drop-shadow(0 0 4px rgba(255, 206, 128, .22));
+    filter: brightness(1.02) saturate(1.03) drop-shadow(0 1px 1px rgba(0, 0, 0, .32));
 }
 
 .dashboard-brand-copy small {
