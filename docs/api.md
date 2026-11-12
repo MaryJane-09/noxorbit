@@ -711,3 +711,41 @@ Do not run the updated Go profile endpoints before migration 010.
 512×512 JPEG before uploading. The Go API independently validates and optimizes
 the received image. The original source photo is not sent by the cropper.
 If the save fails with a database error, confirm that migration 010 is applied.
+
+
+## Settings Phase 1C — active session management (migration 011)
+
+**Apply `backend/migrations/011_session_management.sql` after migration
+010 and before starting the updated Go backend.** This migration retains
+existing sessions. It adds `public_id` (random UUID), `created_at`, and
+`user_agent` to `public.sessions` and indexes the session lookup.
+
+Every new login stores a truncated (up to 256 bytes) browser user-agent
+description. Legacy sessions show **Unknown device** in Settings.
+
+These authenticated endpoints do not expose token hashes or raw cookies:
+
+- `GET /api/v1/account/sessions` returns `{"sessions":[...]}` with
+  ID, user_agent, created_at, expires_at, and a boolean `current`.
+- `DELETE /api/v1/account/sessions/{session_id}` removes only the
+  current user's specified session (random UUID). The current session
+  cookie is cleared if the user signs out this device.
+- `POST /api/v1/account/sessions/others` with JSON `{}` signs
+  out all other sessions while preserving the current device. Returns
+  `{"revoked":count}`.
+
+The backend always obtains identity from the verified session. SQL
+operations are scoped by that user ID; IDs from request paths are never
+accepted as permission to access another account's sessions.
+
+**Collapsible sidebar:** On desktop widths over 900px, the dashboard
+offers an expand/collapse toggle with icon-only navigation when collapsed.
+Tooltips/accessible labels remain available and the preference is stored
+in browser localStorage. Mobile still uses the existing slide-out menu.
+
+Run `go test ./backend/...`, `go vet ./backend/...`, and from the
+frontend directory `npm run lint` and `npm run build`. Verify the
+session list shows the current device; use a second browser/private window
+to test individual session removal and "sign out all other sessions".
+Do not test revocation with the only browser session unless you're
+prepared to log in again.
