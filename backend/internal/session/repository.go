@@ -71,7 +71,7 @@ func (r *SessionRepository) DeleteAllForUser(userID uuid.UUID) error {
 type DeviceSession struct {
  ID uuid.UUID `json:"id"`
  UserAgent string `json:"user_agent"`
- CreatedAt time.Time `json:"created_at"`
+ CreatedAt *time.Time `json:"created_at"`
  ExpiresAt time.Time `json:"expires_at"`
  Current bool `json:"current"`
 }
