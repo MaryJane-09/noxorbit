@@ -91,6 +91,8 @@ func repositoryError(w http.ResponseWriter, err error) bool {
 		fail(w, http.StatusForbidden, "You cannot change this task")
 	case errors.Is(err, ErrArchived):
 		fail(w, http.StatusConflict, "Archived projects cannot be changed")
+	case errors.Is(err, ErrPastDueDate):
+        fail(w, http.StatusBadRequest, ErrPastDueDate.Error())
 	case errors.Is(err, ErrInvalidAssignee):
 		fail(w, http.StatusBadRequest, ErrInvalidAssignee.Error())
 	default:
