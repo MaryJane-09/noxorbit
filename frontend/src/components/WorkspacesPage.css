@@ -231,3 +231,10 @@
 .workspace-member-confirm { width:min(450px,calc(100vw - 32px)); }
 .workspace-member-danger { display:inline-flex; align-items:center; justify-content:center; min-height:43px; padding:10px 16px; border:1px solid rgba(255,156,170,.55); border-radius:10px; background:#8f3650; color:#fff7f8; font-weight:800; cursor:pointer; }
 .workspace-member-danger:disabled { opacity:.55; cursor:wait; }
+
+.workspace-invite-email { margin: 16px 0 25px; padding-bottom: 22px; border-bottom: 1px solid rgba(244,198,151,.18); }
+.workspace-invite-email > label { color: #f1d9b7; font-size: 12px; font-weight: 750; }
+.workspace-invite-email .workspace-invite-link { margin-top: 9px; }
+.workspace-invite-email .workspace-invite-link input { flex: 1 1 210px; }
+.workspace-invite-email .dashboard-feature-action { flex: 0 0 auto; }
+.workspace-invite-tools h3 + .workspace-invite-email { margin-top: 13px; }
