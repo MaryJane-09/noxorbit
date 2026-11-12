@@ -33,3 +33,29 @@
 .settings-deletion-error { padding:10px 0; color:#ffbbca; font-size:14px; line-height:1.5; }
 .settings-delete-actions { display:flex; justify-content:flex-end; gap:11px; margin-top:12px; flex-wrap:wrap; }
 @media (max-width:600px) { .settings-account,.settings-danger { padding:18px; } .settings-delete-actions button { flex:1 1 100%; } }
+
+/* Settings tabs separate routine profile editing from security actions. */
+.settings-tabs { display:flex; flex-wrap:wrap; gap:10px; margin:0 0 22px; }
+.settings-tabs button { display:inline-flex; align-items:center; gap:9px; min-height:45px;
+    padding:11px 17px; border:1px solid rgba(240,199,149,.24); border-radius:11px;
+    background:rgba(245,190,130,.04); color:#dac7dd; font-size:15px; font-weight:750; cursor:pointer; }
+.settings-tabs button.settings-tab--active { border-color:rgba(247,207,151,.6);
+    background:linear-gradient(110deg,rgba(236,186,124,.18),rgba(143,77,112,.1)); color:#ffe1ad; }
+.settings-tabs button:focus-visible { outline:2px solid #ffe0a4; outline-offset:3px; }
+.settings-help { color:#d2bed4; font-size:14px; line-height:1.65; margin:0 0 16px; }
+.settings-edit-form { display:grid; gap:11px; }
+.settings-edit-form label { color:#f8eaf5; font-size:14px; font-weight:800; }
+.settings-edit-form input { width:100%; min-height:47px; padding:12px 14px;
+    border:1px solid rgba(241,200,158,.35); border-radius:10px;
+    background:#1c1325; color:#fff5fa; font-size:16px; }
+.settings-edit-form input[readonly] { color:#cbb8d0; background:#24192c; }
+.settings-edit-form input:focus-visible { outline:2px solid #f2d095; outline-offset:2px; }
+.settings-edit-actions { display:flex; justify-content:flex-end; margin-top:12px; }
+.settings-edit-actions button { min-height:44px; padding:11px 19px;
+    border:1px solid rgba(240,195,137,.54); border-radius:10px;
+    background:linear-gradient(120deg,#e6bb79,#cca263); color:#211523;
+    font-size:14px; font-weight:850; cursor:pointer; }
+.settings-edit-actions button:disabled { opacity:.55; cursor:not-allowed; }
+.settings-success { color:#bce7c7; font-size:14px; line-height:1.6; }
+@media(max-width:560px) { .settings-tabs button { flex:1; justify-content:center; }
+    .settings-edit-actions button { width:100%; } }
