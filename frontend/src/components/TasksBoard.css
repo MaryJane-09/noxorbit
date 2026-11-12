@@ -70,3 +70,7 @@
 .tasks-card-menu-items button:hover:not(:disabled) { background: rgba(241,194,150,.12); }
 .tasks-card-menu-items button:last-child { color: #ffc4cf; }
 .tasks-card-menu-items button:disabled { opacity: .5; cursor: wait; }
+
+.tasks-meta .tasks-due-indicator { border-radius: 6px; padding: 3px 7px; font-size: 12px; font-weight: 800; }
+.tasks-due-indicator--overdue, .tasks-due-indicator--today { background: rgba(192,69,86,.24); color: #ffd1d9; }
+.tasks-due-indicator--tomorrow, .tasks-due-indicator--soon { background: rgba(196,132,51,.24); color: #ffe0aa; }
