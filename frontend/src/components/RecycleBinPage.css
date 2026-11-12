@@ -5,13 +5,12 @@
 .recycle-heading p:not(.dashboard-eyebrow) { color: #d5bfd9; font-size: 15px; line-height: 1.7; max-width: 600px; }
 .recycle-refresh { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 15px; border: 1px solid rgba(243,204,154,.36); border-radius: 10px; background: rgba(245,196,138,.07); color: #f9d8a5; font-size: 14px; font-weight: 800; cursor: pointer; }
 .recycle-refresh:disabled { opacity: .6; }
-.recycle-scope { color: #c7b3cb; font-size: 14px; line-height: 1.6; margin: 22px 0; }
 .recycle-notice { margin: 20px 0; padding: 12px 16px; border: 1px solid rgba(130,191,150,.4); border-radius: 10px; background: rgba(66,132,94,.12); color: #c9ebd2; font-size: 14px; }
-.recycle-message { display: flex; flex-direction: column; align-items: center; gap: 13px; padding: 48px 22px; border: 1px solid var(--dash-line); border-radius: 16px; background: rgba(48,31,57,.7); color: #dcc9de; text-align: center; font-size: 15px; }
+.recycle-message { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 13px; padding: 48px 22px; border: 1px solid var(--dash-line); border-radius: 16px; background: rgba(48,31,57,.7); color: #dcc9de; text-align: center; font-size: 15px; }
 .recycle-message h2 { font-size: 21px; margin: 0; }
 .recycle-message p { margin: 0; }
 .recycle-message button { color: #ffe0ad; border: 1px solid rgba(243,204,154,.4); background: transparent; border-radius: 8px; padding: 9px 12px; cursor: pointer; }
-.recycle-items { display: grid; gap: 13px; }
+.recycle-items { display: grid; gap: 13px; margin-top: 24px; }
 .recycle-item { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; padding: 21px; border: 1px solid rgba(245,200,154,.25); border-radius: 15px; background: linear-gradient(145deg,#302039,#21182b); }
 .recycle-item-info { min-width: 0; flex: 1 1 260px; }
 .recycle-item-info > span { font-size: 13px; color: #e3c795; font-weight: 750; }
