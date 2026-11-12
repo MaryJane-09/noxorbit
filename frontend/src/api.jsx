@@ -174,3 +174,12 @@ export async function deleteTask(workspaceID, projectID, taskID) {
   if (response.status === 204) return;
   return workspaceResponse(response);
 }
+
+
+// Only members of the selected workspace can read this directory.
+export async function fetchWorkspaceMembers(workspaceID, { signal } = {}) {
+  const url = `${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/members`;
+  const members = await projectRequest(url, { signal });
+  if (!Array.isArray(members)) throw new Error("The server returned an invalid member list.");
+  return members;
+}
