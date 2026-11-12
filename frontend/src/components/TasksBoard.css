@@ -33,3 +33,17 @@
 .tasks-dialog textarea { width: 100%; min-height: 90px; padding: 13px 14px; resize: vertical; border: 1px solid rgba(245,199,158,.3); border-radius: 11px; background: #1c1325; color: #f8f0f8; font-size: 13px; }
 @media(max-width: 980px) { .tasks-columns { grid-template-columns: 1fr; } .tasks-column { min-height: 150px; } }
 @media(max-width: 620px) { .tasks-heading { flex-direction: column; align-items: flex-start; } .tasks-summary { gap: 12px; } }
+
+/* Destructive actions use an app-owned, accessible modal instead of window.confirm. */
+.tasks-delete-dialog { width: min(450px, calc(100vw - 32px)); }
+.tasks-delete-icon { color: #ffc4c9; border-color: rgba(255, 160, 172, .34); background: rgba(179, 62, 91, .13); }
+.tasks-delete-dialog .dashboard-dialog-description strong { color: #fff1f4; overflow-wrap: anywhere; }
+.tasks-delete-confirm {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    min-height: 43px; padding: 11px 17px;
+    border: 1px solid rgba(255, 156, 170, .55);
+    border-radius: 10px; background: #8f3650;
+    color: #fff7f8; font-size: 12px; font-weight: 800; cursor: pointer;
+}
+.tasks-delete-confirm:hover:not(:disabled) { background: #a6455e; }
+.tasks-delete-confirm:disabled { opacity: .6; cursor: wait; }
