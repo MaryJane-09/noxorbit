@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, CalendarDays, Check, LoaderCircle, MoreHorizontal, Pencil, Plus, Trash2, X } from 'lucide-react'
 import { changeTaskStatus, createTask, deleteTask, fetchTasks, fetchWorkspaceMembers, updateTask } from '../api'
+import { deadlineLabel } from './deadlines'
 import './TasksBoard.css'
 
 const COLUMNS = [
@@ -261,6 +262,11 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                                             <div className="tasks-meta">
                                                 {task.due_date && <span><CalendarDays size={14} /> {task.due_date}</span>}
                                                 <span>{task.assignee_id ? (task.assignee_id === currentUserID ? 'Assigned to you' : 'Assigned to member') : 'Unassigned'}</span>
+                                                {task.status !== 'done' && task.due_date && deadlineLabel(task.due_date, today)?.kind !== 'upcoming' && (
+                                                    <span className={`tasks-due-indicator tasks-due-indicator--${deadlineLabel(task.due_date, today).kind}`}>
+                                                        {deadlineLabel(task.due_date, today).label}
+                                                    </span>
+                                                )}
                                             </div>
                                             <div className="tasks-actions">
                                                 {canMove(task) && (
