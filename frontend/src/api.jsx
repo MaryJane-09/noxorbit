@@ -251,3 +251,18 @@ export async function restoreRecycledTask(taskID) {
   if (response.status === 204) return;
   return workspaceResponse(response);
 }
+
+
+// Permanent deletion is only available for tasks already in the recycle bin.
+// The backend re-checks membership and owner/creator permissions.
+export async function deleteRecycledTaskForever(taskID) {
+  const url = `${API}/api/v1/recycle-bin/tasks/${encodeURIComponent(taskID)}`;
+  let response;
+  try {
+    response = await fetch(url, { method: "DELETE", credentials: "include" });
+  } catch {
+    throw new Error("Cannot reach the NoxOrbit server. Check that your Go backend is running.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
