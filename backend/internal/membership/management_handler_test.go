@@ -4,6 +4,7 @@ import (
     "context"
     "net/http"
     "net/http/httptest"
+    "strings"
     "testing"
     "time"
 
@@ -70,5 +71,5 @@ func TestManagementListDoesNotReturnToken(t *testing.T) {
     rec:=httptest.NewRecorder()
     h.List(rec,managementRequest("GET","",true))
     if rec.Code!=200 {t.Fatalf("list: %d",rec.Code)}
-    if contains:=rec.Body.String(); len(contains)==0 {t.Fatal("empty response")}
+    if rec.Body.Len()==0 || strings.Contains(rec.Body.String(),"token_hash") || strings.Contains(rec.Body.String(),"secret") {t.Fatal("unexpected invitation response")}
 }
