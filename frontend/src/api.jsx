@@ -187,7 +187,7 @@ export async function fetchWorkspaceMembers(workspaceID, { signal } = {}) {
 
 export function createWorkspaceInvite(workspaceID) {
   return projectRequest(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/invitations`, {
-    method: "POST",
+    method: "POST", body: {},
   });
 }
 export function acceptWorkspaceInvite(token) {
