@@ -183,3 +183,15 @@ export async function fetchWorkspaceMembers(workspaceID, { signal } = {}) {
   if (!Array.isArray(members)) throw new Error("The server returned an invalid member list.");
   return members;
 }
+
+
+export function createWorkspaceInvite(workspaceID) {
+  return projectRequest(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/invitations`, {
+    method: "POST",
+  });
+}
+export function acceptWorkspaceInvite(token) {
+  return projectRequest(`${API}/api/v1/invitations/accept`, {
+    method: "POST", body: { token },
+  });
+}
