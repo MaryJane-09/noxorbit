@@ -31,7 +31,7 @@ func (r *Repository) ListAssigned(ctx context.Context, userID uuid.UUID) ([]Assi
         JOIN public.workspaces AS w ON w.id=t.workspace_id
         JOIN public.workspace_memberships AS m ON m.workspace_id=t.workspace_id
             AND m.user_id=$1
-        WHERE t.assignee_id=$1
+        WHERE t.assignee_id=$1 AND t.deleted_at IS NULL
         ORDER BY (t.status='done'), t.due_date ASC NULLS LAST,
             t.updated_at DESC, t.id DESC
     `,userID)
