@@ -7,7 +7,6 @@ import (
  "log"
  "net/http"
  "strings"
- "time"
 
  "github.com/MaryJane-09/noxorbit/backend/internal/auth"
  "github.com/MaryJane-09/noxorbit/backend/internal/otp"
@@ -80,4 +79,3 @@ func(h *EmailChangeHandler)Confirm(w http.ResponseWriter,r *http.Request){
  w.Header().Set("Content-Type","application/json")
  _=json.NewEncoder(w).Encode(profile)
 }
-var _ = time.Minute
