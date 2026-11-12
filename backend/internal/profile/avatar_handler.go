@@ -121,7 +121,7 @@ func prepareAvatar(source image.Image, mime string)([]byte,string,error){
  if p,ok:=source.(interface{Opaque() bool});ok{opaque=p.Opaque()}
  outputMime:="image/jpeg"
  if mime=="image/png"&&!opaque{outputMime="image/png"}
- for dim>=64 {
+ for {
     square:=image.NewNRGBA(image.Rect(0,0,dim,dim))
     // Bilinear interpolation: smooth downscaling without third-party libs.
     scale:=float64(side)/float64(dim)
@@ -153,6 +153,7 @@ func prepareAvatar(source image.Image, mime string)([]byte,string,error){
     }else{err=jpeg.Encode(&result,square,&jpeg.Options{Quality:82})}
     if err!=nil{return nil,"",err}
     if result.Len()<=maxAvatarBytes{return result.Bytes(),outputMime,nil}
+    if dim<=1{break}
     dim/=2
  }
  return nil,"",errors.New("processed avatar exceeds storage limit")
