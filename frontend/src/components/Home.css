@@ -991,7 +991,6 @@
     .dashboard-section-heading > span { display: none; }
     .dashboard-guide { padding: 22px; }
     .dashboard-guide-steps { gap: 16px; }
-    .dashboard-footer-hint { align-items: flex-start; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1261,9 +1260,6 @@
 .dashboard-data-value { margin: 1px 0 10px; font: 800 clamp(30px, 3vw, 38px)/1.1 var(--dash-display); color: #ffdda5; }
 .dashboard-data-value span { font: 650 15px/1.5 var(--font-body); color: #d6c1d5; }
 .dashboard-overview-data-card p { max-width: none; margin-bottom: 14px; overflow-wrap: anywhere; }
-.dashboard-deadline-date { margin: 3px 0 8px; color: #ffe0a5; font: 750 19px/1.4 var(--dash-display); }
-.dashboard-overview-data-card .dashboard-deadline-label { margin-bottom: 2px; font-weight: 750; color: #f5e7f2; }
-.dashboard-overview-data-card .dashboard-deadline-context { margin-bottom: 12px; color: #bda8c3; font-size: 13px; }
 .dashboard-deadline-clear { color: #e5c485; margin-bottom: 9px; }
 .dashboard-card-link { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding: 8px 0 0; border: 0; background: transparent; color: #ffda9a; font-size: 14px; font-weight: 800; text-align: left; cursor: pointer; }
 .dashboard-card-link:hover { color: #fff0c9; }
@@ -1274,11 +1270,6 @@
 
 /* Grouped deadlines: one reminder per due-day, expandable priority-sorted tasks. */
 .dashboard-deadline-card { min-width: 0; }
-.dashboard-deadline-alerts { display: grid; gap: 6px; width: 100%; margin: 0 0 12px; }
-.dashboard-overview-data-card .dashboard-deadline-reminder {
-    margin: 0; padding: 8px 11px; border-radius: 9px; font-size: 14px;
-    font-weight: 800; line-height: 1.45; border: 1px solid rgba(244,191,131,.24);
-}
 .dashboard-deadline-reminder--overdue, .dashboard-deadline-reminder--today {
     color: #ffd5da; background: rgba(176,68,86,.19);
 }
@@ -1386,4 +1377,12 @@
 @media (max-width: 600px) {
     .dashboard-deadline-details { padding: 17px; }
     .dashboard-deadline-details-header { flex-direction: column; gap: 13px; }
+}
+
+/* Prevent crowded three-column summaries on tablet-sized viewports. */
+@media (max-width: 1050px) {
+    .dashboard-overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+    .dashboard-overview-grid { grid-template-columns: 1fr; }
 }
