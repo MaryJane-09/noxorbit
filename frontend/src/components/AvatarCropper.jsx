@@ -111,7 +111,7 @@ export default function AvatarCropper({ file, onCancel, onSave, saving }) {
             {error && <p className="avatar-cropper-error" role="alert">{error}</p>}
             <div className="avatar-cropper-actions">
                 <button type="button" onClick={onCancel} disabled={saving}>Cancel</button>
-                <button type="button" onClick={save} disabled={saving || !source || Boolean(error)}>
+                <button type="button" onClick={save} disabled={saving || !source}>
                     {saving ? 'Saving…' : 'Save picture'}
                 </button>
             </div>
