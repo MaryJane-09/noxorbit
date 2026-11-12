@@ -16,6 +16,7 @@ import {
     Menu,
     Plus,
     Sparkles,
+    Settings2,
     Users,
     X,
 } from 'lucide-react'
@@ -25,6 +26,7 @@ import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
 import RecycleBinPage from './RecycleBinPage'
 import ActivityPage from './ActivityPage'
+import SettingsPage from './SettingsPage'
 import OverviewTaskCards from './OverviewTaskCards'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
@@ -70,6 +72,7 @@ function pageFromHash() {
     if (window.location.hash === '#my-tasks') return 'my-tasks'
     if (window.location.hash === '#recycle-bin') return 'recycle-bin'
     if (window.location.hash === '#activity') return 'activity'
+    if (window.location.hash === '#settings') return 'settings'
     return 'overview'
 }
 
@@ -293,6 +296,13 @@ export default function Home({ user, onLogout }) {
                         <span>Recycle bin</span>
                         {page === 'recycle-bin' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
+                    <a href="#settings" className={`dashboard-nav-item${page === 'settings' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'settings' ? 'page' : undefined}
+                        onClick={() => goToPage('settings')}>
+                        <Settings2 size={19} aria-hidden="true" />
+                        <span>Settings</span>
+                        {page === 'settings' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
                 </nav>
 
                 <div className="dashboard-sidebar-bottom">
@@ -323,7 +333,7 @@ export default function Home({ user, onLogout }) {
                         </button>
                         <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : 'Overview'}</strong>
+                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <span>Signed in</span>
@@ -331,7 +341,7 @@ export default function Home({ user, onLogout }) {
                     </div>
                 </header>
 
-                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : 'dashboard-projects'}>
+                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : page === 'settings' ? 'dashboard-settings' : 'dashboard-projects'}>
                     {page === 'invite' ? (
                         <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
                             onAccepted={onInvitationAccepted} />
@@ -355,6 +365,11 @@ export default function Home({ user, onLogout }) {
                         <ActivityPage activeWorkspace={activeWorkspace}
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
+                    ) : page === 'settings' ? (
+                        <SettingsPage user={user} onAccountDeleted={() => {
+                            window.location.hash = ''
+                            onLogout()
+                        }} />
                     ) : page === 'projects' ? (
                         <ProjectsPage
                             user={user}
