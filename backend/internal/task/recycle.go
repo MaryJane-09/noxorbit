@@ -62,7 +62,7 @@ func (r *Repository) Restore(ctx context.Context, userID, taskID uuid.UUID) erro
     var restored uuid.UUID
     err:=r.pool.QueryRow(ctx, `
         UPDATE public.tasks AS t
-        SET deleted_at=NULL, deleted_by=NULL, updated_at=NOW()
+        SET deleted_at=NULL, deleted_by=NULL, activity_actor_id=$1, updated_at=NOW()
         FROM public.projects p
         WHERE t.id=$2 AND t.deleted_at IS NOT NULL
           AND p.id=t.project_id AND p.workspace_id=t.workspace_id
@@ -84,16 +84,25 @@ func (r *Repository) Restore(ctx context.Context, userID, taskID uuid.UUID) erro
 func (r *Repository) DeleteForever(ctx context.Context, userID, taskID uuid.UUID) error {
     var deleted uuid.UUID
     err := r.pool.QueryRow(ctx, `
-        DELETE FROM public.tasks AS t
-        USING public.projects AS p
-        WHERE t.id = $2 AND t.deleted_at IS NOT NULL
-          AND p.id = t.project_id AND p.workspace_id = t.workspace_id
-          AND EXISTS (
-              SELECT 1 FROM public.workspace_memberships AS m
-              WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
-                AND (m.role = 'owner' OR t.created_by = $1)
-          )
-        RETURNING t.id
+        WITH removed AS (
+            DELETE FROM public.tasks AS t
+            USING public.projects AS p
+            WHERE t.id = $2 AND t.deleted_at IS NOT NULL
+              AND p.id = t.project_id AND p.workspace_id = t.workspace_id
+              AND EXISTS (
+                  SELECT 1 FROM public.workspace_memberships AS m
+                  WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
+                    AND (m.role = 'owner' OR t.created_by = $1)
+              )
+            RETURNING t.id, t.workspace_id, t.title
+        ), logged AS (
+            INSERT INTO public.activity_events
+                (workspace_id, actor_id, action, entity_type, entity_id, entity_name)
+            SELECT workspace_id, $1, 'task.deleted_forever', 'task', id, title
+            FROM removed
+            RETURNING entity_id
+        )
+        SELECT entity_id FROM logged
     `, userID, taskID).Scan(&deleted)
     if errors.Is(err, pgx.ErrNoRows) { return ErrNotFound }
     return err
