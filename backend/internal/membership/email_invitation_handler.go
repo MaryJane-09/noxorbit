@@ -27,7 +27,7 @@ func NewEmailInviteHandler(store EmailInviteStore,mailer WorkspaceInviteMailer)*
 }
 
 func trustedInvitationBase(configured string)(string,error){
- if configured=="" {configured="http://localhost:5173"}
+ if configured=="" {return "",errors.New("FRONTEND_URL is required")}
  parsed,err:=url.Parse(configured)
  if err!=nil || parsed.Host=="" || parsed.User!=nil || parsed.RawQuery!="" || parsed.Fragment!="" || parsed.Path!="" ||
    (parsed.Scheme!="https" && !(parsed.Scheme=="http" && (parsed.Hostname()=="localhost" || parsed.Hostname()=="127.0.0.1"))) {
