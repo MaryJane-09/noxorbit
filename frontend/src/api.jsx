@@ -220,3 +220,10 @@ export function revokeWorkspaceInvite(workspaceID, invitationID) {
 export function removeWorkspaceMember(workspaceID, userID) {
   return deleteWorkspaceResource(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/members/${encodeURIComponent(userID)}`);
 }
+
+
+export function sendWorkspaceEmailInvite(workspaceID, email) {
+  return projectRequest(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/invitations/email`, {
+    method: "POST", body: { email },
+  });
+}
