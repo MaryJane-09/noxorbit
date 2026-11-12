@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, CalendarDays, Check, LoaderCircle, Pencil, Plus, Trash2, X } from 'lucide-react'
-import { changeTaskStatus, createTask, deleteTask, fetchTasks, updateTask } from '../api'
+import { changeTaskStatus, createTask, deleteTask, fetchTasks, fetchWorkspaceMembers, updateTask } from '../api'
 import './TasksBoard.css'
 
 const COLUMNS = [
@@ -19,6 +19,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
     const projectID = project.id
     const [data, setData] = useState({ key: '', items: [], error: '' })
     const [reload, setReload] = useState(0)
+    const [memberState, setMemberState] = useState({ workspaceID: null, members: [], error: '' })
     const [editor, setEditor] = useState(null)
     const [form, setForm] = useState(emptyForm)
     const [saving, setSaving] = useState(false)
@@ -48,6 +49,18 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
             })
         return () => controller.abort()
     }, [workspaceID, projectID, key, reload])
+
+    useEffect(() => {
+        const controller = new AbortController()
+        fetchWorkspaceMembers(workspaceID, { signal: controller.signal })
+            .then((members) => {
+                if (!controller.signal.aborted) setMemberState({ workspaceID, members, error: '' })
+            })
+            .catch((err) => {
+                if (!controller.signal.aborted) setMemberState({ workspaceID, members: [], error: err.message })
+            })
+        return () => controller.abort()
+    }, [workspaceID])
 
     useEffect(() => {
         const dialog = deleteDialogRef.current
@@ -290,13 +303,17 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     <input id="task-due" type="date" min={form.due_date && form.due_date < today ? form.due_date : today} value={form.due_date} onChange={(event) => change('due_date', event.target.value)} disabled={saving} />
                     <label htmlFor="task-assignee">Assignee</label>
                     <select id="task-assignee" value={form.assignee_id}
-                        disabled={saving || (Boolean(form.assignee_id) && form.assignee_id !== currentUserID)}
+                        disabled={saving || memberState.workspaceID !== workspaceID || Boolean(memberState.error)}
                         onChange={(event) => change('assignee_id', event.target.value)}>
                         <option value="">Unassigned</option>
-                        {currentUserID && <option value={currentUserID}>Assign to myself</option>}
-                        {form.assignee_id && form.assignee_id !== currentUserID && <option value={form.assignee_id}>Assigned to another member</option>}
+                        {memberState.members.map((member) => (
+                            <option key={member.user_id} value={member.user_id}>
+                                {member.name}{member.user_id === currentUserID ? ' (you)' : ''} · {member.role}
+                            </option>
+                        ))}
                     </select>
-                    <p className="dashboard-form-hint">Assigning other teammates will be available when the workspace member directory is connected.</p>
+                    {memberState.error && <p className="dashboard-form-error" role="alert">{memberState.error}</p>}
+                    {memberState.workspaceID !== workspaceID && <p className="dashboard-form-hint">Loading workspace members…</p>}
                     {formError && <p role="alert" className="dashboard-form-error">{formError}</p>}
                     <div className="dashboard-dialog-actions">
                         <button type="button" className="dashboard-dialog-cancel" disabled={saving} onClick={closeEditor}>Cancel</button>
