@@ -354,3 +354,23 @@ owner/creator/assignee authorization rules for each update. All other task
 editing remains in the project board. The page refreshes on navigation,
 manual refresh, and successful local status updates. No new database
 migration is needed: it uses tables/indexes from migrations 003/005/006.
+
+
+## Dashboard Overview cards (UI refinement)
+
+The Overview page now uses existing authenticated API data, without new
+backend routes or migrations:
+- **Projects:** fetches the current workspace's projects, shows the number
+  of active projects, up to two names, and any archived count.
+- **My tasks:** fetches the signed-in user's assignments across memberships,
+  showing remaining, completed, and total assigned counts.
+- **Your upcoming deadlines:** uses the same assigned-task response and
+  selects the nearest due date among unfinished assignments; finished tasks
+  and tasks without due dates are excluded. This does **not** claim to be
+  every deadline in the workspace.
+
+The My Tasks and deadline cards intentionally share a single API call. Data
+loads when Overview mounts; switching back from other dashboard screens
+refreshes the cards. Errors are displayed rather than replacing them with
+fictional data. The duplicated Overview footer was removed and the Projects
+cards have more compact spacing with the existing primary Open board action.
