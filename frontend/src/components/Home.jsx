@@ -24,14 +24,10 @@ import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
 import RecycleBinPage from './RecycleBinPage'
+import ActivityPage from './ActivityPage'
 import OverviewTaskCards from './OverviewTaskCards'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
-
-// These sections will become interactive when their APIs exist.
-const PLANNED_SECTIONS = [
-    { name: 'Activity', icon: CalendarDays },
-]
 
 const SETUP_STEPS = [
     {
@@ -73,6 +69,7 @@ function pageFromHash() {
     if (window.location.hash === '#projects') return 'projects'
     if (window.location.hash === '#my-tasks') return 'my-tasks'
     if (window.location.hash === '#recycle-bin') return 'recycle-bin'
+    if (window.location.hash === '#activity') return 'activity'
     return 'overview'
 }
 
@@ -280,13 +277,13 @@ export default function Home({ user, onLogout }) {
                         <span>My tasks</span>
                         {page === 'my-tasks' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    {PLANNED_SECTIONS.map(({ name, icon: Icon }) => (
-                        <span className="dashboard-nav-item dashboard-nav-item--planned" key={name} title="Available when workspace features are connected">
-                            <Icon size={19} aria-hidden="true" />
-                            <span>{name}</span>
-                            <small>SOON</small>
-                        </span>
-                    ))}
+                    <a href="#activity" className={`dashboard-nav-item${page === 'activity' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'activity' ? 'page' : undefined}
+                        onClick={() => goToPage('activity')}>
+                        <CalendarDays size={19} aria-hidden="true" />
+                        <span>Activity</span>
+                        {page === 'activity' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
                     <div className="dashboard-nav-section-separator" aria-hidden="true" />
                     <p className="dashboard-sidebar-label dashboard-manage-label">MANAGE</p>
                     <a href="#recycle-bin" className={`dashboard-nav-item${page === 'recycle-bin' ? ' dashboard-nav-item--active' : ''}`}
@@ -326,7 +323,7 @@ export default function Home({ user, onLogout }) {
                         </button>
                         <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : 'Overview'}</strong>
+                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <span>Signed in</span>
@@ -334,7 +331,7 @@ export default function Home({ user, onLogout }) {
                     </div>
                 </header>
 
-                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : 'dashboard-projects'}>
+                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : 'dashboard-projects'}>
                     {page === 'invite' ? (
                         <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
                             onAccepted={onInvitationAccepted} />
@@ -354,6 +351,10 @@ export default function Home({ user, onLogout }) {
                         <MyTasksPage />
                     ) : page === 'recycle-bin' ? (
                         <RecycleBinPage />
+                    ) : page === 'activity' ? (
+                        <ActivityPage activeWorkspace={activeWorkspace}
+                            workspacesLoading={workspacesLoading}
+                            onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'projects' ? (
                         <ProjectsPage
                             user={user}
