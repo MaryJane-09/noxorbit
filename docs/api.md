@@ -330,3 +330,27 @@ accordingly.
 **Deployment note:** No new database migration is needed. The existing
 `007_workspace_invitations.sql` schema already supports `kind='email'`.
 SMTP and app-origin configuration are required to test actual delivery.
+
+
+## My Tasks — assigned work across workspaces
+
+`GET /api/v1/my-tasks` requires an authenticated session. The server
+takes the user ID only from the validated session and returns tasks where
+`assignee_id` equals that user **and** the user has a current membership in
+the corresponding workspace. It does not accept an arbitrary `user_id` query
+parameter, and it never returns another account's task assignments.
+
+Each result contains the normal task fields plus `project_name`,
+`workspace_name`, and `project_status`. Both active and archived project
+tasks appear; archived tasks remain read-only. Results are sorted with
+unfinished tasks first and earlier due dates before later ones (tasks
+without due dates appear last within each group).
+
+The React **My tasks** page (`#my-tasks`) includes filters for unfinished,
+completed, and all assignments, and lets the current assignee change a
+task's status through the existing protected task-status endpoint.
+The backend still checks membership, archived status, and the existing
+owner/creator/assignee authorization rules for each update. All other task
+editing remains in the project board. The page refreshes on navigation,
+manual refresh, and successful local status updates. No new database
+migration is needed: it uses tables/indexes from migrations 003/005/006.
