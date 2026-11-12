@@ -1304,3 +1304,86 @@
 .dashboard-deadline-task-priority--urgent { color: #ffc2cd; background: rgba(204,75,99,.23); }
 .dashboard-deadline-task-priority--high { color: #ffd69b; background: rgba(221,129,73,.2); }
 .dashboard-deadline-task-priority--low { color: #c9e8d1; background: rgba(82,167,119,.2); }
+
+/* Deadline summary remains compact; details occupy a separate full-width grid row. */
+.dashboard-deadline-card .dashboard-deadline-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin: 0 0 16px;
+}
+.dashboard-deadline-card .dashboard-deadline-summary .dashboard-deadline-reminder {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    max-width: 100%;
+    margin: 0;
+    padding: 3px 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.5;
+}
+.dashboard-deadline-reminder--overdue,
+.dashboard-deadline-reminder--today { color: #ffc8d2; }
+.dashboard-deadline-reminder--tomorrow { color: #ffdfa0; }
+.dashboard-deadline-reminder--upcoming { color: #cfbcd6; }
+.dashboard-deadline-summary .dashboard-deadline-reminder strong { font-size: 17px; font-weight: 800; }
+.dashboard-card-link .dashboard-chevron--open { transform: rotate(180deg); }
+.dashboard-deadline-details {
+    grid-column: 1 / -1;
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid rgba(241, 198, 150, .3);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(52, 31, 61, .97), rgba(25, 17, 35, .98));
+}
+.dashboard-deadline-details-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.dashboard-deadline-details-header h3 {
+    font: 750 clamp(19px, 2.1vw, 25px)/1.3 var(--dash-display);
+    color: #f8edf6;
+    margin: 6px 0 7px;
+}
+.dashboard-deadline-details-header p:not(.dashboard-eyebrow) {
+    color: #cbb8cf;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.dashboard-deadline-close {
+    flex: 0 0 auto;
+    border: 1px solid rgba(241, 198, 150, .35);
+    border-radius: 10px;
+    background: rgba(241, 198, 150, .06);
+    color: #ffe0ac;
+    padding: 10px 14px;
+    font: 700 14px var(--font-body);
+    cursor: pointer;
+}
+.dashboard-deadline-close:hover { background: rgba(241, 198, 150, .14); }
+.dashboard-deadline-details .dashboard-deadline-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+    align-items: start;
+    gap: 12px;
+    width: 100%;
+    max-height: none;
+    margin: 0 0 18px;
+    overflow: visible;
+}
+.dashboard-deadline-details .dashboard-deadline-group { background: rgba(20, 13, 31, .68); }
+.dashboard-deadline-details .dashboard-deadline-task-list strong { font-size: 14px; }
+.dashboard-deadline-details .dashboard-deadline-task-list small { font-size: 13px; }
+@media (max-width: 600px) {
+    .dashboard-deadline-details { padding: 17px; }
+    .dashboard-deadline-details-header { flex-direction: column; gap: 13px; }
+}
