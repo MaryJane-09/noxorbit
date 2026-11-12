@@ -19,6 +19,7 @@ var (
 	ErrInvalidStatus = errors.New("task status must be todo, in_progress, or done")
 	ErrInvalidPriority = errors.New("task priority must be low, medium, high, or urgent")
 	ErrInvalidDueDate = errors.New("due_date must be a valid YYYY-MM-DD date")
+	ErrPastDueDate = errors.New("due date cannot be in the past")
 )
 
 type Task struct {
@@ -90,4 +91,22 @@ func NormalizeStatus(value string) (string, error) {
 	default:
 		return "", ErrInvalidStatus
 	}
+}
+
+	
+// ValidateNewDueDate rejects past dates. Existing overdue dates can be
+// preserved when editing other fields; moving one earlier is not allowed.
+func ValidateNewDueDate(date *string, previous *string, now time.Time) error {
+	if date == nil || (previous != nil && *date == *previous) {
+		return nil
+	}
+	parsed, err := time.Parse("2006-01-02", *date)
+	if err != nil { return ErrInvalidDueDate }
+	// Workspace deadlines are calendar dates. Use the app's Nigerian
+	// business timezone, independently of the deployment server timezone.
+	location, err := time.LoadLocation("Africa/Lagos")
+	if err != nil { return err }
+	today := now.In(location).Format("2006-01-02")
+	if parsed.Format("2006-01-02") < today { return ErrPastDueDate }
+	return nil
 }
