@@ -7,7 +7,10 @@ import (
  "github.com/gofrs/uuid"
  "github.com/jackc/pgx/v5"
 )
-const maxAvatarBytes = 512 * 1024
+const maxAvatarBytes = 512 * 1024 // Stored image limit; keep migration 010 constraint.
+const maxAvatarUploadBytes = 10 * 1024 * 1024
+const maxAvatarSourceDimension = 6000
+const avatarOutputDimension = 512
 var ErrAvatarMissing = errors.New("profile picture not found")
 
 type Avatar struct {
