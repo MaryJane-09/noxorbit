@@ -90,8 +90,10 @@ func (r *MemberManagementRepository) RemoveMember(ctx context.Context, owner, wo
         ), recorded AS (
             INSERT INTO public.activity_events
                 (workspace_id, actor_id, action, entity_type, entity_id, entity_name)
-            SELECT workspace_id, $2, 'member.removed', 'member', user_id, 'Team member'
+            SELECT removed.workspace_id, $2, 'member.removed', 'member',
+                   removed.user_id, COALESCE(NULLIF(u.name,''), 'Team member')
             FROM removed
+            LEFT JOIN public.users u ON u.id = removed.user_id
             RETURNING entity_id
         )
         SELECT entity_id FROM recorded
