@@ -9,7 +9,7 @@ import "./App.css";
 
 function App() {
   const [introDone, setIntroDone] = useState(false);
-  const [view, setView] = useState("register");
+  const [view, setView] = useState(() => window.location.hash.startsWith("#invite/") ? "login" : "register");
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
 
