@@ -8,8 +8,8 @@ import (
  "encoding/json"
  "errors"
  "image"
- _ "image/jpeg"
- _ "image/png"
+ "image/jpeg"
+ "image/png"
  "io"
  "log"
  "net/http"
@@ -79,7 +79,20 @@ func(h *AvatarHandler)Avatar(w http.ResponseWriter,r *http.Request){
  if (format=="png"&&mime!="image/png")||(format=="jpeg"&&mime!="image/jpeg"){
     fail(w,400,"Invalid image format");return
  }
- if err:=h.store.SaveAvatar(r.Context(),uid,Avatar{Data:data,Mime:mime});err!=nil{
+ // Fully decode to reject incomplete images. Re-encode from pixels to remove
+ // EXIF (including GPS metadata) and other uploaded metadata before storage.
+ pixels,_,err:=image.Decode(bytes.NewReader(data))
+ if err!=nil{fail(w,400,"Invalid or incomplete image");return}
+ var normalized bytes.Buffer
+ if mime=="image/png"{
+    err=png.Encode(&normalized,pixels)
+ }else{
+    err=jpeg.Encode(&normalized,pixels,&jpeg.Options{Quality:85})
+ }
+ if err!=nil||normalized.Len()>maxAvatarBytes{
+    fail(w,400,"The processed picture is too large. Choose a smaller image.");return
+ }
+ if err:=h.store.SaveAvatar(r.Context(),uid,Avatar{Data:normalized.Bytes(),Mime:mime});err!=nil{
     if errors.Is(err,ErrNotFound){fail(w,401,"Account not found");return}
     log.Println("Save avatar:",err);fail(w,500,"Could not save picture");return
  }
