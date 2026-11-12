@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react'
 import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail } from 'lucide-react'
 import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange } from '../api'
 import './SettingsPage.css'
+import AvatarCropper from './AvatarCropper'
 
 export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
     const [tab, setTab] = useState('profile')
     const [avatarBusy, setAvatarBusy] = useState(false)
+    const [avatarFile, setAvatarFile] = useState(null)
     const [avatarError, setAvatarError] = useState('')
     const [avatarNotice, setAvatarNotice] = useState('')
     const [emailFormOpen, setEmailFormOpen] = useState(false)
@@ -53,23 +55,31 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         && password.length > 0 && phrase === 'DELETE MY ACCOUNT'
         && (sole.length === 0 || consent)
 
-    async function changeAvatar(event) {
+    function changeAvatar(event) {
         const file = event.target.files?.[0]
         event.target.value = ''
         if (!file || avatarBusy) return
         setAvatarError('')
         setAvatarNotice('')
         if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 10 * 1024 * 1024) {
-            setAvatarError('Choose a PNG or JPEG image up to 10 MB.')
+            setAvatarError('Choose a PNG or JPEG picture under 10 MB.')
             return
         }
+        setAvatarFile(file)
+    }
+
+    async function saveCroppedAvatar(file) {
+        if (avatarBusy) return
         setAvatarBusy(true)
+        setAvatarError('')
         try {
             await saveMyAvatar(file)
+            setAvatarFile(null)
             onAvatarUpdated()
-            setAvatarNotice('Profile picture updated.')
+            setAvatarNotice('Picture updated.')
         } catch (error) {
-            setAvatarError(error.message || 'Could not upload the picture.')
+            setAvatarError(error.message || 'Could not save picture.')
+            throw error
         } finally {
             setAvatarBusy(false)
         }
@@ -194,7 +204,11 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         setVersion((value) => value + 1)
     }
 
-    return <section className="settings-page" aria-labelledby="settings-heading">
+    return <>
+        {avatarFile && <AvatarCropper file={avatarFile}
+            onCancel={() => { if (!avatarBusy) setAvatarFile(null) }}
+            onSave={saveCroppedAvatar} saving={avatarBusy} />}
+        <section className="settings-page" aria-labelledby="settings-heading">
         <header className="settings-heading">
             <p className="dashboard-eyebrow">PERSONAL SETTINGS</p>
             <h1 id="settings-heading">Settings<span>.</span></h1>
@@ -221,7 +235,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 </span>
                 <div>
                     <strong>Profile picture</strong>
-                    <p className="settings-help">PNG or JPEG, up to 10 MB and 6000 × 6000 pixels. We automatically crop and optimize it for your profile.</p>
+                    <p className="settings-help">PNG or JPEG · Max 10 MB</p>
                     <div className="settings-avatar-actions">
                         <label className="settings-avatar-upload" htmlFor="settings-avatar-input">
                             <Camera size={16} aria-hidden="true" /> {avatarBusy ? 'Saving…' : 'Upload picture'}
@@ -375,4 +389,5 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         </section>
         </>}
     </section>
+    </>
 }
