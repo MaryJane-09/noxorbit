@@ -6,6 +6,7 @@ import (
 
 	"github.com/MaryJane-09/noxorbit/backend/config"
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
+	"github.com/MaryJane-09/noxorbit/backend/internal/activity"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
@@ -71,6 +72,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	taskRepo := task.NewRepository(pool)
 	taskHandler := task.NewHandler(taskRepo)
 	assignedHandler := task.NewAssignedHandler(taskRepo)
+	activityHandler := activity.NewHandler(activity.NewRepository(pool))
 	recycleHandler := task.NewRecycleHandler(taskRepo)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
@@ -97,6 +99,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/status", auth.RequireAuth(sessionRepo, projectHandler.Status))
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/activity", auth.RequireAuth(sessionRepo, activityHandler.List))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks", auth.RequireAuth(sessionRepo, recycleHandler.List))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks/{task_id}/restore", auth.RequireAuth(sessionRepo, recycleHandler.Restore))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks/{task_id}", auth.RequireAuth(sessionRepo, recycleHandler.DeleteForever))
