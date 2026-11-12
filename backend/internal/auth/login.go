@@ -98,7 +98,7 @@ func LoginHandler(users *user.UserRepository, sessions *session.SessionRepositor
 		}
 
 		expiresAt := time.Now().Add(sessionLifetime)
-		if err := sessions.Create(u.Id, session.HashToken(token), expiresAt); err != nil {
+		if err := sessions.CreateWithAgent(u.Id, session.HashToken(token), expiresAt, r.UserAgent()); err != nil {
 			log.Println(err)
 			writeError(w, http.StatusInternalServerError, "Something went wrong")
 			return
