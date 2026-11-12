@@ -104,7 +104,17 @@ func(r *Repository) Delete(ctx context.Context,userID uuid.UUID,password string,
 
     // Pending invitations created in other people's workspaces have an FK to
     // this user without ON DELETE SET NULL. Revoke these links by deletion.
-    if _,err:=tx.Exec(ctx,`DELETE FROM public.workspace_invitations WHERE created_by=$1`,userID);err!=nil{return err}
+    if _,err:=tx.Exec(ctx,`
+        DELETE FROM public.workspace_invitations
+        WHERE created_by=$1 OR lower(invited_email)=lower($2)
+    `,userID,email);err!=nil{return err}
+    // Keep historical events without retaining the deleted account's name
+    // in membership event snapshots. Actor references are separately SET NULL.
+    if _,err:=tx.Exec(ctx,`
+        UPDATE public.activity_events
+        SET entity_name='Former member'
+        WHERE entity_type='member' AND entity_id=$1
+    `,userID);err!=nil{return err}
     // Revoke every browser session *before* deleting the user. Never assume
     // a legacy sessions table has ON DELETE CASCADE.
     if _,err:=tx.Exec(ctx,`DELETE FROM public.sessions WHERE user_id=$1`,userID);err!=nil{return err}
