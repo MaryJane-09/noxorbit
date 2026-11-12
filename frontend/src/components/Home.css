@@ -1271,3 +1271,36 @@
 @media (max-width: 760px) {
     .dashboard-overview-data-card { min-height: 215px; }
 }
+
+/* Grouped deadlines: one reminder per due-day, expandable priority-sorted tasks. */
+.dashboard-deadline-card { min-width: 0; }
+.dashboard-deadline-alerts { display: grid; gap: 6px; width: 100%; margin: 0 0 12px; }
+.dashboard-overview-data-card .dashboard-deadline-reminder {
+    margin: 0; padding: 8px 11px; border-radius: 9px; font-size: 14px;
+    font-weight: 800; line-height: 1.45; border: 1px solid rgba(244,191,131,.24);
+}
+.dashboard-deadline-reminder--overdue, .dashboard-deadline-reminder--today {
+    color: #ffd5da; background: rgba(176,68,86,.19);
+}
+.dashboard-deadline-reminder--tomorrow { color: #ffe0a3; background: rgba(207,134,52,.18); }
+.dashboard-deadline-groups { display: grid; width: 100%; gap: 7px; margin-bottom: 15px; max-height: 310px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(245,204,148,.4) transparent; }
+.dashboard-deadline-group { min-width: 0; border: 1px solid rgba(239,194,153,.23); border-radius: 10px; background: rgba(23,14,32,.55); }
+.dashboard-deadline-group-toggle { display: flex; justify-content: space-between; align-items: center; gap: 9px; width: 100%; min-height: 49px; padding: 9px 10px; border: 0; background: transparent; color: #f5e7f2; font: inherit; cursor: pointer; text-align: left; }
+.dashboard-deadline-group-toggle:hover { background: rgba(255,218,158,.06); }
+.dashboard-deadline-group-toggle:focus-visible { outline: 2px solid #ffe0a4; outline-offset: -2px; border-radius: 10px; }
+.dashboard-deadline-group-title { display: flex; align-items: flex-start; flex-direction: column; gap: 4px; min-width: 0; }
+.dashboard-deadline-group-date { color: #cfbad1; font-size: 12px; }
+.dashboard-deadline-group-count { display: flex; flex: 0 0 auto; gap: 5px; align-items: center; font-size: 13px; font-weight: 700; color: #f2d8b0; white-space: nowrap; }
+.dashboard-deadline-group-toggle[aria-expanded="true"] .dashboard-deadline-group-count svg { transform: rotate(180deg); }
+.dashboard-deadline-badge { display: inline-block; border-radius: 6px; padding: 3px 6px; color: #d0bbd4; font-size: 12px; font-weight: 800; }
+.dashboard-deadline-badge--tomorrow, .dashboard-deadline-badge--soon { color: #ffdfa6; background: rgba(191,127,49,.22); }
+.dashboard-deadline-badge--today, .dashboard-deadline-badge--overdue { color: #ffccd5; background: rgba(191,64,86,.24); }
+.dashboard-deadline-task-list { display: grid; gap: 0; margin: 0; padding: 2px 10px 8px; list-style: none; }
+.dashboard-deadline-task-list li { display: flex; align-items: flex-start; gap: 8px; padding: 9px 0; border-top: 1px solid rgba(238,190,149,.13); min-width: 0; }
+.dashboard-deadline-task-list li > div { display: grid; gap: 3px; min-width: 0; }
+.dashboard-deadline-task-list strong { color: #fff0f6; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+.dashboard-deadline-task-list small { color: #c7b3c9; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.dashboard-deadline-task-priority { flex: 0 0 auto; padding: 3px 5px; border-radius: 5px; text-transform: capitalize; font-size: 11px; font-weight: 800; color: #ead8eb; background: rgba(206,177,208,.17); }
+.dashboard-deadline-task-priority--urgent { color: #ffc2cd; background: rgba(204,75,99,.23); }
+.dashboard-deadline-task-priority--high { color: #ffd69b; background: rgba(221,129,73,.2); }
+.dashboard-deadline-task-priority--low { color: #c9e8d1; background: rgba(82,167,119,.2); }
