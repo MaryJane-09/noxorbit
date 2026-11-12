@@ -69,6 +69,7 @@ func (r *Repository) Create(ctx context.Context, userID, workspaceID, projectID 
 			SELECT 1 FROM public.workspace_memberships m
 			WHERE m.workspace_id = p.workspace_id AND m.user_id = $1
 		  )
+		  AND ($7::date IS NULL OR $7::date >= (NOW() AT TIME ZONE 'Africa/Lagos')::date)
 		  AND ($8::uuid IS NULL OR EXISTS (
 			SELECT 1 FROM public.workspace_memberships a
 			WHERE a.workspace_id = p.workspace_id AND a.user_id = $8
@@ -135,6 +136,7 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 			WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
 			  AND (m.role = 'owner' OR t.created_by = $1)
 		  )
+		  AND ($8::date IS NULL OR $8::date = t.due_date OR $8::date >= (NOW() AT TIME ZONE 'Africa/Lagos')::date)
 		  AND ($9::uuid IS NULL OR EXISTS (
 			SELECT 1 FROM public.workspace_memberships a
 			WHERE a.workspace_id = t.workspace_id AND a.user_id = $9
