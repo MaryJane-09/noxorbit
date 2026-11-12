@@ -1,0 +1,18 @@
+.avatar-cropper-backdrop { position:fixed; inset:0; z-index:2000; display:grid; place-items:center; padding:18px; background:rgba(12,8,18,.83); backdrop-filter:blur(9px); }
+.avatar-cropper-dialog { width:min(100%,470px); max-height:calc(100vh - 36px); overflow:auto; padding:24px; border:1px solid rgba(229,181,122,.4); border-radius:20px; background:#291b33; color:#fff1f9; box-shadow:0 24px 90px rgba(0,0,0,.5); }
+.avatar-cropper-heading { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; margin-bottom:18px; }
+.avatar-cropper-heading h2 { margin:0 0 5px; font-size:23px; }
+.avatar-cropper-heading p { margin:0; color:#cdb6d0; font-size:14px; }
+.avatar-cropper-heading button { background:transparent; border:0; color:#efd7eb; cursor:pointer; }
+.avatar-cropper-stage { position:relative; width:min(100%,340px); margin:0 auto; aspect-ratio:1; border-radius:14px; overflow:hidden; cursor:grab; touch-action:none; background:#170e20; }
+.avatar-cropper-stage:active { cursor:grabbing; }
+.avatar-cropper-stage canvas { display:block; width:100%; height:100%; pointer-events:none; }
+.avatar-cropper-circle { position:absolute; inset:0; border-radius:50%; border:2px solid rgba(250,215,151,.9); box-shadow:0 0 0 100px rgba(14,9,18,.25); pointer-events:none; }
+.avatar-cropper-zoom { display:flex; align-items:center; gap:13px; margin:22px 0 18px; color:#f2d9b7; font-size:14px; font-weight:700; }
+.avatar-cropper-zoom input { flex:1; accent-color:#dcb77d; min-width:0; }
+.avatar-cropper-actions { display:flex; justify-content:flex-end; gap:11px; }
+.avatar-cropper-actions button { border-radius:10px; border:1px solid rgba(239,204,156,.4); min-height:43px; padding:11px 16px; font-size:14px; font-weight:800; cursor:pointer; color:#f8e3f2; background:transparent; }
+.avatar-cropper-actions button:last-child { background:linear-gradient(110deg,#edcc92,#d5a968); color:#251726; border-color:transparent; }
+.avatar-cropper-actions button:disabled { opacity:.5; cursor:not-allowed; }
+.avatar-cropper-error { color:#ffc1d0; font-size:14px; line-height:1.5; }
+@media(max-width:500px) { .avatar-cropper-dialog { padding:17px; } }
