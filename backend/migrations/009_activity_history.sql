@@ -74,6 +74,10 @@ BEGIN
     IF TG_OP = 'INSERT' THEN
         INSERT INTO public.activity_events (workspace_id,actor_id,action,entity_type,entity_id,entity_name)
         VALUES (NEW.workspace_id,NEW.created_by,'task.created','task',NEW.id,NEW.title);
+        IF NEW.assignee_id IS NOT NULL THEN
+            INSERT INTO public.activity_events (workspace_id,actor_id,action,entity_type,entity_id,entity_name)
+            VALUES (NEW.workspace_id,NEW.created_by,'task.assigned','task',NEW.id,NEW.title);
+        END IF;
         RETURN NEW;
     END IF;
     -- Deletion/restoration is distinct from ordinary editing and takes priority.
@@ -115,7 +119,9 @@ CREATE FUNCTION public.noxorbit_audit_membership_join()
 RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
     INSERT INTO public.activity_events (workspace_id,actor_id,action,entity_type,entity_id,entity_name)
-    VALUES (NEW.workspace_id,NEW.user_id,'member.joined','member',NEW.user_id,'Team member');
+    SELECT NEW.workspace_id, NEW.user_id, 'member.joined', 'member', NEW.user_id,
+           COALESCE(NULLIF(u.name,''),'Team member')
+    FROM public.users u WHERE u.id=NEW.user_id;
     RETURN NEW;
 END $$;
 CREATE TRIGGER noxorbit_membership_join_activity AFTER INSERT ON public.workspace_memberships
