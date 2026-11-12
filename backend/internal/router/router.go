@@ -8,6 +8,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/MaryJane-09/noxorbit/backend/internal/activity"
 	"github.com/MaryJane-09/noxorbit/backend/internal/account"
+	"github.com/MaryJane-09/noxorbit/backend/internal/profile"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
@@ -75,6 +76,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	assignedHandler := task.NewAssignedHandler(taskRepo)
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
 	accountHandler := account.NewHandler(account.NewRepository(pool))
+	profileHandler := profile.NewHandler(profile.NewRepository(pool))
 	recycleHandler := task.NewRecycleHandler(taskRepo)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
@@ -84,6 +86,8 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.Handle("/register", limits.LimitIP("register", 12, window, register.RegisterHandler(otpRepo, &sender)))
 	mux.HandleFunc("/me", auth.RequireAuth(sessionRepo, auth.MeHandler(repo)))
 	mux.HandleFunc("/api/v1/account", auth.RequireAuth(sessionRepo, accountHandler.Handle))
+	mux.HandleFunc("/api/v1/profile", auth.RequireAuth(sessionRepo, profileHandler.Name))
+	mux.HandleFunc("/api/v1/profile/password", auth.RequireAuth(sessionRepo, profileHandler.Password))
 	// Only authenticated users can create or list their own workspaces.
 	// The repository enforces the per-user membership filter.
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
