@@ -59,8 +59,8 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         if (!file || avatarBusy) return
         setAvatarError('')
         setAvatarNotice('')
-        if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 512 * 1024) {
-            setAvatarError('Choose a PNG or JPEG image smaller than 512 KB.')
+        if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 10 * 1024 * 1024) {
+            setAvatarError('Choose a PNG or JPEG image up to 10 MB.')
             return
         }
         setAvatarBusy(true)
@@ -221,7 +221,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 </span>
                 <div>
                     <strong>Profile picture</strong>
-                    <p className="settings-help">PNG or JPEG, up to 512 KB and 1024 × 1024 pixels.</p>
+                    <p className="settings-help">PNG or JPEG, up to 10 MB and 6000 × 6000 pixels. We automatically crop and optimize it for your profile.</p>
                     <div className="settings-avatar-actions">
                         <label className="settings-avatar-upload" htmlFor="settings-avatar-input">
                             <Camera size={16} aria-hidden="true" /> {avatarBusy ? 'Saving…' : 'Upload picture'}
