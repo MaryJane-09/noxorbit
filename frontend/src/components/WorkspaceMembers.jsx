@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { LoaderCircle, Users, Trash2, X } from 'lucide-react'
-import { createWorkspaceInvite, fetchWorkspaceMembers, fetchWorkspaceInvites, removeWorkspaceMember, revokeWorkspaceInvite } from '../api'
+import { createWorkspaceInvite, fetchWorkspaceMembers, fetchWorkspaceInvites, removeWorkspaceMember, revokeWorkspaceInvite, sendWorkspaceEmailInvite } from '../api'
 
 export default function WorkspaceMembers({ workspace }) {
     const [state, setState] = useState({ id: null, members: [], error: '' })
@@ -11,6 +11,10 @@ export default function WorkspaceMembers({ workspace }) {
     const [actionError, setActionError] = useState('')
     const confirmRef = useRef(null)
     const [invite, setInvite] = useState({ creating: false, link: '', error: '', copied: false })
+    const [recipientEmail, setRecipientEmail] = useState('')
+    const [sendingEmail, setSendingEmail] = useState(false)
+    const [emailNotice, setEmailNotice] = useState('')
+    const [emailError, setEmailError] = useState('')
     useEffect(() => {
         const controller = new AbortController()
         fetchWorkspaceMembers(workspace.id, { signal: controller.signal })
@@ -63,6 +67,24 @@ export default function WorkspaceMembers({ workspace }) {
 
     function cancelAction() {
         if (!working) { setConfirm(null); setActionError('') }
+    }
+
+    async function sendEmail(event) {
+        event.preventDefault()
+        if (sendingEmail) return
+        setSendingEmail(true)
+        setEmailError('')
+        setEmailNotice('')
+        try {
+            await sendWorkspaceEmailInvite(workspace.id, recipientEmail.trim())
+            setEmailNotice('Invitation email sent.')
+            setRecipientEmail('')
+            setReload((value) => value + 1)
+        } catch (err) {
+            setEmailError(err.message || 'Could not send invitation email.')
+        } finally {
+            setSendingEmail(false)
+        }
     }
 
     async function generateLink() {
@@ -126,10 +148,10 @@ export default function WorkspaceMembers({ workspace }) {
                     const revoked = Boolean(item.revoked_at)
                     const status = revoked ? 'Revoked' : used ? 'Used' : expired ? 'Expired' : 'Active'
                     return <div key={item.id} className="workspace-invite-entry">
-                        <div><strong>{item.kind === 'email' ? 'Email invitation' : 'Invitation link'}</strong>
+                        <div><strong>{item.kind === 'email' ? (item.invited_email || 'Email invitation') : 'Invitation link'}</strong>
                             <span>{status} · {item.use_count}/{item.max_uses} uses · Expires {new Date(item.expires_at).toLocaleDateString()}</span></div>
                         {!revoked && !used && !expired && <button type="button" className="workspace-member-remove"
-                            onClick={() => setConfirm({ type: 'invite', id: item.id, label: 'this invitation link' })}>
+                            onClick={() => setConfirm({ type: 'invite', id: item.id, label: 'this invitation' })}>
                             Revoke
                         </button>}
                     </div>
@@ -137,6 +159,21 @@ export default function WorkspaceMembers({ workspace }) {
             </section>}
             {workspace.role === 'owner' && <div className="workspace-invite-tools">
                 <h3>Invite a teammate</h3>
+                <form className="workspace-invite-email" onSubmit={sendEmail}>
+                    <label htmlFor="workspace-email-recipient">Invite by email</label>
+                    <div className="workspace-invite-link">
+                        <input id="workspace-email-recipient" type="email" required maxLength={254}
+                            placeholder="teammate@example.com" value={recipientEmail}
+                            onChange={(event) => setRecipientEmail(event.target.value)}
+                            autoComplete="off" disabled={sendingEmail} />
+                        <button className="dashboard-feature-action" type="submit" disabled={sendingEmail || !recipientEmail.trim()}>
+                            {sendingEmail ? 'Sending…' : 'Send invitation'}
+                        </button>
+                    </div>
+                    {emailNotice && <p role="status" className="dashboard-form-hint">{emailNotice}</p>}
+                    {emailError && <p role="alert" className="dashboard-form-error">{emailError}</p>}
+                </form>
+                <h3>Or share an invitation link</h3>
                 <p className="dashboard-form-hint">Create a link valid for seven days and one new member. Send it privately to the person you want to invite.</p>
                 <button type="button" className="dashboard-feature-action" disabled={invite.creating}
                     onClick={generateLink}>{invite.creating ? 'Generating…' : 'Generate invitation link'}</button>
