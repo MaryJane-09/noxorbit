@@ -3,6 +3,7 @@ package task
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/gofrs/uuid"
 	"github.com/jackc/pgx/v5"
@@ -81,6 +82,7 @@ func (r *Repository) Create(ctx context.Context, userID, workspaceID, projectID 
 	status, lookupErr := r.accessibleProject(ctx, userID, workspaceID, projectID)
 	if lookupErr != nil { return Task{}, lookupErr }
 	if status != "active" { return Task{}, ErrArchived }
+	if err := ValidateNewDueDate(in.DueDate, nil, time.Now()); err != nil { return Task{}, err }
 	return Task{}, ErrInvalidAssignee
 }
 
@@ -160,7 +162,12 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 		)
 	`, userID, workspaceID, projectID, taskID).Scan(&canEdit)
 	if err != nil { return Task{}, err }
-	if canEdit { return Task{}, ErrInvalidAssignee }
+	if canEdit {
+        current, getErr := r.Get(ctx, userID, workspaceID, projectID, taskID)
+        if getErr != nil { return Task{}, getErr }
+        if err := ValidateNewDueDate(in.DueDate, current.DueDate, time.Now()); err != nil { return Task{}, err }
+        return Task{}, ErrInvalidAssignee
+    }
 	return Task{}, ErrForbidden
 }
 
