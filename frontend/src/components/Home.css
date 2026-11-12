@@ -236,28 +236,6 @@
     padding: 17px 18px 15px;
 }
 
-.dashboard-sidebar-note {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 16px;
-    padding: 13px 14px;
-    border: 1px solid rgba(229, 195, 136, .1);
-    border-radius: 14px;
-    background: rgba(223, 181, 122, .035);
-    color: #cbb8cf;
-}
-
-.dashboard-sidebar-note svg {
-    color: var(--dash-gold);
-    flex: 0 0 auto;
-}
-
-.dashboard-sidebar-note p {
-    font-size: 14px;
-    line-height: 1.6;
-}
-
 .dashboard-profile {
     display: flex;
     align-items: center;
@@ -1416,7 +1394,6 @@
     .home-page--sidebar-collapsed .dashboard-workspace-indicator-text,
     .home-page--sidebar-collapsed .dashboard-sidebar-label,
     .home-page--sidebar-collapsed .dashboard-nav-item > span,
-    .home-page--sidebar-collapsed .dashboard-sidebar-note,
     .home-page--sidebar-collapsed .dashboard-profile-info,
     .home-page--sidebar-collapsed .dashboard-error,
     .home-page--sidebar-collapsed .dashboard-signout:not(:focus-visible) > :not(svg) { display:none; }
@@ -1443,4 +1420,125 @@
 /* Apply the wider expanded rail at the intermediate desktop breakpoint too. */
 @media (min-width:901px) and (max-width:1180px) {
     .home-page:not(.home-page--sidebar-collapsed) { grid-template-columns:260px minmax(0,1fr); }
+}
+
+/* Sidebar refinement: utility control is quieter than page navigation. */
+@media (min-width: 901px) {
+    .dashboard-sidebar-top {
+        padding-top: 19px;
+        padding-bottom: 17px;
+    }
+    .dashboard-sidebar-toggle-row {
+        padding: 8px 18px 0;
+    }
+    .dashboard-desktop-sidebar-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        width: auto;
+        height: 34px;
+        min-width: 34px;
+        padding: 0 9px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: transparent;
+        color: #bca8c5;
+        font-size: 12px;
+        font-weight: 650;
+        transition: color .15s ease, background .15s ease;
+    }
+    .dashboard-desktop-sidebar-toggle:hover {
+        color: #f1d8b1;
+        background: rgba(243, 195, 139, .09);
+    }
+    .dashboard-sidebar-toggle-label {
+        white-space: nowrap;
+    }
+    .dashboard-workspace-indicator {
+        padding-top: 11px;
+        padding-bottom: 16px;
+    }
+    .dashboard-nav {
+        gap: 4px;
+    }
+    .dashboard-nav-item {
+        min-height: 43px;
+        border: 1px solid transparent;
+        border-radius: 11px;
+        transition: background .15s ease, color .15s ease;
+    }
+    .dashboard-nav-item:hover {
+        color: #f6e3c7;
+        background: rgba(240, 192, 143, .07);
+    }
+    .dashboard-nav-item:focus-visible {
+        outline: 2px solid #f5d19b;
+        outline-offset: 2px;
+    }
+    .dashboard-nav-item--active,
+    .dashboard-nav-item--active:hover {
+        border-color: rgba(250, 212, 150, .4);
+        background: linear-gradient(90deg, rgba(243, 189, 108, .19), rgba(214, 136, 123, .065));
+    }
+    .dashboard-sidebar-bottom {
+        padding-top: 12px;
+    }
+    .home-page--sidebar-collapsed .dashboard-sidebar-top {
+        margin: 0 12px;
+        padding: 18px 0 13px;
+    }
+    .home-page--sidebar-collapsed .dashboard-sidebar-toggle-row {
+        padding: 8px 0 6px;
+        justify-content: center;
+    }
+    .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle {
+        justify-content: center;
+        width: 42px;
+        height: 34px;
+        padding: 0;
+    }
+    .home-page--sidebar-collapsed .dashboard-sidebar-toggle-label {
+        display: none;
+    }
+    .home-page--sidebar-collapsed .dashboard-workspace-indicator {
+        padding: 10px 12px 12px;
+    }
+    .home-page--sidebar-collapsed .dashboard-workspace-indicator-body {
+        padding: 9px 0;
+        border-radius: 12px;
+    }
+    .home-page--sidebar-collapsed .dashboard-nav {
+        padding: 0 12px;
+        gap: 5px;
+    }
+    .home-page--sidebar-collapsed .dashboard-nav-item {
+        min-height: 44px;
+        padding: 0;
+        border-radius: 11px;
+    }
+    .home-page--sidebar-collapsed .dashboard-nav-section-separator {
+        margin: 13px 8px 12px;
+    }
+    .home-page--sidebar-collapsed .dashboard-sidebar-bottom {
+        padding: 12px 12px 15px;
+    }
+    .home-page--sidebar-collapsed .dashboard-profile {
+        padding: 10px 0;
+    }
+    .home-page--sidebar-collapsed .dashboard-signout {
+        min-height: 43px;
+        margin-top: 3px;
+    }
+    .home-page--sidebar-collapsed .dashboard-nav-active-mark {
+        display: none;
+    }
+}
+/* Small screens keep the original drawer layout and full navigation labels. */
+@media (max-width: 900px) {
+    .dashboard-sidebar-toggle-row { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-nav-item,
+    .dashboard-desktop-sidebar-toggle { transition: none; }
 }
