@@ -159,3 +159,27 @@ WHERE schemaname = 'public' AND tablename = 'projects';
 Expected: `public.projects` exists and `rowsecurity` is `true`.
 No dummy projects are inserted. The backend enforces workspace membership
 in each project query and owner permission for archive/restore.
+
+
+## Migration 010 — Profile photos and verified email updates
+
+Run `backend/migrations/010_profile_avatar_email.sql` in Supabase SQL
+Editor **after migration 009** and before starting the upgraded Go backend.
+
+This migration adds two optional columns to `public.users` for a bounded
+private PNG/JPEG profile photo, and a protected `pending_email_changes`
+table for 5-minute email verification codes (stored as bcrypt hashes).
+It does not overwrite existing emails, passwords, names, projects or tasks.
+
+Verify:
+```sql
+SELECT column_name FROM information_schema.columns
+WHERE table_schema='public' AND table_name='users'
+  AND column_name IN ('avatar_data','avatar_mime');
+SELECT to_regclass('public.pending_email_changes');
+```
+The first query should return two rows, and the second should return
+`public.pending_email_changes`.
+
+Avoid testing address changes against your primary account until the
+backend and frontend checks have passed.
