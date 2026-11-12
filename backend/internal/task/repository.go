@@ -131,6 +131,7 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 			due_date = $8::date, assignee_id = $9, updated_at = NOW()
 		FROM public.projects p
 		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
+		  AND t.deleted_at IS NULL
 		  AND p.id = t.project_id AND p.workspace_id = t.workspace_id
 		  AND p.status = 'active'
 		  AND EXISTS (
@@ -177,6 +178,7 @@ func (r *Repository) UpdateStatus(ctx context.Context, userID, workspaceID, proj
 		UPDATE public.tasks AS t SET status = $5, updated_at = NOW()
 		FROM public.projects p
 		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
+		  AND t.deleted_at IS NULL
 		  AND p.id = t.project_id AND p.workspace_id = t.workspace_id
 		  AND p.status = 'active'
 		  AND EXISTS (
