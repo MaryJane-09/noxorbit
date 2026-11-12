@@ -1398,17 +1398,19 @@
 }
 
 
-/* Desktop-only collapsible rail. Mobile retains the full slide-out navigation. */
+/* Desktop navigation: a slightly roomier rail and a left-aligned control below branding. */
+.dashboard-sidebar-toggle-row { display:flex; justify-content:flex-start; padding:12px 20px 2px; }
 .dashboard-desktop-sidebar-toggle { display:grid; place-items:center; flex:0 0 auto;
-    width:32px; height:32px; border:1px solid rgba(236,194,152,.27);
+    width:36px; height:36px; border:1px solid rgba(236,194,152,.27);
     border-radius:9px; background:rgba(244,201,143,.065); color:#f4d49b; cursor:pointer; }
 .dashboard-desktop-sidebar-toggle:hover { background:rgba(244,201,143,.16); }
 .dashboard-desktop-sidebar-toggle:focus-visible { outline:2px solid #ffe3a5; outline-offset:2px; }
 @media (min-width: 901px) {
-    .home-page { transition:grid-template-columns .2s ease; }
-    .home-page.home-page--sidebar-collapsed { grid-template-columns:76px minmax(0,1fr); }
-    .home-page--sidebar-collapsed .dashboard-sidebar-top { flex-direction:column-reverse; gap:12px; margin:0 10px; padding:16px 0; }
+    .home-page { grid-template-columns:286px minmax(0,1fr); transition:grid-template-columns .2s ease; }
+    .home-page.home-page--sidebar-collapsed { grid-template-columns:88px minmax(0,1fr); }
+    .home-page--sidebar-collapsed .dashboard-sidebar-top { margin:0 10px; justify-content:center; padding:17px 0 14px; }
     .home-page--sidebar-collapsed .dashboard-brand { justify-content:center; }
+    .home-page--sidebar-collapsed .dashboard-sidebar-toggle-row { justify-content:flex-start; padding:12px 0 4px 20px; }
     .home-page--sidebar-collapsed .dashboard-brand img { margin:0; width:45px; height:45px; }
     .home-page--sidebar-collapsed .dashboard-brand-copy,
     .home-page--sidebar-collapsed .dashboard-workspace-indicator-text,
@@ -1430,9 +1432,15 @@
     .home-page--sidebar-collapsed .dashboard-sidebar { overflow-x:hidden; }
 }
 @media (max-width:900px) {
+    .dashboard-sidebar-toggle-row { display:none; }
     .dashboard-desktop-sidebar-toggle { display:none; }
     .home-page--sidebar-collapsed .dashboard-sidebar { width:min(290px,84vw); }
 }
 @media (prefers-reduced-motion:reduce) {
     .home-page { transition:none; }
+}
+
+/* Apply the wider expanded rail at the intermediate desktop breakpoint too. */
+@media (min-width:901px) and (max-width:1180px) {
+    .home-page:not(.home-page--sidebar-collapsed) { grid-template-columns:260px minmax(0,1fr); }
 }
