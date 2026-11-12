@@ -1,10 +1,21 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound } from 'lucide-react'
-import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName } from '../api'
+import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail } from 'lucide-react'
+import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange } from '../api'
 import './SettingsPage.css'
 
-export default function SettingsPage({ user, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
+export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
     const [tab, setTab] = useState('profile')
+    const [avatarBusy, setAvatarBusy] = useState(false)
+    const [avatarError, setAvatarError] = useState('')
+    const [avatarNotice, setAvatarNotice] = useState('')
+    const [emailFormOpen, setEmailFormOpen] = useState(false)
+    const [newEmail, setNewEmail] = useState('')
+    const [emailPassword, setEmailPassword] = useState('')
+    const [emailCode, setEmailCode] = useState('')
+    const [emailRequested, setEmailRequested] = useState(false)
+    const [emailBusy, setEmailBusy] = useState(false)
+    const [emailError, setEmailError] = useState('')
+    const [emailNotice, setEmailNotice] = useState('')
     const [displayName, setDisplayName] = useState(user.name || '')
     const [savingName, setSavingName] = useState(false)
     const [profileError, setProfileError] = useState('')
@@ -41,6 +52,78 @@ export default function SettingsPage({ user, onAccountDeleted, onProfileUpdated,
     const canDelete = !busy && !state.loading && !state.error && !blocked
         && password.length > 0 && phrase === 'DELETE MY ACCOUNT'
         && (sole.length === 0 || consent)
+
+    async function changeAvatar(event) {
+        const file = event.target.files?.[0]
+        event.target.value = ''
+        if (!file || avatarBusy) return
+        setAvatarError('')
+        setAvatarNotice('')
+        if (!['image/png', 'image/jpeg'].includes(file.type) || file.size > 512 * 1024) {
+            setAvatarError('Choose a PNG or JPEG image smaller than 512 KB.')
+            return
+        }
+        setAvatarBusy(true)
+        try {
+            await saveMyAvatar(file)
+            onAvatarUpdated()
+            setAvatarNotice('Profile picture updated.')
+        } catch (error) {
+            setAvatarError(error.message || 'Could not upload the picture.')
+        } finally {
+            setAvatarBusy(false)
+        }
+    }
+
+    async function clearAvatar() {
+        if (avatarBusy) return
+        setAvatarBusy(true)
+        setAvatarError('')
+        setAvatarNotice('')
+        try {
+            await removeMyAvatar()
+            onAvatarUpdated()
+            setAvatarNotice('Profile picture removed.')
+        } catch (error) {
+            setAvatarError(error.message || 'Could not remove the picture.')
+        } finally {
+            setAvatarBusy(false)
+        }
+    }
+
+    async function startEmailChange(event) {
+        event.preventDefault()
+        if (emailBusy) return
+        setEmailBusy(true)
+        setEmailError('')
+        setEmailNotice('')
+        try {
+            await requestEmailChange(newEmail.trim(), emailPassword)
+            setEmailPassword('')
+            setEmailCode('')
+            setEmailRequested(true)
+            setEmailNotice('Check your new inbox for the six-character verification code. It expires in five minutes.')
+        } catch (error) {
+            setEmailError(error.message || 'Could not send the verification code.')
+        } finally {
+            setEmailBusy(false)
+        }
+    }
+
+    async function finishEmailChange(event) {
+        event.preventDefault()
+        if (emailBusy) return
+        setEmailBusy(true)
+        setEmailError('')
+        try {
+            await confirmEmailChange(emailCode.trim())
+            onEmailChanged()
+        } catch (error) {
+            setEmailError(error.message || 'Could not verify the code.')
+        } finally {
+            setEmailBusy(false)
+        }
+    }
 
     async function saveName(event) {
         event.preventDefault()
@@ -132,14 +215,34 @@ export default function SettingsPage({ user, onAccountDeleted, onProfileUpdated,
                 <UserRound size={21} aria-hidden="true" />
                 <h2 id="settings-account-heading">My profile</h2>
             </div>
+            <div className="settings-avatar-editor">
+                <span className="settings-avatar-preview">
+                    {avatarURL ? <img src={avatarURL} alt="Your profile picture" /> : <UserRound size={35} aria-hidden="true" />}
+                </span>
+                <div>
+                    <strong>Profile picture</strong>
+                    <p className="settings-help">PNG or JPEG, up to 512 KB and 1024 × 1024 pixels.</p>
+                    <div className="settings-avatar-actions">
+                        <label className="settings-avatar-upload" htmlFor="settings-avatar-input">
+                            <Camera size={16} aria-hidden="true" /> {avatarBusy ? 'Saving…' : 'Upload picture'}
+                        </label>
+                        <input id="settings-avatar-input" className="settings-avatar-input"
+                            type="file" accept="image/png,image/jpeg"
+                            onChange={changeAvatar} disabled={avatarBusy} />
+                        {avatarURL && <button type="button" onClick={clearAvatar} disabled={avatarBusy}>Remove picture</button>}
+                    </div>
+                </div>
+            </div>
+            {avatarError && <p role="alert" className="settings-deletion-error">{avatarError}</p>}
+            {avatarNotice && <p role="status" className="settings-success">{avatarNotice}</p>}
             <p className="settings-help">Your name is visible to teammates across Noxorbit.</p>
             <form onSubmit={saveName} className="settings-edit-form">
                 <label htmlFor="settings-display-name">Full name</label>
                 <input id="settings-display-name" value={displayName} autoComplete="name" maxLength={100}
                     onChange={(event) => setDisplayName(event.target.value)} />
-                <label htmlFor="settings-email-display">Email address</label>
-                <input id="settings-email-display" value={user.email} readOnly aria-describedby="settings-email-note" />
-                <p id="settings-email-note" className="settings-help">Email changes will require verification and are not enabled yet.</p>
+                <label htmlFor="settings-email-display">Current email address</label>
+                <input id="settings-email-display" value={user.email} readOnly />
+                <p className="settings-help">Changing your email requires your password and a code sent to the new address.</p>
                 {profileError && <p role="alert" className="settings-deletion-error">{profileError}</p>}
                 {profileMessage && <p role="status" className="settings-success">{profileMessage}</p>}
                 <div className="settings-edit-actions">
@@ -148,6 +251,48 @@ export default function SettingsPage({ user, onAccountDeleted, onProfileUpdated,
                     </button>
                 </div>
             </form>
+            <div className="settings-email-change">
+                <div className="settings-email-heading">
+                    <Mail size={19} aria-hidden="true" />
+                    <strong>Change email address</strong>
+                    <button type="button" onClick={() => {
+                        setEmailFormOpen((value) => !value)
+                        setEmailError('')
+                        setEmailNotice('')
+                        setEmailRequested(false)
+                        setNewEmail('')
+                        setEmailPassword('')
+                        setEmailCode('')
+                    }} disabled={emailBusy}>
+                        {emailFormOpen ? 'Cancel' : 'Change email'}
+                    </button>
+                </div>
+                {emailFormOpen && (!emailRequested ? <form className="settings-edit-form" onSubmit={startEmailChange}>
+                    <label htmlFor="settings-new-email">New email address</label>
+                    <input id="settings-new-email" type="email" autoComplete="email"
+                        value={newEmail} onChange={(event) => setNewEmail(event.target.value)} required />
+                    <label htmlFor="settings-email-password">Current password</label>
+                    <input id="settings-email-password" type="password" autoComplete="current-password"
+                        value={emailPassword} onChange={(event) => setEmailPassword(event.target.value)} required />
+                    <div className="settings-edit-actions">
+                        <button type="submit" disabled={emailBusy || !newEmail || !emailPassword}>
+                            {emailBusy ? 'Sending…' : 'Send verification code'}
+                        </button>
+                    </div>
+                </form> : <form className="settings-edit-form" onSubmit={finishEmailChange}>
+                    <p className="settings-help">Enter the code sent to <strong>{newEmail}</strong>. Your current email remains active until verification succeeds.</p>
+                    <label htmlFor="settings-email-code">Verification code</label>
+                    <input id="settings-email-code" type="text" inputMode="text" autoComplete="one-time-code"
+                        maxLength={6} value={emailCode} onChange={(event) => setEmailCode(event.target.value)} required />
+                    <div className="settings-edit-actions">
+                        <button type="submit" disabled={emailBusy || emailCode.trim().length !== 6}>
+                            {emailBusy ? 'Verifying…' : 'Verify and change email'}
+                        </button>
+                    </div>
+                </form>)}
+                {emailError && <p role="alert" className="settings-deletion-error">{emailError}</p>}
+                {emailNotice && <p role="status" className="settings-success">{emailNotice}</p>}
+            </div>
         </section>}
         {tab === 'security' && <>
             <section className="settings-account" aria-labelledby="settings-security-heading">
