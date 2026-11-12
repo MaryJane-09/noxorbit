@@ -2,10 +2,10 @@ package membership
 
 import (
     "context"
-    "crypto/rand"
     "crypto/sha256"
     "encoding/base64"
     "errors"
+    "strings"
     "time"
 
     "github.com/gofrs/uuid"
@@ -25,23 +25,25 @@ type LinkRepository struct { pool *pgxpool.Pool }
 func NewLinkRepository(pool *pgxpool.Pool) *LinkRepository { return &LinkRepository{pool:pool} }
 
 func (r *LinkRepository) CreateLink(ctx context.Context,actor,workspaceID uuid.UUID)(string,error) {
-    var random [32]byte
-    if _,err:=rand.Read(random[:]);err!=nil{return "",err}
-    secret:=base64.RawURLEncoding.EncodeToString(random[:])
-    digest:=sha256.Sum256([]byte(secret))
+    secret,digest,err:=newInviteSecret()
+    if err!=nil{return "",err}
+    tx,err:=r.pool.Begin(ctx)
+    if err!=nil{return "",err}
+    defer tx.Rollback(ctx)
+    var owner bool
+    err=tx.QueryRow(ctx,`SELECT EXISTS(SELECT 1 FROM public.workspace_memberships WHERE workspace_id=$1 AND user_id=$2 AND role='owner')`,workspaceID,actor).Scan(&owner)
+    if err!=nil{return "",err}
+    if !owner{return "",ErrOwnerRequired}
+    if err=invitationQuota(ctx,tx,workspaceID);err!=nil{return "",err}
     var id uuid.UUID
-    err:=r.pool.QueryRow(ctx,`
+    err=tx.QueryRow(ctx,`
         INSERT INTO public.workspace_invitations
             (workspace_id,created_by,kind,token_hash,expires_at,max_uses)
-        SELECT $1,$2,'link',$3,NOW()+INTERVAL '7 days',1
-        WHERE EXISTS (
-            SELECT 1 FROM public.workspace_memberships
-            WHERE workspace_id=$1 AND user_id=$2 AND role='owner'
-        )
+        VALUES ($1,$2,'link',$3,NOW()+INTERVAL '7 days',1)
         RETURNING id
-    `,workspaceID,actor,digest[:]).Scan(&id)
-    if errors.Is(err,pgx.ErrNoRows) { return "",ErrOwnerRequired }
-    if err!=nil { return "",err }
+    `,workspaceID,actor,digest).Scan(&id)
+    if err!=nil{return "",err}
+    if err=tx.Commit(ctx);err!=nil{return "",err}
     return secret,nil
 }
 
@@ -58,13 +60,24 @@ func (r *LinkRepository) AcceptLink(ctx context.Context,userID uuid.UUID,secret 
     var expires time.Time
     var revoked *time.Time
     var maxUses,uses int
+    var kind string
+    var invitedEmail *string
     err=tx.QueryRow(ctx,`
-        SELECT id,workspace_id,expires_at,revoked_at,max_uses,use_count
+        SELECT id,workspace_id,expires_at,revoked_at,max_uses,use_count,kind,invited_email
         FROM public.workspace_invitations
-        WHERE token_hash=$1 AND kind='link' FOR UPDATE
-    `,digest[:]).Scan(&inviteID,&workspaceID,&expires,&revoked,&maxUses,&uses)
+        WHERE token_hash=$1 FOR UPDATE
+    `,digest[:]).Scan(&inviteID,&workspaceID,&expires,&revoked,&maxUses,&uses,&kind,&invitedEmail)
     if errors.Is(err,pgx.ErrNoRows){return uuid.Nil,ErrInvalidInvite}
     if err!=nil{return uuid.Nil,err}
+    if kind=="email" {
+        var accountEmail string
+        err=tx.QueryRow(ctx,`SELECT email FROM public.users WHERE id=$1`,userID).Scan(&accountEmail)
+        if errors.Is(err,pgx.ErrNoRows){return uuid.Nil,ErrInvalidInvite}
+        if err!=nil{return uuid.Nil,err}
+        if invitedEmail==nil || strings.ToLower(strings.TrimSpace(accountEmail))!=*invitedEmail {
+            return uuid.Nil,ErrEmailMismatch
+        }
+    }
     var alreadyMember bool
     err=tx.QueryRow(ctx,`
         SELECT EXISTS(SELECT 1 FROM public.workspace_memberships
