@@ -1,0 +1,22 @@
+.recycle-page { padding-top: 10px; }
+.recycle-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; padding-bottom: 28px; border-bottom: 1px solid var(--dash-line); }
+.recycle-heading h1 { font: 700 clamp(32px, 4vw, 48px)/1.2 var(--dash-display); margin: 12px 0; letter-spacing: -.045em; }
+.recycle-heading h1 span { color: var(--dash-gold-rich); }
+.recycle-heading p:not(.dashboard-eyebrow) { color: #d5bfd9; font-size: 15px; line-height: 1.7; max-width: 600px; }
+.recycle-refresh { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 15px; border: 1px solid rgba(243,204,154,.36); border-radius: 10px; background: rgba(245,196,138,.07); color: #f9d8a5; font-size: 14px; font-weight: 800; cursor: pointer; }
+.recycle-refresh:disabled { opacity: .6; }
+.recycle-scope { color: #c7b3cb; font-size: 14px; line-height: 1.6; margin: 22px 0; }
+.recycle-notice { margin: 20px 0; padding: 12px 16px; border: 1px solid rgba(130,191,150,.4); border-radius: 10px; background: rgba(66,132,94,.12); color: #c9ebd2; font-size: 14px; }
+.recycle-message { display: flex; flex-direction: column; align-items: center; gap: 13px; padding: 48px 22px; border: 1px solid var(--dash-line); border-radius: 16px; background: rgba(48,31,57,.7); color: #dcc9de; text-align: center; font-size: 15px; }
+.recycle-message h2 { font-size: 21px; margin: 0; }
+.recycle-message p { margin: 0; }
+.recycle-message button { color: #ffe0ad; border: 1px solid rgba(243,204,154,.4); background: transparent; border-radius: 8px; padding: 9px 12px; cursor: pointer; }
+.recycle-items { display: grid; gap: 13px; }
+.recycle-item { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; padding: 21px; border: 1px solid rgba(245,200,154,.25); border-radius: 15px; background: linear-gradient(145deg,#302039,#21182b); }
+.recycle-item-info { min-width: 0; flex: 1 1 260px; }
+.recycle-item-info > span { font-size: 13px; color: #e3c795; font-weight: 750; }
+.recycle-item-info h2 { margin: 8px 0; font-size: 19px; overflow-wrap: anywhere; }
+.recycle-item-info p { color: #cbb8d0; font-size: 14px; }
+.recycle-item button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 10px 15px; border: 1px solid rgba(244,204,154,.5); border-radius: 10px; background: rgba(244,204,154,.11); color: #ffe1af; font-size: 14px; font-weight: 800; cursor: pointer; }
+.recycle-item button:disabled { opacity: .55; cursor: wait; }
+@media(max-width:600px) { .recycle-item button { width: 100%; } }
