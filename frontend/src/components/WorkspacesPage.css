@@ -201,3 +201,13 @@
 @media (prefers-reduced-motion: reduce) {
     .workspace-manager-card { transition: none; }
 }
+
+.workspace-manager-section-top h2 { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.workspace-members-list { display: grid; gap: 10px; margin: 16px 0; }
+.workspace-member-row {
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    padding: 13px 16px; border: 1px solid rgba(244, 198, 151, .24);
+    border-radius: 12px; background: rgba(51, 32, 59, .48);
+}
+.workspace-member-row strong { color: #f8edf6; font-size: 13px; overflow-wrap: anywhere; }
+.workspace-member-row span { color: #f1d5a5; font-size: 11px; font-weight: 750; text-transform: capitalize; }
