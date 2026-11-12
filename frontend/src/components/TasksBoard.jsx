@@ -300,8 +300,8 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                 <p className="dashboard-eyebrow">CONFIRM YOUR ACTION</p>
                 <h2 id="tasks-delete-title">Delete task?</h2>
                 <p id="tasks-delete-description" className="dashboard-dialog-description">
-                    You are about to permanently delete <strong>{pendingDelete?.title}</strong>.
-                    This cannot be undone. A recycle bin is planned but is not available yet.
+                    Move <strong>{pendingDelete?.title}</strong> to the recycle bin?
+                    You can restore this task later from Recycle bin.
                 </p>
                 {deleteError && <p role="alert" className="dashboard-form-error">{deleteError}</p>}
                 <form onSubmit={confirmDelete} className="dashboard-dialog-actions">
@@ -309,7 +309,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                         disabled={Boolean(busyID)} onClick={cancelDelete}>Cancel</button>
                     <button type="submit" className="tasks-delete-confirm" disabled={Boolean(busyID)}>
                         {busyID ? <><LoaderCircle size={16} className="dashboard-spin" /> Deleting…</>
-                            : <><Trash2 size={16} /> Delete task</>}
+                            : <><Trash2 size={16} /> Move to bin</>}
                     </button>
                 </form>
             </dialog>
