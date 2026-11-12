@@ -8,6 +8,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"time"
 
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/gofrs/uuid"
@@ -118,6 +119,7 @@ func (h *Handler) Collection(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &input) { return }
 	input, err := NormalizeDetails(input)
 	if err != nil { fail(w, http.StatusBadRequest, err.Error()); return }
+	if err := ValidateNewDueDate(input.DueDate, nil, time.Now()); err != nil { fail(w, http.StatusBadRequest, err.Error()); return }
 	item, err := h.store.Create(r.Context(), uid, wid, pid, input)
 	if repositoryError(w, err) { return }
 	respond(w, http.StatusCreated, item)
@@ -145,6 +147,9 @@ func (h *Handler) Detail(w http.ResponseWriter, r *http.Request) {
 		if !decode(w, r, &input) { return }
 		input, err := NormalizeDetails(input)
 		if err != nil { fail(w, http.StatusBadRequest, err.Error()); return }
+		previous, err := h.store.Get(r.Context(), uid, wid, pid, tid)
+		if repositoryError(w, err) { return }
+		if err := ValidateNewDueDate(input.DueDate, previous.DueDate, time.Now()); err != nil { fail(w, http.StatusBadRequest, err.Error()); return }
 		item, err := h.store.UpdateDetails(r.Context(), uid, wid, pid, tid, input)
 		if repositoryError(w, err) { return }
 		respond(w, http.StatusOK, item)
