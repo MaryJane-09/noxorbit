@@ -59,3 +59,27 @@
 .settings-success { color:#bce7c7; font-size:14px; line-height:1.6; }
 @media(max-width:560px) { .settings-tabs button { flex:1; justify-content:center; }
     .settings-edit-actions button { width:100%; } }
+
+.settings-avatar-editor { display:flex; align-items:center; gap:21px; flex-wrap:wrap; padding:17px; margin:0 0 22px;
+    border:1px solid rgba(242,194,146,.25); border-radius:15px; background:rgba(16,9,26,.27); }
+.settings-avatar-preview { display:grid; place-items:center; flex:0 0 84px; height:84px; width:84px;
+    border-radius:50%; background:linear-gradient(135deg,#b78350,#65406d); color:#fff1db; overflow:hidden; }
+.settings-avatar-preview img { width:100%; height:100%; object-fit:cover; }
+.settings-avatar-editor strong { color:#fff0f7; font-size:16px; }
+.settings-avatar-editor .settings-help { margin:7px 0 11px; }
+.settings-avatar-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+.settings-avatar-upload,.settings-avatar-actions button { display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:1px solid rgba(240,197,143,.48); border-radius:10px; background:rgba(242,192,135,.1);
+    color:#ffe1b1; min-height:41px; padding:9px 12px; font-size:14px; font-weight:750; cursor:pointer; }
+.settings-avatar-input { position:absolute; width:1px; height:1px; opacity:0; overflow:hidden; }
+.settings-avatar-upload:focus-within { outline:2px solid #fff0b8; outline-offset:2px; }
+.settings-avatar-actions button:disabled { opacity:.58; cursor:not-allowed; }
+.settings-email-change { margin-top:23px; padding-top:22px; border-top:1px solid rgba(241,200,158,.2); }
+.settings-email-heading { display:flex; align-items:center; flex-wrap:wrap; gap:11px; margin-bottom:17px; color:#f0d4a8; }
+.settings-email-heading strong { flex:1; color:#fff0f7; font-size:16px; }
+.settings-email-heading button { border:1px solid rgba(240,197,143,.42); border-radius:9px; padding:9px 13px;
+    background:rgba(240,197,143,.08); color:#ffdfaa; font-size:14px; font-weight:750; cursor:pointer; }
+.settings-email-change .settings-help strong { color:#fff1dc; overflow-wrap:anywhere; }
+.dashboard-avatar img { display:block; width:100%; height:100%; object-fit:cover; border-radius:inherit; }
+@media(max-width:560px) { .settings-avatar-editor { align-items:flex-start; gap:14px; }
+    .settings-avatar-preview { width:65px; height:65px; flex-basis:65px; } }
