@@ -400,7 +400,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                     <MonitorSmartphone size={21} aria-hidden="true" />
                     <div className="settings-session-details">
                         <strong>{item.user_agent || 'Unknown device'} {item.current && <span className="settings-session-current">Current</span>}</strong>
-                        <span>Signed in {new Date(item.created_at).toLocaleString()} · Expires {new Date(item.expires_at).toLocaleDateString()}</span>
+                        <span>{item.created_at ? `Signed in ${new Date(item.created_at).toLocaleString()}` : "Earlier session"} · Expires {new Date(item.expires_at).toLocaleDateString()}</span>
                     </div>
                     <button type="button" disabled={sessionsBusy} onClick={() => signOutSession(item)}>
                         <LogOut size={15} aria-hidden="true" /> Sign out
