@@ -414,3 +414,29 @@ export async function confirmEmailChange(code) {
   const body = await response.json().catch(() => null);
   throw new Error(body?.error || "Could not verify the new email address.");
 }
+
+
+// Session IDs are random public UUIDs; session secrets never reach the UI.
+export function fetchActiveSessions() {
+  return projectRequest(`${API}/api/v1/account/sessions`);
+}
+
+export async function revokeSession(id) {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/account/sessions/${encodeURIComponent(id)}`, {
+      method: "DELETE", credentials: "include",
+    });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.status === 204) return;
+  const body = await response.json().catch(() => null);
+  throw new Error(body?.error || "Could not sign out that session.");
+}
+
+export function revokeOtherSessions() {
+  return projectRequest(`${API}/api/v1/account/sessions/others`, {
+    method: "POST", body: {},
+  });
+}
