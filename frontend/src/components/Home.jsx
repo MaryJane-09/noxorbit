@@ -76,7 +76,7 @@ function pageFromHash() {
     return 'overview'
 }
 
-export default function Home({ user, onLogout }) {
+export default function Home({ user, onLogout, onUserUpdated }) {
     const [loggingOut, setLoggingOut] = useState(false)
     const [error, setError] = useState('')
     const [guideOpen, setGuideOpen] = useState(false)
@@ -366,7 +366,10 @@ export default function Home({ user, onLogout }) {
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
-                        <SettingsPage user={user} onAccountDeleted={() => {
+                        <SettingsPage user={user} onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
+                            window.location.hash = ''
+                            onLogout()
+                        }} onAccountDeleted={() => {
                             window.location.hash = ''
                             onLogout()
                         }} />
