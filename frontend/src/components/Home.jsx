@@ -254,11 +254,6 @@ export default function Home({ user, onLogout, onUserUpdated }) {
 
             <aside className={`dashboard-sidebar ${menuOpen ? 'dashboard-sidebar--open' : ''}`} aria-label="Dashboard sidebar">
                 <div className="dashboard-sidebar-top">
-                    <button className="dashboard-desktop-sidebar-toggle" type="button"
-                        onClick={toggleSidebar} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-                        aria-expanded={!sidebarCollapsed} title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
-                        {sidebarCollapsed ? <PanelLeftOpen size={19} aria-hidden="true" /> : <PanelLeftClose size={19} aria-hidden="true" />}
-                    </button>
                     <a className="dashboard-brand" href="#overview" onClick={() => goToPage('overview')}>
                         <img src="/noxorbit-mark.svg" alt="" />
                         <span className="dashboard-brand-copy">
@@ -268,6 +263,13 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     </a>
                     <button className="dashboard-sidebar-close" type="button" onClick={() => setMenuOpen(false)} aria-label="Close navigation">
                         <X size={20} />
+                    </button>
+                </div>
+                <div className="dashboard-sidebar-toggle-row">
+                    <button className="dashboard-desktop-sidebar-toggle" type="button"
+                        onClick={toggleSidebar} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        aria-expanded={!sidebarCollapsed} title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+                        {sidebarCollapsed ? <PanelLeftOpen size={19} aria-hidden="true" /> : <PanelLeftClose size={19} aria-hidden="true" />}
                     </button>
                 </div>
 
