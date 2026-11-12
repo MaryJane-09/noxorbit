@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail } from 'lucide-react'
-import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange } from '../api'
+import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut } from 'lucide-react'
+import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange, fetchActiveSessions, revokeSession, revokeOtherSessions } from '../api'
 import './SettingsPage.css'
 import AvatarCropper from './AvatarCropper'
 
 export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
     const [tab, setTab] = useState('profile')
+    const [sessions, setSessions] = useState([])
+    const [sessionsLoading, setSessionsLoading] = useState(false)
+    const [sessionsError, setSessionsError] = useState('')
+    const [sessionsMessage, setSessionsMessage] = useState('')
+    const [sessionsBusy, setSessionsBusy] = useState(false)
+    const [sessionsRevision, setSessionsRevision] = useState(0)
     const [avatarBusy, setAvatarBusy] = useState(false)
     const [avatarFile, setAvatarFile] = useState(null)
     const [avatarError, setAvatarError] = useState('')
@@ -47,6 +53,54 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
             })
         return () => controller.abort()
     }, [version])
+
+    useEffect(() => {
+        if (tab !== 'security') return undefined
+        let live = true
+        setSessionsLoading(true)
+        fetchActiveSessions()
+            .then((data) => {
+                if (!live) return
+                setSessions(Array.isArray(data.sessions) ? data.sessions : [])
+                setSessionsError('')
+            })
+            .catch((error) => { if (live) setSessionsError(error.message || 'Could not load sessions.') })
+            .finally(() => { if (live) setSessionsLoading(false) })
+        return () => { live = false }
+    }, [tab, sessionsRevision])
+
+    async function signOutSession(item) {
+        if (sessionsBusy) return
+        setSessionsBusy(true)
+        setSessionsError('')
+        setSessionsMessage('')
+        try {
+            await revokeSession(item.id)
+            if (item.current) { onPasswordChanged(); return }
+            setSessionsMessage('Session signed out.')
+            setSessionsRevision((v) => v + 1)
+        } catch (error) {
+            setSessionsError(error.message || 'Could not revoke session.')
+        } finally {
+            setSessionsBusy(false)
+        }
+    }
+
+    async function signOutOthers() {
+        if (sessionsBusy) return
+        setSessionsBusy(true)
+        setSessionsError('')
+        setSessionsMessage('')
+        try {
+            const result = await revokeOtherSessions()
+            setSessionsMessage(`${result.revoked || 0} other session(s) signed out.`)
+            setSessionsRevision((v) => v + 1)
+        } catch (error) {
+            setSessionsError(error.message || 'Could not revoke other sessions.')
+        } finally {
+            setSessionsBusy(false)
+        }
+    }
 
     const sole = state.impact?.sole_owned || []
     const shared = state.impact?.shared_owned || []
@@ -220,7 +274,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 <UserRound size={18} aria-hidden="true" /> My profile
             </button>
             <button type="button" className={tab === 'security' ? 'settings-tab--active' : ''}
-                aria-current={tab === 'security' ? 'page' : undefined} onClick={() => setTab('security')}>
+                aria-current={tab === 'security' ? 'page' : undefined} onClick={() => { setSessionsLoading(true); setTab('security'); setSessionsRevision((v) => v + 1) }}>
                 <KeyRound size={18} aria-hidden="true" /> Security
             </button>
         </nav>
@@ -332,6 +386,31 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                         </button>
                     </div>
                 </form>
+            </section>
+            <section className="settings-account" aria-labelledby="settings-sessions-heading">
+                <div className="settings-section-title"><MonitorSmartphone size={21} aria-hidden="true" />
+                    <h2 id="settings-sessions-heading">Active sessions</h2>
+                </div>
+                <p className="settings-help">Review where you're signed in and sign out sessions you don't recognize. Older sessions may not have device details.</p>
+                {sessionsLoading && <p className="settings-help" role="status">Loading sessions…</p>}
+                {sessionsError && <p role="alert" className="settings-deletion-error">{sessionsError}</p>}
+                {sessionsMessage && <p role="status" className="settings-success">{sessionsMessage}</p>}
+                {!sessionsLoading && sessions.map((item) => <div className="settings-session-row" key={item.id}>
+                    <MonitorSmartphone size={21} aria-hidden="true" />
+                    <div className="settings-session-details">
+                        <strong>{item.user_agent || 'Unknown device'} {item.current && <span className="settings-session-current">Current</span>}</strong>
+                        <span>Signed in {new Date(item.created_at).toLocaleString()} · Expires {new Date(item.expires_at).toLocaleDateString()}</span>
+                    </div>
+                    <button type="button" disabled={sessionsBusy} onClick={() => signOutSession(item)}>
+                        <LogOut size={15} aria-hidden="true" /> Sign out
+                    </button>
+                </div>)}
+                {!sessionsLoading && !sessionsError && sessions.length === 0 && <p className="settings-help">No active sessions found.</p>}
+                {sessions.filter((item) => !item.current).length > 0 && <div className="settings-session-actions">
+                    <button type="button" disabled={sessionsBusy} onClick={signOutOthers}>
+                        Sign out all other sessions
+                    </button>
+                </div>}
             </section>
         <section className="settings-danger" aria-labelledby="settings-danger-heading">
             <div className="settings-section-title">
