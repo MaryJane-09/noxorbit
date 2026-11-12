@@ -35,6 +35,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
     const archived = project.status === 'archived'
     const currentUserID = user?.id || null
     const isOwner = workspace.role === 'owner'
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Lagos', year: 'numeric', month: '2-digit', day: '2-digit' })
 
     useEffect(() => {
         const controller = new AbortController()
@@ -82,6 +83,10 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
         const title = form.title.trim()
         if (!title || [...title].length > 200 || [...form.description].length > 5000) {
             setFormError('Title must be 1–200 characters and description at most 5000.')
+            return
+        }
+        if (form.due_date && form.due_date < today && form.due_date !== (editor?.due_date || '')) {
+            setFormError('Choose today or a future due date.')
             return
         }
         setSaving(true)
@@ -282,7 +287,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                         {PRIORITIES.map((value) => <option key={value} value={value}>{value.charAt(0).toUpperCase() + value.slice(1)}</option>)}
                     </select>
                     <label htmlFor="task-due">Due date (optional)</label>
-                    <input id="task-due" type="date" value={form.due_date} onChange={(event) => change('due_date', event.target.value)} disabled={saving} />
+                    <input id="task-due" type="date" min={form.due_date && form.due_date < today ? form.due_date : today} value={form.due_date} onChange={(event) => change('due_date', event.target.value)} disabled={saving} />
                     <label htmlFor="task-assignee">Assignee</label>
                     <select id="task-assignee" value={form.assignee_id}
                         disabled={saving || (Boolean(form.assignee_id) && form.assignee_id !== currentUserID)}
