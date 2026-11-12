@@ -55,6 +55,7 @@ func (h *InvitationHandler) Create(w http.ResponseWriter,r *http.Request) {
     secret,err:=h.store.CreateLink(r.Context(),actor,workspaceID)
     switch {
     case errors.Is(err,ErrOwnerRequired): inviteError(w,403,"Only workspace owners can create invitations")
+    case errors.Is(err,ErrInviteLimit): inviteError(w,429,"Invitation limit reached. Try again later.")
     case err!=nil: log.Println("Create invitation:",err);inviteError(w,500,"Could not create invitation")
     default:
         w.Header().Set("Cache-Control","no-store")
@@ -84,6 +85,7 @@ func (h *InvitationHandler) Accept(w http.ResponseWriter,r *http.Request) {
     id,err:=h.store.AcceptLink(r.Context(),actor,input.Token)
     switch {
     case errors.Is(err,ErrInvalidInvite): inviteError(w,404,"Invitation not found")
+    case errors.Is(err,ErrEmailMismatch): inviteError(w,403,"Sign in with the email address this invitation was sent to")
     case errors.Is(err,ErrExpiredInvite): inviteError(w,410,"Invitation expired or already used")
     case err!=nil:log.Println("Accept invitation:",err);inviteError(w,500,"Could not accept invitation")
     default:inviteReply(w,200,map[string]string{"workspace_id":id.String()})
