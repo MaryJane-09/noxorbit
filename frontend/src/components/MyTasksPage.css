@@ -29,3 +29,8 @@
 .my-tasks-control select { width:100%; min-height:43px; padding:9px 12px; border:1px solid rgba(235,193,146,.4); border-radius:9px; color:#f9e7fa; background:#21152d; font-size:14px; }
 .my-tasks-control select:disabled { opacity:.65; }
 @media (max-width:600px) { .my-tasks-item { padding:17px; } .my-tasks-control { width:100%; } }
+
+/* Refresh is a utility control, not a competing gold primary action. */
+.my-tasks-refresh { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:44px; padding:10px 16px; border:1px solid rgba(239,194,153,.38); border-radius:10px; background:rgba(242,195,145,.065); color:#f1d6a8; font-size:14px; font-weight:750; cursor:pointer; }
+.my-tasks-refresh:hover:not(:disabled) { background:rgba(242,195,145,.15); }
+.my-tasks-refresh:disabled { opacity:.6; cursor:wait; }
