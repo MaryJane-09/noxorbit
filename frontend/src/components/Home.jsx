@@ -387,7 +387,7 @@ export default function Home({ user, onLogout }) {
                             <p className="dashboard-feature-overline"><Compass size={16} aria-hidden="true" /> {hasWorkspace ? 'YOUR WORKSPACE IS READY' : 'YOUR WORK BEGINS HERE'}</p>
                             <h2 id="dashboard-feature-title">{hasWorkspace ? <>A shared space.<br /><em>Now build together.</em></> : <>One place for<br /><em>what comes next.</em></>}</h2>
                             <p>{hasWorkspace
-                                ? `${activeWorkspace.name} is ready for your team. Projects and task management are coming in our next development steps.`
+                                ? `${activeWorkspace.name} is ready for your team. Your projects and task boards are ready to use.`
                                 : "Create a shared home for your team's work. Projects, tasks, and deadlines will be easier to follow when everything is connected."}</p>
                             <button type="button" className="dashboard-feature-action" onClick={() => goToPage('workspaces')}
                                 disabled={workspacesLoading || Boolean(workspaceLoadError)}>
@@ -489,8 +489,10 @@ export default function Home({ user, onLogout }) {
                                 <ArrowUpRight size={19} aria-hidden="true" />
                             </div>
                             <h3 id="dashboard-tasks-heading">My tasks</h3>
-                            <p>{hasWorkspace ? 'Tasks will appear here once task management is connected.' : "Know what you're responsible for and what deserves your attention."}</p>
-                            <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
+                            <p>Find tasks assigned to you across all your workspaces and projects.</p>
+                            <button type="button" className="dashboard-feature-action" onClick={() => goToPage('my-tasks')}>
+                                Open my tasks <ArrowRight size={16} aria-hidden="true" />
+                            </button>
                         </section>
 
                         <section className="dashboard-empty-card" aria-labelledby="dashboard-deadlines-heading">
@@ -506,7 +508,7 @@ export default function Home({ user, onLogout }) {
 
                     <div className="dashboard-footer-hint">
                         <Users size={19} aria-hidden="true" />
-                        <span>{hasWorkspace ? "Your projects are ready to organize. Tasks, deadlines, and invitations are the next features we'll connect." : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
+                        <span>{hasWorkspace ? "Projects, tasks, and invitations are ready. Keep your assigned work together in My tasks." : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
                     </div>
                         </>
                     )}
