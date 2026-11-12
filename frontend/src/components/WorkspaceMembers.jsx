@@ -5,7 +5,7 @@ import { createWorkspaceInvite, fetchWorkspaceMembers, fetchWorkspaceInvites, re
 export default function WorkspaceMembers({ workspace }) {
     const [state, setState] = useState({ id: null, members: [], error: '' })
     const [reload, setReload] = useState(0)
-    const [invites, setInvites] = useState({ loading: false, items: [], error: '' })
+    const [invites, setInvites] = useState({ loading: false, items: [], error: '', checkedAt: 0 })
     const [confirm, setConfirm] = useState(null)
     const [working, setWorking] = useState(false)
     const [actionError, setActionError] = useState('')
@@ -27,10 +27,10 @@ export default function WorkspaceMembers({ workspace }) {
         const controller = new AbortController()
         fetchWorkspaceInvites(workspace.id, { signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) setInvites({ loading: false, items, error: '' })
+                if (!controller.signal.aborted) setInvites({ loading: false, items, error: '', checkedAt: Date.now() })
             })
             .catch((err) => {
-                if (!controller.signal.aborted) setInvites({ loading: false, items: [], error: err.message })
+                if (!controller.signal.aborted) setInvites({ loading: false, items: [], error: err.message, checkedAt: 0 })
             })
         return () => controller.abort()
     }, [workspace.id, workspace.role, reload])
@@ -121,7 +121,7 @@ export default function WorkspaceMembers({ workspace }) {
                 {invites.error && <p className="dashboard-form-error" role="alert">{invites.error}</p>}
                 {invites.items.length === 0 && !invites.error && <p className="dashboard-form-hint">No invitations yet.</p>}
                 {invites.items.map((item) => {
-                    const expired = new Date(item.expires_at).getTime() <= Date.now()
+                    const expired = new Date(item.expires_at).getTime() <= invites.checkedAt
                     const used = item.use_count >= item.max_uses
                     const revoked = Boolean(item.revoked_at)
                     const status = revoked ? 'Revoked' : used ? 'Used' : expired ? 'Expired' : 'Active'
