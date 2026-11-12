@@ -99,6 +99,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks", auth.RequireAuth(sessionRepo, recycleHandler.List))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks/{task_id}/restore", auth.RequireAuth(sessionRepo, recycleHandler.Restore))
+	mux.HandleFunc("/api/v1/recycle-bin/tasks/{task_id}", auth.RequireAuth(sessionRepo, recycleHandler.DeleteForever))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks", auth.RequireAuth(sessionRepo, taskHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}", auth.RequireAuth(sessionRepo, taskHandler.Detail))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}/status", auth.RequireAuth(sessionRepo, taskHandler.Status))
