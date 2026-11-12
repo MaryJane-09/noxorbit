@@ -333,3 +333,80 @@ export async function changeAccountPassword(currentPassword, newPassword) {
   }
   return workspaceResponse(response);
 }
+
+
+export async function loadMyAvatar() {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/profile/avatar`, {
+      credentials: "include",
+      cache: "no-store",
+    });
+  } catch {
+    return null;
+  }
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error("Could not load your profile picture.");
+  return response.blob();
+}
+
+export async function saveMyAvatar(file) {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/profile/avatar`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
+
+export async function removeMyAvatar() {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/profile/avatar`, {
+      method: "DELETE", credentials: "include",
+    });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
+
+export async function requestEmailChange(newEmail, password) {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/profile/email/request`, {
+      method: "POST", credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ new_email: newEmail, password }),
+    });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.ok) return response.json();
+  const body = await response.json().catch(() => null);
+  throw new Error(body?.error || "Could not send verification email.");
+}
+
+export async function confirmEmailChange(code) {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/profile/email/confirm`, {
+      method: "POST", credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.ok) return response.json();
+  const body = await response.json().catch(() => null);
+  throw new Error(body?.error || "Could not verify the new email address.");
+}
