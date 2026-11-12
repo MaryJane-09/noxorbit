@@ -374,3 +374,31 @@ loads when Overview mounts; switching back from other dashboard screens
 refreshes the cards. Errors are displayed rather than replacing them with
 fictional data. The duplicated Overview footer was removed and the Projects
 cards have more compact spacing with the existing primary Open board action.
+
+
+## Grouped task deadlines (Overview UI)
+
+The Overview's **Your deadlines** card groups all *unfinished tasks assigned
+to the signed-in user* by due calendar date, using the Africa/Lagos date
+policy already used to validate task creation. When four assignments are due
+tomorrow, the card displays **4 tasks due tomorrow** as a single reminder,
+with an expandable group showing all four tasks. Within each date group,
+tasks are ranked urgent → high → medium → low, then title and ID for stable
+ties. Every due-date group can be expanded independently; the group list is
+scrollable so it does not stretch the full Overview unnecessarily.
+
+Warnings are separate from task status and priority. Overdue and due-today
+tasks receive red highlights; due-tomorrow and due-soon tasks receive amber.
+Completed and undated tasks do not generate deadline warnings. Identical
+labels appear in the Task Board and My Tasks views. The Overview calendar
+label refreshes approximately every 60 seconds while open.
+
+This is an **in-app dashboard reminder**, not a scheduled background
+notification. There is no automatic email digest or push notification yet;
+those require a future notification scheduler, delivery infrastructure, and
+user notification preferences. The frontend does not generate four emails
+for four tasks or modify task priorities or status.
+
+Run `npm run test:deadlines` from `frontend` to verify grouped tomorrow
+deadlines, urgency ordering, status filtering, and date boundaries.
+No database migration or new API endpoint is required.
