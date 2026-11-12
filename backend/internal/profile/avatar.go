@@ -3,11 +3,9 @@ package profile
 import (
  "context"
  "errors"
- "time"
 
  "github.com/gofrs/uuid"
  "github.com/jackc/pgx/v5"
- "github.com/jackc/pgx/v5/pgxpool"
 )
 const maxAvatarBytes = 512 * 1024
 var ErrAvatarMissing = errors.New("profile picture not found")
@@ -43,5 +41,3 @@ func(r *Repository)AvatarPresent(ctx context.Context,uid uuid.UUID)(bool,error){
  if errors.Is(err,pgx.ErrNoRows){return false,ErrNotFound}
  return exists,err
 }
-var _ *pgxpool.Pool
-var _ = time.Now
