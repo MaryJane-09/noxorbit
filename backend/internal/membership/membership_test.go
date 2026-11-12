@@ -3,7 +3,6 @@ package membership
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -51,5 +50,4 @@ func TestMembersHandlerDoesNotLeakOtherWorkspaces(t *testing.T){
 	rec:=httptest.NewRecorder()
 	h.List(rec,r)
 	if rec.Code!=404 {t.Fatalf("inaccessible workspace: %d",rec.Code)}
-	_ = errors.Is
 }
