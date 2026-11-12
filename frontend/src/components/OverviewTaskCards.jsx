@@ -1,29 +1,48 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, CalendarDays, CheckCircle2, ListTodo } from 'lucide-react'
+import { ArrowRight, CalendarDays, CheckCircle2, ChevronDown, ListTodo } from 'lucide-react'
 import { fetchMyTasks } from '../api'
+import { calendarToday, groupAssignedDeadlines } from './deadlines'
 
-// The overview reuses the authenticated My Tasks endpoint rather than
-// gathering every project and task with a cascade of client requests.
+// All cards reuse the same session-scoped assignment request. Calendar
+// comparisons refresh periodically, even if the dashboard stays open overnight.
 export default function OverviewTaskCards({ onOpenTasks }) {
-    const [state, setState] = useState({ items: [], loading: true, error: '' })
+    const [state, setState] = useState({ items: [], loading: true, error: '', today: '' })
+    const [expandedDates, setExpandedDates] = useState([])
 
     useEffect(() => {
         const controller = new AbortController()
         fetchMyTasks({ signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) setState({ items, loading: false, error: '' })
+                if (!controller.signal.aborted) {
+                    setState({ items, loading: false, error: '', today: calendarToday() })
+                }
             })
             .catch((error) => {
-                if (!controller.signal.aborted) setState({ items: [], loading: false, error: error.message || 'Could not load your tasks.' })
+                if (!controller.signal.aborted) {
+                    setState({ items: [], loading: false, error: error.message || 'Could not load your tasks.', today: calendarToday() })
+                }
             })
-        return () => controller.abort()
+        const interval = window.setInterval(() => {
+            if (!controller.signal.aborted) {
+                setState((current) => ({ ...current, today: calendarToday() }))
+            }
+        }, 60_000)
+        return () => { controller.abort(); window.clearInterval(interval) }
     }, [])
 
     const unfinished = state.items.filter((task) => task.status !== 'done')
     const completed = state.items.length - unfinished.length
-    const dated = unfinished.filter((task) => task.due_date)
-        .sort((a, b) => a.due_date.localeCompare(b.due_date) || a.id.localeCompare(b.id))
-    const nextDue = dated[0]
+    const groups = groupAssignedDeadlines(state.items, state.today)
+    const dueTomorrow = groups.find((group) => group.timing.kind === 'tomorrow')
+    const dueToday = groups.find((group) => group.timing.kind === 'today')
+    const overdueCount = groups.filter((group) => group.timing.kind === 'overdue')
+        .reduce((sum, group) => sum + group.items.length, 0)
+
+    function toggleGroup(date) {
+        setExpandedDates((current) => current.includes(date)
+            ? current.filter((item) => item !== date)
+            : [...current, date])
+    }
 
     return (
         <>
@@ -46,24 +65,57 @@ export default function OverviewTaskCards({ onOpenTasks }) {
                 </button>
             </section>
 
-            <section className="dashboard-empty-card dashboard-overview-data-card" aria-labelledby="dashboard-deadlines-heading">
+            <section className="dashboard-empty-card dashboard-overview-data-card dashboard-deadline-card" aria-labelledby="dashboard-deadlines-heading">
                 <div className="dashboard-empty-top">
                     <span className="dashboard-tile-icon"><CalendarDays size={23} aria-hidden="true" /></span>
                     <span className="dashboard-data-tag">ASSIGNED TO YOU</span>
                 </div>
-                <h3 id="dashboard-deadlines-heading">Your upcoming deadlines</h3>
+                <h3 id="dashboard-deadlines-heading">Your deadlines</h3>
                 {state.loading ? <p role="status">Checking your deadlines…</p>
                     : state.error ? <p role="alert">Deadline data is unavailable.</p>
-                        : nextDue ? <>
-                            <div className="dashboard-deadline-date">{nextDue.due_date}</div>
-                            <p className="dashboard-deadline-label">{nextDue.title}</p>
-                            <p className="dashboard-deadline-context">{nextDue.workspace_name} / {nextDue.project_name}</p>
-                        </> : <>
+                        : groups.length === 0 ? <>
                             <CheckCircle2 size={22} className="dashboard-deadline-clear" aria-hidden="true" />
                             <p>No unfinished assigned tasks have due dates.</p>
+                        </> : <>
+                            <div className="dashboard-deadline-alerts" aria-label="Deadline reminders">
+                                {overdueCount > 0 && <p className="dashboard-deadline-reminder dashboard-deadline-reminder--overdue">
+                                    {overdueCount} {overdueCount === 1 ? 'task' : 'tasks'} overdue
+                                </p>}
+                                {dueToday && <p className="dashboard-deadline-reminder dashboard-deadline-reminder--today">
+                                    {dueToday.items.length} {dueToday.items.length === 1 ? 'task' : 'tasks'} due today
+                                </p>}
+                                {dueTomorrow && <p className="dashboard-deadline-reminder dashboard-deadline-reminder--tomorrow">
+                                    {dueTomorrow.items.length} {dueTomorrow.items.length === 1 ? 'task' : 'tasks'} due tomorrow
+                                </p>}
+                            </div>
+                            <div className="dashboard-deadline-groups">
+                                {groups.map((group) => {
+                                    const expanded = expandedDates.includes(group.date)
+                                    const id = `deadline-group-${group.date}`
+                                    return <div className="dashboard-deadline-group" key={group.date}>
+                                        <button type="button" className="dashboard-deadline-group-toggle"
+                                            aria-expanded={expanded} aria-controls={id}
+                                            onClick={() => toggleGroup(group.date)}>
+                                            <span className="dashboard-deadline-group-title">
+                                                <span className={`dashboard-deadline-badge dashboard-deadline-badge--${group.timing.kind}`}>{group.timing.label}</span>
+                                                <span className="dashboard-deadline-group-date">{group.date}</span>
+                                            </span>
+                                            <span className="dashboard-deadline-group-count">{group.items.length} {group.items.length === 1 ? 'task' : 'tasks'} <ChevronDown size={16} aria-hidden="true" /></span>
+                                        </button>
+                                        {expanded && <ul id={id} className="dashboard-deadline-task-list">
+                                            {group.items.map((task) => <li key={task.id}>
+                                                <span className={`dashboard-deadline-task-priority dashboard-deadline-task-priority--${task.priority}`}>{task.priority}</span>
+                                                <div><strong>{task.title}</strong>
+                                                    <small>{task.workspace_name} / {task.project_name}</small>
+                                                </div>
+                                            </li>)}
+                                        </ul>}
+                                    </div>
+                                })}
+                            </div>
                         </>}
                 <button type="button" className="dashboard-card-link" onClick={onOpenTasks}>
-                    View assigned work <ArrowRight size={16} aria-hidden="true" />
+                    View all assigned tasks <ArrowRight size={16} aria-hidden="true" />
                 </button>
             </section>
         </>
