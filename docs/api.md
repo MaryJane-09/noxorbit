@@ -452,11 +452,35 @@ Existing task delete confirmation now states that deletion is recoverable.
 
 **Scope:** This initial Recycle Bin phase covers tasks only. Projects use the
 existing archive/restore flow. Workspace deletion is not enabled.
-There is **no retention purge or permanent-delete action** in this phase:
-deleted rows remain stored until a future explicit retention policy is
-implemented. Deleted tasks from before migration 008 were permanently
+There is **no automated retention purge**. Authorized users can now
+permanently delete individual recycled tasks from the Recycle Bin. Deleted tasks from before migration 008 were permanently
 deleted and cannot be recovered by this feature.
 
 Run `go test ./backend/...` and `go vet ./backend/...` from the repository
 root; in `frontend`, run `npm run lint` and `npm run build`.
 Integration-test against a migrated Supabase instance before production.
+
+
+## Permanently deleting recycled tasks
+
+`DELETE /api/v1/recycle-bin/tasks/{task_id}` permanently deletes **only**
+a task that is already in the recycle bin (`deleted_at IS NOT NULL`).
+Its single SQL DELETE rechecks the signed-in user's current workspace
+membership and verifies that the user is either a workspace owner or the
+task's creator. Deleting a task from a different workspace, guessing a task
+ID, or targeting a still-active task cannot bypass those checks. Archived
+projects may contain recycled tasks, and those can be permanently removed,
+but not restored until the project is active.
+
+The endpoint returns HTTP 204 on success, 404 for a missing or inaccessible
+recycled task, and 401 without authentication. No new migration is required
+after migration 008.
+
+The Recycle Bin UI displays **Restore task** as the primary action and
+**Delete forever** as a secondary destructive action. Delete forever
+requires confirmation in an app-owned dialog identifying the task, workspace,
+and project, with explicit notice that the action cannot be undone. If the
+server rejects the request the task stays in the list and the error is shown.
+
+There is no **Empty bin** bulk action. Deletions are individual, deliberate,
+and irreversible.
