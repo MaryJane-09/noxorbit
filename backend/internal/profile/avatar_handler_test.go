@@ -51,7 +51,7 @@ func TestAvatarRejectsInvalidMediaAndSize(t *testing.T){
  h:=NewAvatarHandler(avatarTestStore{save:func(context.Context,uuid.UUID,Avatar)error{called=true;return nil}})
  for _,data:=range [][]byte{
      []byte("<svg><script>alert(1)</script></svg>"),
-     bytes.Repeat([]byte{0},maxAvatarBytes+1),
+     bytes.Repeat([]byte{0},maxAvatarUploadBytes+1),
      []byte("not an image"),
  }{
      w:=httptest.NewRecorder()
@@ -96,4 +96,56 @@ func TestAvatarFailureDoesNotLeakInternalErrors(t *testing.T){
  var output map[string]string
  _=json.Unmarshal(w.Body.Bytes(),&output)
  if w.Code!=500||strings.Contains(output["error"],"private SQL"){t.Fatalf("error leaked %d %q",w.Code,w.Body.String())}
+}
+
+func TestAvatarLargeSourceIsResizedToSquare(t *testing.T) {
+ uid:=uuid.Must(uuid.NewV4())
+ img:=image.NewRGBA(image.Rect(0,0,1400,900))
+ for y:=0;y<900;y++{
+  for x:=0;x<1400;x++{
+   img.SetRGBA(x,y,color.RGBA{R:uint8(x%256),G:uint8(y%256),B:120,A:255})
+  }
+ }
+ var input bytes.Buffer
+ if err:=png.Encode(&input,img);err!=nil{t.Fatal(err)}
+ if input.Len()>maxAvatarUploadBytes{t.Fatal("fixture too large")}
+ var stored Avatar
+ h:=NewAvatarHandler(avatarTestStore{
+  save:func(_ context.Context,id uuid.UUID,a Avatar)error{
+   if id!=uid{t.Fatal("wrong user")}
+   stored=a
+   return nil
+  },
+ })
+ w:=httptest.NewRecorder()
+ h.Avatar(w,avatarRequest("POST",input.Bytes(),uid))
+ if w.Code!=204{t.Fatalf("upload rejected: %d %s",w.Code,w.Body.String())}
+ if len(stored.Data)>maxAvatarBytes{t.Fatalf("stored %d bytes exceeds 512 KiB",len(stored.Data))}
+ config,format,err:=image.DecodeConfig(bytes.NewReader(stored.Data))
+ if err!=nil{t.Fatal(err)}
+ if config.Width!=512||config.Height!=512{t.Fatalf("wanted square 512x512, got %dx%d",config.Width,config.Height)}
+ if format!="jpeg"||stored.Mime!="image/jpeg"{t.Fatalf("wanted optimized JPEG, got %s %s",format,stored.Mime)}
+}
+
+func TestAvatarRejectsSourceOverDimensionLimit(t *testing.T){
+ uid:=uuid.Must(uuid.NewV4())
+ img:=image.NewRGBA(image.Rect(0,0,maxAvatarSourceDimension+1,1))
+ var input bytes.Buffer
+ if err:=png.Encode(&input,img);err!=nil{t.Fatal(err)}
+ called:=false
+ h:=NewAvatarHandler(avatarTestStore{save:func(context.Context,uuid.UUID,Avatar)error{called=true;return nil}})
+ w:=httptest.NewRecorder()
+ h.Avatar(w,avatarRequest("POST",input.Bytes(),uid))
+ if w.Code!=400||called{t.Fatalf("oversize dimension accepted: %d",w.Code)}
+}
+
+func TestAvatarAcceptsTransparentPNG(t *testing.T){
+ img:=image.NewNRGBA(image.Rect(0,0,256,256))
+ img.SetNRGBA(128,128,color.NRGBA{R:255,A:150})
+ data,mime,err:=prepareAvatar(img,"image/png")
+ if err!=nil{t.Fatal(err)}
+ if mime!="image/png"{t.Fatalf("transparent PNG became %q",mime)}
+ decoded,_,err:=image.Decode(bytes.NewReader(data))
+ if err!=nil{t.Fatal(err)}
+ if _,_,_,a:=decoded.At(0,0).RGBA();a!=0{t.Fatal("transparency lost")}
 }
