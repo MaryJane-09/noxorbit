@@ -238,3 +238,11 @@
 .workspace-invite-email .workspace-invite-link input { flex: 1 1 210px; }
 .workspace-invite-email .dashboard-feature-action { flex: 0 0 auto; }
 .workspace-invite-tools h3 + .workspace-invite-email { margin-top: 13px; }
+
+/* Keep the main workspace navigation separate from owner utilities. */
+.workspace-manager-secondary-actions { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 600px) {
+    .workspace-manager-card-footer { align-items: stretch; }
+    .workspace-manager-secondary-actions { width: 100%; }
+    .workspace-manager-secondary-actions > button { flex: 1 1 auto; }
+}
