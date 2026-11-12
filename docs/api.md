@@ -282,3 +282,51 @@ Existing historic task dates are not automatically changed.
 All these operations require an authenticated workspace owner. They use workspace-scoped database permissions rather than trusting the React UI. Removed users lose access on subsequent authenticated API requests. No new migration is required beyond 007 for these operations.
 
 Invitation email delivery and invitation creation rate limiting are still pending, and generated links must currently be shared privately. Use a disposable test member when checking removal, because removal revokes their workspace access immediately.
+
+
+## Email-bound invitations (November 2026)
+
+### POST /api/v1/workspaces/{workspace_id}/invitations/email
+
+Requires an authenticated **owner** and `Content-Type: application/json`:
+
+```json
+{"email":"teammate@example.com"}
+```
+
+The backend validates and normalizes the recipient email, creates a hashed
+one-use invitation expiring in seven days, and sends an SMTP message with a
+link to `/#invite/<token>`. It returns **201** only after SMTP acknowledges
+the message. On delivery failure, it attempts to revoke that invitation and
+returns **502**. Invitation secrets are not included in API responses.
+
+To send email invitations, set the Go server environment variable
+`FRONTEND_URL` to the **frontend origin**, such as
+`http://localhost:5173` for same-device testing or
+`https://your-noxorbit-domain.example` after deployment. An HTTPS
+origin is required for non-localhost addresses. If missing or invalid,
+email invitation requests return **503**. The server's SMTP
+credentials must already be configured for verification emails.
+
+Email invitations are **recipient-bound**: acceptance uses the logged-in
+user's email from the database, never an email supplied by the browser.
+Signing in with another address returns **403**; the intended recipient
+must sign in or register and then accept the invitation.
+
+Link and email invitation creation share a workspace-level database quota:
+at most **10 invitations per hour** and **30 per day** per workspace.
+Quota failures return **429** and are enforced transactionally, including
+concurrent requests. Existing invitation history and revocation features
+work for either kind of invitation.
+
+**Login continuity:** The frontend preserves the `#invite/<token>`
+hash through login and registration, showing the acceptance page after
+authentication. An unauthenticated user opening an invitation starts at
+the login screen with a route to registration. Email invites sent with a
+localhost frontend URL are suitable only for same-device development;
+for remote recipients deploy the frontend and set `FRONTEND_URL`
+accordingly.
+
+**Deployment note:** No new database migration is needed. The existing
+`007_workspace_invitations.sql` schema already supports `kind='email'`.
+SMTP and app-origin configuration are required to test actual delivery.
