@@ -63,6 +63,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	limits := ratelimit.New(pool)
 	workspaceHandler := workspace.NewHandler(workspace.NewRepository(pool))
 	memberHandler := membership.NewHandler(membership.NewRepository(pool))
+	invitationHandler := membership.NewInvitationHandler(membership.NewLinkRepository(pool))
 	projectHandler := project.NewHandler(project.NewRepository(pool))
 	taskHandler := task.NewHandler(task.NewRepository(pool))
 	mux := http.NewServeMux()
@@ -77,6 +78,8 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{id}", auth.RequireAuth(sessionRepo, workspaceHandler.Detail))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/members", auth.RequireAuth(sessionRepo, memberHandler.List))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/invitations", auth.RequireAuth(sessionRepo, invitationHandler.Create))
+	mux.HandleFunc("/api/v1/invitations/accept", auth.RequireAuth(sessionRepo, invitationHandler.Accept))
 	// All project routes are workspace-scoped; repositories enforce membership
 	// or owner permissions on the data read or mutation itself.
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects", auth.RequireAuth(sessionRepo, projectHandler.Collection))
