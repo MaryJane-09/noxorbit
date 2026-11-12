@@ -14,6 +14,8 @@ import {
     LogOut,
     Trash2,
     Menu,
+    PanelLeftClose,
+    PanelLeftOpen,
     Plus,
     Sparkles,
     Settings2,
@@ -83,6 +85,17 @@ export default function Home({ user, onLogout, onUserUpdated }) {
     const [avatarRevision, setAvatarRevision] = useState(0)
     const [guideOpen, setGuideOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        try { return window.localStorage.getItem('noxorbit.sidebar.collapsed') === 'true' }
+        catch { return false }
+    })
+    function toggleSidebar() {
+        setSidebarCollapsed((value) => {
+            const next = !value
+            try { window.localStorage.setItem('noxorbit.sidebar.collapsed', String(next)) } catch { /* storage unavailable */ }
+            return next
+        })
+    }
     const [page, setPage] = useState(pageFromHash)
     const [workspaces, setWorkspaces] = useState([])
     const [workspacesLoading, setWorkspacesLoading] = useState(true)
@@ -229,7 +242,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
     }
 
     return (
-        <div className="home-page">
+        <div className={sidebarCollapsed ? "home-page home-page--sidebar-collapsed" : "home-page"}>
             {menuOpen && (
                 <button
                     className="dashboard-mobile-scrim"
@@ -241,6 +254,11 @@ export default function Home({ user, onLogout, onUserUpdated }) {
 
             <aside className={`dashboard-sidebar ${menuOpen ? 'dashboard-sidebar--open' : ''}`} aria-label="Dashboard sidebar">
                 <div className="dashboard-sidebar-top">
+                    <button className="dashboard-desktop-sidebar-toggle" type="button"
+                        onClick={toggleSidebar} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                        aria-expanded={!sidebarCollapsed} title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+                        {sidebarCollapsed ? <PanelLeftOpen size={19} aria-hidden="true" /> : <PanelLeftClose size={19} aria-hidden="true" />}
+                    </button>
                     <a className="dashboard-brand" href="#overview" onClick={() => goToPage('overview')}>
                         <img src="/noxorbit-mark.svg" alt="" />
                         <span className="dashboard-brand-copy">
@@ -270,35 +288,35 @@ export default function Home({ user, onLogout, onUserUpdated }) {
 
                 <nav className="dashboard-nav" aria-label="Primary">
                     <p className="dashboard-sidebar-label">WORKSPACE</p>
-                    <a href="#overview" className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#overview" aria-label="Overview" title={sidebarCollapsed ? "Overview" : undefined} className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'overview' ? 'page' : undefined}
                         onClick={() => goToPage('overview')}>
                         <LayoutDashboard size={19} aria-hidden="true" />
                         <span>Overview</span>
                         {page === 'overview' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    <a href="#workspaces" className={`dashboard-nav-item${page === 'workspaces' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#workspaces" aria-label="Workspaces" title={sidebarCollapsed ? "Workspaces" : undefined} className={`dashboard-nav-item${page === 'workspaces' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'workspaces' ? 'page' : undefined}
                         onClick={() => goToPage('workspaces')}>
                         <Layers3 size={19} aria-hidden="true" />
                         <span>Workspaces</span>
                         {page === 'workspaces' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    <a href="#projects" className={`dashboard-nav-item${page === 'projects' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#projects" aria-label="Projects" title={sidebarCollapsed ? "Projects" : undefined} className={`dashboard-nav-item${page === 'projects' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'projects' ? 'page' : undefined}
                         onClick={() => goToPage('projects')}>
                         <FolderKanban size={19} aria-hidden="true" />
                         <span>Projects</span>
                         {page === 'projects' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    <a href="#my-tasks" className={`dashboard-nav-item${page === 'my-tasks' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#my-tasks" aria-label="My tasks" title={sidebarCollapsed ? "My tasks" : undefined} className={`dashboard-nav-item${page === 'my-tasks' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'my-tasks' ? 'page' : undefined}
                         onClick={() => goToPage('my-tasks')}>
                         <ListTodo size={19} aria-hidden="true" />
                         <span>My tasks</span>
                         {page === 'my-tasks' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    <a href="#activity" className={`dashboard-nav-item${page === 'activity' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#activity" aria-label="Activity" title={sidebarCollapsed ? "Activity" : undefined} className={`dashboard-nav-item${page === 'activity' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'activity' ? 'page' : undefined}
                         onClick={() => goToPage('activity')}>
                         <CalendarDays size={19} aria-hidden="true" />
@@ -307,14 +325,14 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     </a>
                     <div className="dashboard-nav-section-separator" aria-hidden="true" />
                     <p className="dashboard-sidebar-label dashboard-manage-label">MANAGE</p>
-                    <a href="#recycle-bin" className={`dashboard-nav-item${page === 'recycle-bin' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#recycle-bin" aria-label="Recycle bin" title={sidebarCollapsed ? "Recycle bin" : undefined} className={`dashboard-nav-item${page === 'recycle-bin' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'recycle-bin' ? 'page' : undefined}
                         onClick={() => goToPage('recycle-bin')}>
                         <Trash2 size={19} aria-hidden="true" />
                         <span>Recycle bin</span>
                         {page === 'recycle-bin' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    <a href="#settings" className={`dashboard-nav-item${page === 'settings' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href="#settings" aria-label="Settings" title={sidebarCollapsed ? "Settings" : undefined} className={`dashboard-nav-item${page === 'settings' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'settings' ? 'page' : undefined}
                         onClick={() => goToPage('settings')}>
                         <Settings2 size={19} aria-hidden="true" />
