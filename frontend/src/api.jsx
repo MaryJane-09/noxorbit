@@ -306,3 +306,24 @@ export async function deleteMyAccount({ password, deleteSoleOwnedWorkspaces }) {
   if (response.status === 204) return;
   return workspaceResponse(response);
 }
+
+
+export async function saveProfileName(name) {
+  return projectRequest(`${API}/api/v1/profile`, { method: "PATCH", body: { name } });
+}
+
+export async function changeAccountPassword(currentPassword, newPassword) {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/profile/password`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
