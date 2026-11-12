@@ -597,3 +597,41 @@ with transaction rollback.
 For member-join/removal history, account deletion anonymizes the deleted
 account's `entity_name` snapshot to **Former member**. Events themselves
 remain available to authorized workspace members without exposing that name.
+
+
+## Settings Phase 1A — editable profile and password security
+
+**No new SQL migration is needed.** Uses the existing `public.users`
+and `public.sessions` tables.
+
+`PATCH /api/v1/profile` — session required; JSON `{"name":"Full name"}`.
+The API normalizes whitespace, requires 1–100 Unicode characters, and
+updates only the authenticated user's `public.users.name`. It returns
+`{"id":"...","name":"...","email":"..."}`; no password hash is sent to the
+client. The frontend refreshes the shared signed-in user object so the
+dashboard greeting, account badge and Settings page use the edited name.
+
+`POST /api/v1/profile/password` — session required; JSON
+`{"current_password":"...","new_password":"..."}`.
+The current bcrypt password must match, the new password must satisfy the
+same 8–72 byte rules as registration, and it cannot be the same password.
+Inside one database transaction the server locks the user's account row,
+updates the hash and deletes **all** sessions for that user. On success,
+returns 204 and clears the current session cookie. The frontend returns to
+the login screen; users must log in with the new password.
+
+Settings now uses separate **My profile** and **Security** views.
+Account deletion remains in Security's Danger Zone, with the existing
+password confirmation and workspace ownership safeguards.
+
+**Not yet implemented:** profile-photo upload/storage, verified email
+change, active device/session listing, notification preferences, appearance
+themes, time zone and language preferences. The current email field
+is deliberately read-only and explains that changing it will need
+verification. These controls should only be enabled when the underlying
+secure backend functionality exists.
+
+Run `go test ./backend/...` and `go vet ./backend/...`; then run
+`npm run lint` and `npm run build` inside `frontend`. Test with a
+disposable account for password changes, as successful changes invalidate
+all its existing sessions.
