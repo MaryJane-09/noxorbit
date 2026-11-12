@@ -97,7 +97,7 @@ func (r *Repository) GetForUser(ctx context.Context, userID, workspaceID, projec
 func (r *Repository) UpdateForMember(ctx context.Context, userID, workspaceID, projectID uuid.UUID, input Input) (Project, error) {
 	p, err := scanProject(r.pool.QueryRow(ctx, `
 		UPDATE public.projects p
-		SET name = $1, description = $2, updated_at = NOW()
+		SET name = $1, description = $2, activity_actor_id = $5, updated_at = NOW()
 		WHERE p.id = $3 AND p.workspace_id = $4
 		  AND EXISTS (
 			SELECT 1 FROM public.workspace_memberships m
@@ -113,7 +113,7 @@ func (r *Repository) UpdateForMember(ctx context.Context, userID, workspaceID, p
 func (r *Repository) UpdateStatusForOwner(ctx context.Context, userID, workspaceID, projectID uuid.UUID, status string) (Project, error) {
 	p, err := scanProject(r.pool.QueryRow(ctx, `
 		UPDATE public.projects p
-		SET status = $1, updated_at = NOW()
+		SET status = $1, activity_actor_id = $4, updated_at = NOW()
 		WHERE p.id = $2 AND p.workspace_id = $3
 		  AND EXISTS (
 			SELECT 1 FROM public.workspace_memberships m
