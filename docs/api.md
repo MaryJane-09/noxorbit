@@ -650,10 +650,14 @@ accounts, tasks or projects are changed by this migration.
 - `GET /api/v1/profile/avatar` returns the authenticated user's PNG/JPEG
   image, with private caching, ETag and `nosniff`; 404 means no image exists.
 - `POST /api/v1/profile/avatar` accepts a **raw binary** PNG or JPEG body.
-  The server checks the actual file header and image dimensions; uploads must
-  be **at most 512 KiB** and **1024×1024 pixels**. It then fully decodes
-  and re-encodes the image to strip metadata (including EXIF GPS coordinates)
-  and enforces the 512 KiB cap again on the normalized image.
+  The server checks the actual file header and image dimensions; originals
+  may be **up to 10 MiB** and **6000×6000 pixels**. It fully decodes the
+  image, center-crops to a square, resizes to a maximum of **512×512 pixels**
+  with bilinear sampling, and re-encodes the result without uploaded metadata
+  (including EXIF GPS coordinates). Opaque images become optimized JPEGs;
+  transparent PNGs remain PNG. Only the processed image is saved, subject to
+  the existing **512 KiB database storage cap**. High-entropy transparent
+  images may be resized further if necessary to meet that cap.
 - `DELETE /api/v1/profile/avatar` removes the image and reverts to initials.
 - `GET /api/v1/profile/avatar/status` returns `{"has_avatar":true|false}`.
   All four endpoints require an active session. The browser never receives
@@ -698,7 +702,11 @@ npm run build
 npm run dev
 ```
 
-Test image upload/removal and an email-change request using disposable test
+Test a large photo upload, center crop and removal, then an email-change request using disposable test
 accounts; do not post real verification codes or account passwords in chat.
 If email delivery fails, confirm SMTP credentials and restart the server.
 Do not run the updated Go profile endpoints before migration 010.
+
+**Avatar crop limitation:** The first version crops the center automatically.
+User-controlled repositioning and EXIF-orientation-aware preview remain planned
+UI improvements; the upload format/size limits are enforced server-side.
