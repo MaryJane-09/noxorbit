@@ -484,3 +484,51 @@ server rejects the request the task stays in the list and the error is shown.
 
 There is no **Empty bin** bulk action. Deletions are individual, deliberate,
 and irreversible.
+
+
+## Workspace Activity History — migration 009 required
+
+**Apply `backend/migrations/009_activity_history.sql` in Supabase SQL Editor
+AFTER migration 008 and BEFORE starting the updated Go server.** Migration
+009 creates `public.activity_events`, protected with RLS and revoked
+browser-role privileges. It also adds private actor-attribution columns to
+workspaces, projects, and tasks and installs PostgreSQL audit triggers.
+
+The actor columns are populated from the authenticated Go backend's session
+user ID, never from request JSON. Audit inserts happen within the **same
+database transaction** as task, workspace, and project changes, so failed
+writes do not appear as completed history. A permanent task deletion and a
+workspace member removal each use a single SQL statement with a data-changing
+CTE to preserve the same atomicity and the correct actor.
+
+`GET /api/v1/workspaces/{workspace_id}/activity` requires an authenticated
+session and a current membership in that workspace. Inaccessible workspaces
+return 404. The API exposes the **100 most recent events** (newest first):
+actor name, action, entity name/type/ID, optional safe change metadata, and
+timestamp. Users cannot create, edit, or delete activity records through
+the API. Activity is workspace-scoped; switching workspaces changes the feed.
+The sidebar's `#activity` page provides refresh and empty/error states.
+
+Recorded actions:
+- Workspace creation and settings edits.
+- Project creation, edits, archive and restore.
+- Task creation, assignments, detail edits, status changes, recycle and restore.
+- Task **Delete forever**, recorded atomically before row removal.
+- Member joins (including accepted invites) and owner-initiated member removals.
+
+For status changes, the feed includes the previous/new status. Names are
+snapshots of the affected entities at the event time. The activity table
+does not store task descriptions, passwords, invitation tokens or OTPs.
+
+**Limitations:** Tracking starts once migration 009 is installed; the
+migration deliberately does **not** manufacture historical records for
+older actions. The feed currently has a 100-event cap, with pagination,
+invitation send/revoke auditing, and long-term retention controls reserved
+for later milestones. Old events remain stored unless their workspace
+itself is deleted; users who lose workspace membership lose feed access.
+No workspace deletion API is presently enabled.
+
+Verify after migration: `go test ./backend/...`,
+`go vet ./backend/...`, and from `frontend` run `npm run lint`
+and `npm run build`. Then create a task, change its status,
+soft-delete and restore it, and inspect the workspace Activity feed.
