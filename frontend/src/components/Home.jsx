@@ -486,10 +486,6 @@ export default function Home({ user, onLogout }) {
                         <OverviewTaskCards onOpenTasks={() => goToPage('my-tasks')} />
                     </div>
 
-                    <div className="dashboard-footer-hint">
-                        <Users size={19} aria-hidden="true" />
-                        <span>{hasWorkspace ? "Projects, tasks, and invitations are ready. Keep your assigned work together in My tasks." : 'Better teams build bigger dreams. Your workspace is where yours will take shape.'}</span>
-                    </div>
                         </>
                     )}
                 </main>
