@@ -227,3 +227,11 @@ export function sendWorkspaceEmailInvite(workspaceID, email) {
     method: "POST", body: { email },
   });
 }
+
+
+// Across all workspaces the current account belongs to (never another user).
+export async function fetchMyTasks({ signal } = {}) {
+  const items = await projectRequest(`${API}/api/v1/my-tasks`, { signal });
+  if (!Array.isArray(items)) throw new Error("The server returned an invalid assigned task list.");
+  return items;
+}
