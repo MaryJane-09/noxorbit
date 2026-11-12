@@ -20,7 +20,7 @@
     max-width: 530px;
     margin: 0;
     color: #c5b2cb;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.75;
 }
 .projects-create { white-space: nowrap; margin: 0; }
@@ -49,7 +49,7 @@
     border-radius: 8px;
     background: transparent;
     color: #cbb9ce;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     cursor: pointer;
 }
@@ -66,7 +66,7 @@
     padding: 0 6px;
     border-radius: 100px;
     background: rgba(242, 200, 153, .11);
-    font-size: 11px;
+    font-size: 13px;
 }
 .projects-page-workspace {
     overflow: hidden;
@@ -74,7 +74,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #c7b2c8;
-    font-size: 12px;
+    font-size: 14px;
 }
 .projects-grid {
     display: grid;
@@ -117,7 +117,7 @@
     border-radius: 100px;
     background: rgba(248, 202, 151, .065);
     color: #f4d9ac;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 800;
     text-transform: capitalize;
 }
@@ -132,7 +132,7 @@
     margin-bottom: 24px;
     overflow-wrap: anywhere;
     color: #cdbad1;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.75;
     white-space: pre-wrap;
 }
@@ -149,7 +149,7 @@
     align-items: center;
     gap: 7px;
     color: #bba4bf;
-    font-size: 11px;
+    font-size: 13px;
 }
 .projects-card-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .projects-card-actions button {
@@ -162,7 +162,7 @@
     border-radius: 9px;
     background: rgba(246, 194, 138, .055);
     color: #edccaa;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
     cursor: pointer;
 }
@@ -195,7 +195,7 @@
     max-width: 400px;
     margin: 0 0 14px;
     color: #cbb8d0;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
 }
 .projects-empty-icon {
@@ -219,7 +219,7 @@
     border-radius: 11px;
     background: #1c1325;
     color: #f8f0f8;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.6;
 }
 .projects-dialog textarea:focus-visible {
@@ -236,7 +236,7 @@
     border: 0;
     background: transparent;
     color: #f5d394;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     cursor: pointer;
 }
