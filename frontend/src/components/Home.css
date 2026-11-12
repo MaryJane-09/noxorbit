@@ -1396,3 +1396,43 @@
 @media (max-width: 760px) {
     .dashboard-overview-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Desktop-only collapsible rail. Mobile retains the full slide-out navigation. */
+.dashboard-desktop-sidebar-toggle { display:grid; place-items:center; flex:0 0 auto;
+    width:32px; height:32px; border:1px solid rgba(236,194,152,.27);
+    border-radius:9px; background:rgba(244,201,143,.065); color:#f4d49b; cursor:pointer; }
+.dashboard-desktop-sidebar-toggle:hover { background:rgba(244,201,143,.16); }
+.dashboard-desktop-sidebar-toggle:focus-visible { outline:2px solid #ffe3a5; outline-offset:2px; }
+@media (min-width: 901px) {
+    .home-page { transition:grid-template-columns .2s ease; }
+    .home-page.home-page--sidebar-collapsed { grid-template-columns:76px minmax(0,1fr); }
+    .home-page--sidebar-collapsed .dashboard-sidebar-top { flex-direction:column-reverse; gap:12px; margin:0 10px; padding:16px 0; }
+    .home-page--sidebar-collapsed .dashboard-brand { justify-content:center; }
+    .home-page--sidebar-collapsed .dashboard-brand img { margin:0; width:45px; height:45px; }
+    .home-page--sidebar-collapsed .dashboard-brand-copy,
+    .home-page--sidebar-collapsed .dashboard-workspace-indicator-text,
+    .home-page--sidebar-collapsed .dashboard-sidebar-label,
+    .home-page--sidebar-collapsed .dashboard-nav-item > span,
+    .home-page--sidebar-collapsed .dashboard-sidebar-note,
+    .home-page--sidebar-collapsed .dashboard-profile-info,
+    .home-page--sidebar-collapsed .dashboard-error,
+    .home-page--sidebar-collapsed .dashboard-signout:not(:focus-visible) > :not(svg) { display:none; }
+    .home-page--sidebar-collapsed .dashboard-workspace-indicator { padding:13px 8px; }
+    .home-page--sidebar-collapsed .dashboard-workspace-indicator-body { justify-content:center; padding:11px 0; }
+    .home-page--sidebar-collapsed .dashboard-nav { padding-left:9px; padding-right:9px; }
+    .home-page--sidebar-collapsed .dashboard-nav-item { justify-content:center; padding:12px 0; }
+    .home-page--sidebar-collapsed .dashboard-nav-item svg { flex:0 0 auto; }
+    .home-page--sidebar-collapsed .dashboard-sidebar-bottom { padding:13px 8px; }
+    .home-page--sidebar-collapsed .dashboard-profile { justify-content:center; }
+    .home-page--sidebar-collapsed .dashboard-signout { justify-content:center; gap:0; font-size:0; padding-left:0; padding-right:0; }
+    .home-page--sidebar-collapsed .dashboard-signout svg { flex:0 0 auto; }
+    .home-page--sidebar-collapsed .dashboard-sidebar { overflow-x:hidden; }
+}
+@media (max-width:900px) {
+    .dashboard-desktop-sidebar-toggle { display:none; }
+    .home-page--sidebar-collapsed .dashboard-sidebar { width:min(290px,84vw); }
+}
+@media (prefers-reduced-motion:reduce) {
+    .home-page { transition:none; }
+}
