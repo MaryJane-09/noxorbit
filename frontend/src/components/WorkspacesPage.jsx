@@ -9,6 +9,7 @@ import {
     ShieldCheck,
     X,
 } from 'lucide-react'
+import WorkspaceMembers from './WorkspaceMembers'
 import './WorkspacesPage.css'
 
 const PURPOSES = [
@@ -35,6 +36,7 @@ export default function WorkspacesPage({
 }) {
     const editDialogRef = useRef(null)
     const [editingWorkspace, setEditingWorkspace] = useState(null)
+    const [membersWorkspaceID, setMembersWorkspaceID] = useState(null)
     const [editName, setEditName] = useState('')
     const [editPurpose, setEditPurpose] = useState('general')
     const [saving, setSaving] = useState(false)
@@ -148,6 +150,10 @@ export default function WorkspacesPage({
                                             onClick={() => { onSelect(space.id); onBackToOverview() }}>
                                             Open overview <ArrowRight size={17} aria-hidden="true" />
                                         </button>
+                                        <button type="button" className="workspace-manager-edit"
+                                            onClick={() => setMembersWorkspaceID((current) => current === space.id ? null : space.id)}>
+                                            {membersWorkspaceID === space.id ? 'Hide members' : 'View members'}
+                                        </button>
                                         {space.role === 'owner' && (
                                             <button type="button" className="workspace-manager-edit"
                                                 onClick={() => startEditing(space)}
@@ -163,9 +169,13 @@ export default function WorkspacesPage({
                 )}
             </section>
 
+            {membersWorkspaceID && workspaces.some((space) => space.id === membersWorkspaceID) && (
+                <WorkspaceMembers key={membersWorkspaceID} workspace={workspaces.find((space) => space.id === membersWorkspaceID)} />
+            )}
+
             <div className="workspace-manager-help">
                 <ShieldCheck size={19} aria-hidden="true" />
-                <p>Workspace settings are available to owners. Team invitations, projects, and tasks will be added in their own stages.</p>
+                <p>Workspace settings are available to owners. Team invitations are in development. Projects and tasks are available in their dedicated sections.</p>
             </div>
 
             <dialog ref={editDialogRef} className="dashboard-workspace-dialog"
