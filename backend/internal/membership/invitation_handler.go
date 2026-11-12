@@ -38,6 +38,18 @@ func (h *InvitationHandler) Create(w http.ResponseWriter,r *http.Request) {
     }
     actor,ok:=auth.UserIDFromContext(r.Context())
     if !ok {inviteError(w,401,"Not logged in");return}
+    contentType, _, contentErr := mime.ParseMediaType(r.Header.Get("Content-Type"))
+    if contentErr != nil || contentType != "application/json" {
+        inviteError(w,415,"Content-Type must be application/json")
+        return
+    }
+    defer r.Body.Close()
+    decoder:=json.NewDecoder(http.MaxBytesReader(w,r.Body,4096))
+    decoder.DisallowUnknownFields()
+    var payload struct{}
+    if err:=decoder.Decode(&payload);err!=nil {inviteError(w,400,"Invalid invitation request");return}
+    var trailing any
+    if err:=decoder.Decode(&trailing);!errors.Is(err,io.EOF) {inviteError(w,400,"Invalid invitation request");return}
     workspaceID,err:=uuid.FromString(r.PathValue("workspace_id"))
     if err!=nil {inviteError(w,400,"Invalid workspace ID");return}
     secret,err:=h.store.CreateLink(r.Context(),actor,workspaceID)
