@@ -1489,8 +1489,8 @@
         padding: 18px 0 13px;
     }
     .home-page--sidebar-collapsed .dashboard-sidebar-toggle-row {
-        padding: 8px 0 6px;
-        justify-content: center;
+        padding: 8px 0 6px 12px;
+        justify-content: flex-start;
     }
     .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle {
         justify-content: center;
