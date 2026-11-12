@@ -76,7 +76,10 @@ func New(pool *pgxpool.Pool) http.Handler {
 	assignedHandler := task.NewAssignedHandler(taskRepo)
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
 	accountHandler := account.NewHandler(account.NewRepository(pool))
-	profileHandler := profile.NewHandler(profile.NewRepository(pool))
+	profileRepo := profile.NewRepository(pool)
+	profileHandler := profile.NewHandler(profileRepo)
+	avatarHandler := profile.NewAvatarHandler(profileRepo)
+	emailChangeHandler := profile.NewEmailChangeHandler(profileRepo, sender)
 	recycleHandler := task.NewRecycleHandler(taskRepo)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
@@ -88,6 +91,10 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/account", auth.RequireAuth(sessionRepo, accountHandler.Handle))
 	mux.HandleFunc("/api/v1/profile", auth.RequireAuth(sessionRepo, profileHandler.Name))
 	mux.HandleFunc("/api/v1/profile/password", auth.RequireAuth(sessionRepo, profileHandler.Password))
+	mux.HandleFunc("/api/v1/profile/avatar", auth.RequireAuth(sessionRepo, avatarHandler.Avatar))
+	mux.HandleFunc("/api/v1/profile/avatar/status", auth.RequireAuth(sessionRepo, avatarHandler.AvatarStatus))
+	mux.Handle("/api/v1/profile/email/request", limits.LimitIP("email-change", 20, window, auth.RequireAuth(sessionRepo, emailChangeHandler.Request)))
+	mux.HandleFunc("/api/v1/profile/email/confirm", auth.RequireAuth(sessionRepo, emailChangeHandler.Confirm))
 	// Only authenticated users can create or list their own workspaces.
 	// The repository enforces the per-user membership filter.
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
