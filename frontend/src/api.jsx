@@ -278,3 +278,31 @@ export async function fetchWorkspaceActivity(workspaceID, { signal } = {}) {
   if (!Array.isArray(events)) throw new Error("The server returned an invalid activity list.");
   return events;
 }
+
+
+// Account deletion preview never modifies data.
+export function fetchAccountDeletionImpact({ signal } = {}) {
+  return projectRequest(`${API}/api/v1/account`, { signal });
+}
+
+// This is intentionally a DELETE with password reauthentication and an exact
+// confirmation phrase. Workspaces with other members cannot be deleted here.
+export async function deleteMyAccount({ password, deleteSoleOwnedWorkspaces }) {
+  let response;
+  try {
+    response = await fetch(`${API}/api/v1/account`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        password,
+        confirmation: "DELETE MY ACCOUNT",
+        delete_sole_owned_workspaces: deleteSoleOwnedWorkspaces,
+      }),
+    });
+  } catch {
+    throw new Error("Cannot reach the NoxOrbit server. Check that your Go backend is running.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
