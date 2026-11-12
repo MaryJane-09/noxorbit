@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gofrs/uuid"
 )
@@ -65,3 +66,21 @@ func TestNormalizeStatus(t *testing.T) {
 
 func ptr(value string) *string { return &value }
 func uuidPtr(value uuid.UUID) *uuid.UUID { return &value }
+
+func TestValidateNewDueDate(t *testing.T) {
+	now := time.Date(2026, 11, 12, 10, 0, 0, 0, time.UTC)
+	old := "2007-01-01"
+	today := "2026-11-12"
+	future := "2026-12-01"
+	if err := ValidateNewDueDate(&old, nil, now); !errors.Is(err, ErrPastDueDate) {
+		t.Fatalf("old date allowed: %v", err)
+	}
+	if err := ValidateNewDueDate(&old, &old, now); err != nil {
+		t.Fatalf("unchanged overdue date rejected: %v", err)
+	}
+	for _, date := range []*string{nil, &today, &future} {
+		if err := ValidateNewDueDate(date, nil, now); err != nil {
+			t.Fatalf("valid deadline rejected: %v", err)
+		}
+	}
+}
