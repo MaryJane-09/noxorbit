@@ -25,7 +25,10 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
     const [busyID, setBusyID] = useState(null)
     const [error, setError] = useState('')
     const [formError, setFormError] = useState('')
+    const [pendingDelete, setPendingDelete] = useState(null)
+    const [deleteError, setDeleteError] = useState('')
     const dialogRef = useRef(null)
+    const deleteDialogRef = useRef(null)
     const titleRef = useRef(null)
     const key = `${workspaceID}:${projectID}`
     const ready = data.key === key
@@ -44,6 +47,12 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
             })
         return () => controller.abort()
     }, [workspaceID, projectID, key, reload])
+
+    useEffect(() => {
+        const dialog = deleteDialogRef.current
+        if (pendingDelete && dialog && !dialog.open) dialog.showModal()
+        if (!pendingDelete && dialog?.open) dialog.close()
+    }, [pendingDelete])
 
     function change(field, value) {
         setForm((current) => ({ ...current, [field]: value }))
@@ -118,18 +127,30 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
         }
     }
 
-    async function removeTask(task) {
+    function askDelete(task) {
         if (busyID || archived) return
-        if (!window.confirm(`Permanently delete "${task.title}"? This cannot be undone.`)) return
+        setDeleteError('')
+        setPendingDelete(task)
+    }
+
+    function cancelDelete() {
+        if (!busyID) setPendingDelete(null)
+    }
+
+    async function confirmDelete(event) {
+        event.preventDefault()
+        const task = pendingDelete
+        if (!task || busyID || archived) return
         setBusyID(task.id)
-        setError('')
+        setDeleteError('')
         try {
             await deleteTask(workspaceID, projectID, task.id)
             setData((current) => current.key !== key ? current : ({
                 ...current, items: current.items.filter((item) => item.id !== task.id),
             }))
+            setPendingDelete(null)
         } catch (err) {
-            setError(err.message || 'Could not delete task.')
+            setDeleteError(err.message || 'Could not delete task.')
         } finally {
             setBusyID(null)
         }
@@ -202,7 +223,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                                                 {canEdit(task) && (
                                                     <>
                                                         <button type="button" disabled={busyID !== null} onClick={() => openEditor(task)} aria-label={`Edit ${task.title}`}><Pencil size={15} /> Edit</button>
-                                                        <button type="button" disabled={busyID !== null} onClick={() => removeTask(task)} aria-label={`Delete ${task.title}`}><Trash2 size={15} /> Delete</button>
+                                                        <button type="button" disabled={busyID !== null} onClick={() => askDelete(task)} aria-label={`Delete ${task.title}`}><Trash2 size={15} /> Delete</button>
                                                     </>
                                                 )}
                                             </div>
@@ -214,6 +235,31 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     </div>
                 </>
             )}
+            <dialog ref={deleteDialogRef} className="dashboard-workspace-dialog tasks-delete-dialog"
+                aria-labelledby="tasks-delete-title" aria-describedby="tasks-delete-description"
+                onCancel={(event) => { if (busyID) event.preventDefault(); else setPendingDelete(null) }}
+                onClose={() => { if (!busyID) setPendingDelete(null) }}>
+                <div className="dashboard-dialog-header">
+                    <span className="dashboard-dialog-icon tasks-delete-icon"><Trash2 size={22} aria-hidden="true" /></span>
+                    <button type="button" className="dashboard-dialog-close" onClick={cancelDelete}
+                        disabled={Boolean(busyID)} aria-label="Close delete confirmation"><X size={19} /></button>
+                </div>
+                <p className="dashboard-eyebrow">CONFIRM YOUR ACTION</p>
+                <h2 id="tasks-delete-title">Delete task?</h2>
+                <p id="tasks-delete-description" className="dashboard-dialog-description">
+                    You are about to permanently delete <strong>{pendingDelete?.title}</strong>.
+                    This cannot be undone. A recycle bin is planned but is not available yet.
+                </p>
+                {deleteError && <p role="alert" className="dashboard-form-error">{deleteError}</p>}
+                <form onSubmit={confirmDelete} className="dashboard-dialog-actions">
+                    <button type="button" className="dashboard-dialog-cancel"
+                        disabled={Boolean(busyID)} onClick={cancelDelete}>Cancel</button>
+                    <button type="submit" className="tasks-delete-confirm" disabled={Boolean(busyID)}>
+                        {busyID ? <><LoaderCircle size={16} className="dashboard-spin" /> Deleting…</>
+                            : <><Trash2 size={16} /> Delete task</>}
+                    </button>
+                </form>
+            </dialog>
             <dialog className="dashboard-workspace-dialog tasks-dialog" ref={dialogRef}
                 aria-labelledby="tasks-dialog-title"
                 onCancel={(event) => { if (saving) event.preventDefault() }}
