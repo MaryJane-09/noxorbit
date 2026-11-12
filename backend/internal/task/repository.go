@@ -128,7 +128,7 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 	t, err := scanTask(r.pool.QueryRow(ctx, `
 		UPDATE public.tasks AS t SET
 			title = $5, description = $6, priority = $7,
-			due_date = $8::date, assignee_id = $9, updated_at = NOW()
+			due_date = $8::date, assignee_id = $9, activity_actor_id = $1, updated_at = NOW()
 		FROM public.projects p
 		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
 		  AND t.deleted_at IS NULL
@@ -175,7 +175,7 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 // Only owner, creator, or current assignee can change a task's status.
 func (r *Repository) UpdateStatus(ctx context.Context, userID, workspaceID, projectID, taskID uuid.UUID, status string) (Task, error) {
 	t, err := scanTask(r.pool.QueryRow(ctx, `
-		UPDATE public.tasks AS t SET status = $5, updated_at = NOW()
+		UPDATE public.tasks AS t SET status = $5, activity_actor_id = $1, updated_at = NOW()
 		FROM public.projects p
 		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
 		  AND t.deleted_at IS NULL
