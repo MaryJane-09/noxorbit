@@ -3,6 +3,7 @@ package email
 import (
 	"bytes"
 	"mime"
+	"io"
 	"net/mail"
 	"strings"
 	"testing"
@@ -97,4 +98,40 @@ func TestEmailTemplateLabelsMatchPurpose(t *testing.T) {
 	if strings.Contains(html.String(), "YOUR VERIFICATION CODE") {
 		t.Fatal("reset email should not have a generic verification label")
 	}
+}
+
+func TestWorkspaceInvitationContainsHTMLAndPlainText(t *testing.T) {
+    sender := EmailSender{GmailAddress: "noxorbit@example.com"}
+    link := "https://app.example.com/#invite/sample-token"
+    raw, err := sender.buildInvitationMessage("recipient@example.com", "Design & Research", link)
+    if err != nil { t.Fatal(err) }
+    msg, err := mail.ReadMessage(bytes.NewReader(raw))
+    if err != nil { t.Fatal(err) }
+    if !strings.Contains(msg.Header.Get("Content-Type"), "multipart/alternative") {
+        t.Fatal("invitation must include HTML and text alternatives")
+    }
+    body, err := io.ReadAll(msg.Body)
+    if err != nil { t.Fatal(err) }
+    content := string(body)
+    if !strings.Contains(content, "text/html") || !strings.Contains(content, "text/plain") {
+        t.Fatal("both email parts are required")
+    }
+    if !strings.Contains(content, "Accept invitation") || !strings.Contains(content, "Design &amp; Research") {
+        t.Fatal("HTML template should show branded CTA and escaped workspace name")
+    }
+    if !strings.Contains(content, link) {
+        t.Fatal("invitation must include working fallback link")
+    }
+    if strings.Contains(msg.Header.Get("Subject"), "sample-token") {
+        t.Fatal("token must not appear in subject")
+    }
+}
+
+func TestWorkspaceInvitationEscapesUntrustedContent(t *testing.T) {
+    sender := EmailSender{GmailAddress: "noxorbit@example.com"}
+    raw, err := sender.buildInvitationMessage("recipient@example.com", "<script>alert(1)</script>", "https://app.example.com/#invite/token")
+    if err != nil { t.Fatal(err) }
+    if strings.Contains(string(raw), "<script>") {
+        t.Fatal("untrusted workspace name must be HTML-escaped")
+    }
 }
