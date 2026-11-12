@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import {
     Archive,
     ArrowRight,
-    ArrowUpRight,
     CalendarDays,
     Check,
     FolderKanban,
@@ -24,43 +23,40 @@ export function ProjectOverviewCard({ workspaceID, onOpen }) {
         const controller = new AbortController()
         fetchProjects(workspaceID, { signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) {
-                    setState({ workspaceID, projects: items, error: '' })
-                }
+                if (!controller.signal.aborted) setState({ workspaceID, projects: items, error: '' })
             })
             .catch((error) => {
-                if (!controller.signal.aborted) {
-                    setState({ workspaceID, projects: [], error: error.message })
-                }
+                if (!controller.signal.aborted) setState({ workspaceID, projects: [], error: error.message })
             })
         return () => controller.abort()
     }, [workspaceID])
 
-    const ready = workspaceID && state.workspaceID === workspaceID
-    const active = ready ? state.projects.filter((project) => project.status === 'active').length : 0
-    const archived = ready ? state.projects.length - active : 0
+    const ready = Boolean(workspaceID && state.workspaceID === workspaceID)
+    const activeProjects = ready ? state.projects.filter((project) => project.status === 'active') : []
+    const archived = ready ? state.projects.length - activeProjects.length : 0
+    const activeCount = activeProjects.length
 
     return (
-        <section className="dashboard-empty-card" aria-labelledby="dashboard-projects-heading">
+        <section className="dashboard-empty-card dashboard-overview-data-card" aria-labelledby="dashboard-projects-heading">
             <div className="dashboard-empty-top">
                 <span className="dashboard-tile-icon"><FolderKanban size={23} aria-hidden="true" /></span>
-                <ArrowUpRight size={19} aria-hidden="true" />
+                <span className="dashboard-data-tag">CURRENT WORKSPACE</span>
             </div>
             <h3 id="dashboard-projects-heading">Projects</h3>
-            <p>{!workspaceID ? 'Create a workspace to give your projects a home.'
-                : !ready ? 'Loading projects…'
-                : state.error ? 'Project data is unavailable. Open Projects to retry.'
-                : state.projects.length === 0 ? 'No projects yet. Start with one shared goal.'
-                : `${active} active ${active === 1 ? 'project' : 'projects'}${archived ? ` · ${archived} archived` : ''} in this workspace.`}</p>
+            {!workspaceID ? <p>Create a workspace to give your projects a home.</p>
+                : !ready ? <p role="status">Loading projects…</p>
+                    : state.error ? <p role="alert">Project data is unavailable. Open Projects to retry.</p>
+                        : <>
+                            <div className="dashboard-data-value">{activeCount} <span>active</span></div>
+                            <p>{archived ? `${archived} archived · ` : ''}{activeCount === 0
+                                ? 'Start with your first shared project.'
+                                : activeProjects.slice(0, 2).map((project) => project.name).join(' · ')}</p>
+                        </>}
             {workspaceID && (
-                <button type="button" className="dashboard-projects-open" onClick={onOpen}>
-                    Open Projects <ArrowRight size={15} aria-hidden="true" />
+                <button type="button" className="dashboard-card-link" onClick={onOpen}>
+                    Open projects <ArrowRight size={16} aria-hidden="true" />
                 </button>
             )}
-            <span className="dashboard-empty-status">
-                {!workspaceID ? 'Not set up yet' : !ready ? 'Loading' : state.error ? 'Unavailable'
-                    : state.projects.length === 0 ? 'Ready for your first project' : 'Live workspace data'}
-            </span>
         </section>
     )
 }
