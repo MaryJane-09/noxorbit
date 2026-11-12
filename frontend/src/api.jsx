@@ -363,7 +363,11 @@ export async function saveMyAvatar(file) {
     throw new Error("Cannot reach the Noxorbit server.");
   }
   if (response.status === 204) return;
-  return workspaceResponse(response);
+  const body = await response.json().catch(() => null);
+  if (response.status === 500) {
+    throw new Error("Picture could not be saved. Check that Supabase migration 010 was applied and that the backend is up to date.");
+  }
+  throw new Error(body?.error || `Picture upload failed (HTTP ${response.status}).`);
 }
 
 export async function removeMyAvatar() {
