@@ -20,7 +20,7 @@ import {
     Users,
     X,
 } from 'lucide-react'
-import { API, createWorkspace, fetchWorkspaces, updateWorkspace } from '../api'
+import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar } from '../api'
 import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
@@ -79,6 +79,8 @@ function pageFromHash() {
 export default function Home({ user, onLogout, onUserUpdated }) {
     const [loggingOut, setLoggingOut] = useState(false)
     const [error, setError] = useState('')
+    const [avatarURL, setAvatarURL] = useState(null)
+    const [avatarRevision, setAvatarRevision] = useState(0)
     const [guideOpen, setGuideOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
     const [page, setPage] = useState(pageFromHash)
@@ -97,6 +99,22 @@ export default function Home({ user, onLogout, onUserUpdated }) {
     const displayName = (user.name || '').trim().split(/\s+/)[0] || 'there'
     const activeWorkspace = workspaces.find((space) => space.id === selectedWorkspaceId) || workspaces[0] || null
     const hasWorkspace = Boolean(activeWorkspace)
+
+    useEffect(() => {
+        let alive = true
+        let objectURL = null
+        loadMyAvatar()
+            .then((blob) => {
+                if (!alive || !blob) return
+                objectURL = URL.createObjectURL(blob)
+                setAvatarURL(objectURL)
+            })
+            .catch(() => { if (alive) setAvatarURL(null) })
+        return () => {
+            alive = false
+            if (objectURL) URL.revokeObjectURL(objectURL)
+        }
+    }, [avatarRevision])
 
     useEffect(() => {
         const handleHashChange = () => setPage(pageFromHash())
@@ -311,7 +329,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <p>Great things start with a shared space.</p>
                     </div>
                     <div className="dashboard-profile">
-                        <span className="dashboard-avatar" aria-hidden="true">{initialLetters(user.name)}</span>
+                        <span className="dashboard-avatar" aria-hidden="true">{avatarURL ? <img src={avatarURL} alt="" /> : initialLetters(user.name)}</span>
                         <div className="dashboard-profile-info">
                             <strong>{user.name}</strong>
                             <span>{user.email}</span>
@@ -337,7 +355,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     </div>
                     <div className="dashboard-topbar-account">
                         <span>Signed in</span>
-                        <span className="dashboard-avatar dashboard-avatar--small" title={user.name} aria-label={user.name}>{initialLetters(user.name)}</span>
+                        <span className="dashboard-avatar dashboard-avatar--small" title={user.name} aria-label={user.name}>{avatarURL ? <img src={avatarURL} alt="" /> : initialLetters(user.name)}</span>
                     </div>
                 </header>
 
@@ -366,7 +384,10 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
-                        <SettingsPage user={user} onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
+                        <SettingsPage user={user} avatarURL={avatarURL}
+                            onAvatarUpdated={() => { setAvatarURL(null); setAvatarRevision((value) => value + 1) }}
+                            onEmailChanged={() => { window.location.hash = ''; onLogout() }}
+                            onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
                             window.location.hash = ''
                             onLogout()
                         }} onAccountDeleted={() => {
