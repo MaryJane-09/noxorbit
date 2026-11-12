@@ -3,7 +3,6 @@ package auth
 import (
     "context"
     "encoding/json"
-    "errors"
     "log"
     "net/http"
 
@@ -85,4 +84,3 @@ func (h *SessionsHandler) RevokeOtherSessions(w http.ResponseWriter,r *http.Requ
     _=json.NewEncoder(w).Encode(map[string]int64{"revoked":count})
 }
 var _ SessionManager=(*session.SessionRepository)(nil)
-var _ = errors.Is
