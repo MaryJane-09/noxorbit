@@ -325,5 +325,11 @@ export async function changeAccountPassword(currentPassword, newPassword) {
     throw new Error("Cannot reach the Noxorbit server.");
   }
   if (response.status === 204) return;
+  // A wrong current password returns 401 even though the session remains
+  // valid. Keep that distinct from an expired browser session.
+  if (response.status === 401) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error || "Current password was rejected.");
+  }
   return workspaceResponse(response);
 }
