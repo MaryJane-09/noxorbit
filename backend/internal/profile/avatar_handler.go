@@ -32,7 +32,10 @@ func avatarETag(data []byte) string {
 
 // Avatar is a private, authenticated resource. POST accepts only a single
 // image payload, while DELETE resets the account to its initials avatar.
-func(h *Handler)Avatar(w http.ResponseWriter,r *http.Request){
+type AvatarHandler struct{ store AvatarStore }
+func NewAvatarHandler(store AvatarStore)*AvatarHandler{return &AvatarHandler{store:store}}
+
+func(h *AvatarHandler)Avatar(w http.ResponseWriter,r *http.Request){
  uid,ok:=auth.UserIDFromContext(r.Context())
  if !ok{fail(w,401,"Not logged in");return}
  if r.Method==http.MethodGet{
@@ -83,7 +86,7 @@ func(h *Handler)Avatar(w http.ResponseWriter,r *http.Request){
  w.WriteHeader(204)
 }
 
-func(h *Handler)AvatarStatus(w http.ResponseWriter,r *http.Request){
+func(h *AvatarHandler)AvatarStatus(w http.ResponseWriter,r *http.Request){
  if r.Method!=http.MethodGet{w.Header().Set("Allow","GET");fail(w,405,"Method not allowed");return}
  uid,ok:=auth.UserIDFromContext(r.Context())
  if !ok{fail(w,401,"Not logged in");return}
