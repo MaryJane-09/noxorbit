@@ -4,9 +4,10 @@ import (
     "context"
     "encoding/json"
     "errors"
+    "io"
+    "mime"
     "log"
     "net/http"
-    "strings"
 
     "github.com/MaryJane-09/noxorbit/backend/internal/auth"
     "github.com/gofrs/uuid"
@@ -56,7 +57,8 @@ func (h *InvitationHandler) Accept(w http.ResponseWriter,r *http.Request) {
     }
     actor,ok:=auth.UserIDFromContext(r.Context())
     if !ok {inviteError(w,401,"Not logged in");return}
-    if !strings.HasPrefix(r.Header.Get("Content-Type"),"application/json") {
+    contentType, _, contentErr := mime.ParseMediaType(r.Header.Get("Content-Type"))
+    if contentErr != nil || contentType != "application/json" {
         inviteError(w,415,"Content-Type must be application/json")
         return
     }
@@ -66,7 +68,7 @@ func (h *InvitationHandler) Accept(w http.ResponseWriter,r *http.Request) {
     decoder.DisallowUnknownFields()
     if err:=decoder.Decode(&input);err!=nil {inviteError(w,400,"Invalid invitation request");return}
     var extra any
-    if err:=decoder.Decode(&extra);err==nil {inviteError(w,400,"Invalid invitation request");return}
+    if err:=decoder.Decode(&extra);!errors.Is(err,io.EOF) {inviteError(w,400,"Invalid invitation request");return}
     id,err:=h.store.AcceptLink(r.Context(),actor,input.Token)
     switch {
     case errors.Is(err,ErrInvalidInvite): inviteError(w,404,"Invitation not found")
