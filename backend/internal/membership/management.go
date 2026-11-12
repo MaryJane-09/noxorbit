@@ -81,11 +81,20 @@ func NewMemberManagementRepository(pool *pgxpool.Pool)*MemberManagementRepositor
 func (r *MemberManagementRepository) RemoveMember(ctx context.Context, owner, workspace, target uuid.UUID) error {
     var removed uuid.UUID
     err:=r.pool.QueryRow(ctx,`
-        DELETE FROM public.workspace_memberships AS target
-        WHERE target.workspace_id=$1 AND target.user_id=$3 AND target.role='member'
-          AND EXISTS (SELECT 1 FROM public.workspace_memberships m
-            WHERE m.workspace_id=$1 AND m.user_id=$2 AND m.role='owner')
-        RETURNING target.user_id
+        WITH removed AS (
+            DELETE FROM public.workspace_memberships AS target
+            WHERE target.workspace_id=$1 AND target.user_id=$3 AND target.role='member'
+              AND EXISTS (SELECT 1 FROM public.workspace_memberships m
+                WHERE m.workspace_id=$1 AND m.user_id=$2 AND m.role='owner')
+            RETURNING target.workspace_id, target.user_id
+        ), recorded AS (
+            INSERT INTO public.activity_events
+                (workspace_id, actor_id, action, entity_type, entity_id, entity_name)
+            SELECT workspace_id, $2, 'member.removed', 'member', user_id, 'Team member'
+            FROM removed
+            RETURNING entity_id
+        )
+        SELECT entity_id FROM recorded
     `,workspace,owner,target).Scan(&removed)
     if err==nil {return nil}
     if !errors.Is(err,pgx.ErrNoRows) {return err}
