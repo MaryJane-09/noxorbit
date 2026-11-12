@@ -420,3 +420,43 @@ request, database migration, email scheduler or automatic status change.
 Closing the panel hides its contents without losing the selected expanded
 date groups while the Overview remains mounted. At narrower viewport widths
 summary cards reflow from three columns to two and then one.
+
+
+## Task Recycle Bin — migration 008 required
+
+**Deployment order:** Apply `backend/migrations/008_task_recycle_bin.sql` in
+Supabase SQL Editor BEFORE running this version of the Go backend. Existing
+task queries now refer to `tasks.deleted_at`; without the migration, normal
+task listing and updates will fail. No data is removed by the migration.
+
+`DELETE /api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}`
+now **soft-deletes** the task, setting `deleted_at`, `deleted_by`, and
+`updated_at` rather than removing its row. The existing owner/creator rule
+and active-project requirement apply. Normal project-board reads, task-detail
+reads and writes, My Tasks, and deadline summaries filter out recycled tasks.
+
+`GET /api/v1/recycle-bin/tasks` lists up to 200 most recently deleted tasks
+for which the signed-in member is currently the task creator or a workspace
+owner; it includes project and workspace context and timestamps. The user ID
+comes exclusively from the authenticated session.
+
+`POST /api/v1/recycle-bin/tasks/{task_id}/restore` restores a recycled task
+if its project is active and the signed-in member still has creator/owner
+permissions. The guarded SQL UPDATE rechecks those conditions atomically.
+It returns 204 when restored, 404 when missing/inaccessible/archived, 401
+without a session. The task keeps its ID, assignment, status, and due date.
+If the project is archived, restore it in Projects first.
+
+The frontend's `#recycle-bin` route lists deleted tasks and offers Restore.
+Existing task delete confirmation now states that deletion is recoverable.
+
+**Scope:** This initial Recycle Bin phase covers tasks only. Projects use the
+existing archive/restore flow. Workspace deletion is not enabled.
+There is **no retention purge or permanent-delete action** in this phase:
+deleted rows remain stored until a future explicit retention policy is
+implemented. Deleted tasks from before migration 008 were permanently
+deleted and cannot be recovered by this feature.
+
+Run `go test ./backend/...` and `go vet ./backend/...` from the repository
+root; in `frontend`, run `npm run lint` and `npm run build`.
+Integration-test against a migrated Supabase instance before production.
