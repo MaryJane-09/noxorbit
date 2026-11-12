@@ -8,7 +8,6 @@ import (
 
     "github.com/MaryJane-09/noxorbit/backend/internal/auth"
     "github.com/gofrs/uuid"
-    "github.com/jackc/pgx/v5/pgxpool"
 )
 
 // AssignedTask includes the project and workspace context required by My Tasks.
@@ -80,4 +79,3 @@ func (h *AssignedHandler) List(w http.ResponseWriter,r *http.Request){
 
 // Explicit compile-time check, separate from database integration coverage.
 var _ AssignedStore = (*Repository)(nil)
-var _ = (*pgxpool.Pool)(nil)
