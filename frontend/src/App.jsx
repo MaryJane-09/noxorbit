@@ -27,7 +27,7 @@ function App() {
   let screen = null;
   if (introDone && !checking) {
     if (user) {
-      screen = <Home user={user} onLogout={() => { setUser(null); setView("login"); }} />;
+      screen = <Home user={user} onUserUpdated={setUser} onLogout={() => { setUser(null); setView("login"); }} />;
     } else if (view === "forgot") {
       screen = <ForgotPassword onLogin={() => setView("login")} />;
     } else if (view === "login") {
