@@ -53,13 +53,12 @@ export default function RecycleBinPage() {
             <div>
                 <p className="dashboard-eyebrow">RECOVER YOUR WORK</p>
                 <h1 id="recycle-heading">Recycle bin<span>.</span></h1>
-                <p>Restore deleted tasks to their original projects. Only tasks you can recover appear here.</p>
+                <p>Restore deleted tasks to their original projects.</p>
             </div>
             <button type="button" className="recycle-refresh" onClick={refresh} disabled={state.loading || Boolean(busyID)}>
                 <RefreshCw size={17} aria-hidden="true" /> Refresh
             </button>
         </header>
-        <p className="recycle-scope">Task recovery is available now. Project archiving remains available under Projects; workspace deletion is not enabled.</p>
         {actionError && <p role="alert" className="dashboard-form-error">{actionError}</p>}
         {notice && <p role="status" className="recycle-notice">{notice}</p>}
         {state.loading ? <div className="recycle-message" role="status"><LoaderCircle size={19} className="dashboard-spin" /> Loading deleted tasks…</div>
