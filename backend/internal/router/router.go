@@ -7,6 +7,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/config"
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/MaryJane-09/noxorbit/backend/internal/activity"
+	"github.com/MaryJane-09/noxorbit/backend/internal/account"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
@@ -73,6 +74,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	taskHandler := task.NewHandler(taskRepo)
 	assignedHandler := task.NewAssignedHandler(taskRepo)
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
+	accountHandler := account.NewHandler(account.NewRepository(pool))
 	recycleHandler := task.NewRecycleHandler(taskRepo)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
@@ -81,6 +83,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	const window = 15 * time.Minute
 	mux.Handle("/register", limits.LimitIP("register", 12, window, register.RegisterHandler(otpRepo, &sender)))
 	mux.HandleFunc("/me", auth.RequireAuth(sessionRepo, auth.MeHandler(repo)))
+	mux.HandleFunc("/api/v1/account", auth.RequireAuth(sessionRepo, accountHandler.Handle))
 	// Only authenticated users can create or list their own workspaces.
 	// The repository enforces the per-user membership filter.
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
