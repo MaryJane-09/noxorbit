@@ -91,7 +91,7 @@ func (r *Repository) List(ctx context.Context, userID, workspaceID, projectID uu
 	if _, err := r.accessibleProject(ctx, userID, workspaceID, projectID); err != nil { return nil, err }
 	rows, err := r.pool.Query(ctx, `
 		SELECT `+taskColumns+` FROM public.tasks t
-		WHERE t.workspace_id = $2 AND t.project_id = $3
+		WHERE t.workspace_id = $2 AND t.project_id = $3 AND t.deleted_at IS NULL
 		  AND EXISTS (SELECT 1 FROM public.workspace_memberships m
 		              WHERE m.workspace_id = t.workspace_id AND m.user_id = $1)
 		ORDER BY t.created_at DESC, t.id DESC
@@ -114,7 +114,7 @@ func (r *Repository) List(ctx context.Context, userID, workspaceID, projectID uu
 func (r *Repository) Get(ctx context.Context, userID, workspaceID, projectID, taskID uuid.UUID) (Task, error) {
 	t, err := scanTask(r.pool.QueryRow(ctx, `
 		SELECT `+taskColumns+` FROM public.tasks t
-		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
+		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2 AND t.deleted_at IS NULL
 		  AND EXISTS (SELECT 1 FROM public.workspace_memberships m
 		              WHERE m.workspace_id = t.workspace_id AND m.user_id = $1)
 	`, userID, workspaceID, projectID, taskID))
@@ -157,7 +157,7 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 		SELECT EXISTS (
 			SELECT 1 FROM public.tasks t
 			JOIN public.workspace_memberships m ON m.workspace_id=t.workspace_id
-			WHERE t.id=$4 AND t.workspace_id=$2 AND t.project_id=$3
+			WHERE t.id=$4 AND t.workspace_id=$2 AND t.project_id=$3 AND t.deleted_at IS NULL
 			  AND m.user_id=$1 AND (m.role='owner' OR t.created_by=$1)
 		)
 	`, userID, workspaceID, projectID, taskID).Scan(&canEdit)
@@ -192,25 +192,27 @@ func (r *Repository) UpdateStatus(ctx context.Context, userID, workspaceID, proj
 	return t, err
 }
 
-// Hard deletion in the MVP. A future recycle bin requires a separate soft-delete
-// migration; frontend should confirm the irreversible action beforehand.
+// Delete moves a task into the recycle bin. Only the task creator or workspace
+// owner can remove a task, and archived projects remain read-only.
 func (r *Repository) Delete(ctx context.Context, userID, workspaceID, projectID, taskID uuid.UUID) error {
-	var deleted uuid.UUID
-	err := r.pool.QueryRow(ctx, `
-		DELETE FROM public.tasks t
-		USING public.projects p
-		WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
-		  AND p.id = t.project_id AND p.workspace_id = t.workspace_id
-		  AND p.status = 'active'
-		  AND EXISTS (
-			SELECT 1 FROM public.workspace_memberships m
-			WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
-			  AND (m.role = 'owner' OR t.created_by = $1)
-		  )
-		RETURNING t.id
-	`, userID, workspaceID, projectID, taskID).Scan(&deleted)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return r.classifyWriteFailure(ctx, userID, workspaceID, projectID, taskID)
-	}
-	return err
+    var deleted uuid.UUID
+    err := r.pool.QueryRow(ctx, `
+        UPDATE public.tasks AS t
+        SET deleted_at = NOW(), deleted_by = $1, updated_at = NOW()
+        FROM public.projects p
+        WHERE t.id = $4 AND t.project_id = $3 AND t.workspace_id = $2
+          AND t.deleted_at IS NULL
+          AND p.id = t.project_id AND p.workspace_id = t.workspace_id
+          AND p.status = 'active'
+          AND EXISTS (
+              SELECT 1 FROM public.workspace_memberships m
+              WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
+                AND (m.role = 'owner' OR t.created_by = $1)
+          )
+        RETURNING t.id
+    `, userID, workspaceID, projectID, taskID).Scan(&deleted)
+    if errors.Is(err, pgx.ErrNoRows) {
+        return r.classifyWriteFailure(ctx, userID, workspaceID, projectID, taskID)
+    }
+    return err
 }
