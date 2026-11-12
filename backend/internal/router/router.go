@@ -8,6 +8,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/auth"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
+	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/project"
 	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
@@ -61,6 +62,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	sessionRepo := session.NewRepository(pool)
 	limits := ratelimit.New(pool)
 	workspaceHandler := workspace.NewHandler(workspace.NewRepository(pool))
+	memberHandler := membership.NewHandler(membership.NewRepository(pool))
 	projectHandler := project.NewHandler(project.NewRepository(pool))
 	taskHandler := task.NewHandler(task.NewRepository(pool))
 	mux := http.NewServeMux()
@@ -74,6 +76,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	// The repository enforces the per-user membership filter.
 	mux.HandleFunc("/api/v1/workspaces", auth.RequireAuth(sessionRepo, workspaceHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{id}", auth.RequireAuth(sessionRepo, workspaceHandler.Detail))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/members", auth.RequireAuth(sessionRepo, memberHandler.List))
 	// All project routes are workspace-scoped; repositories enforce membership
 	// or owner permissions on the data read or mutation itself.
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects", auth.RequireAuth(sessionRepo, projectHandler.Collection))
