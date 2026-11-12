@@ -24,6 +24,7 @@ type RecycledTask struct {
 type RecycleStore interface {
     ListRecycled(context.Context, uuid.UUID) ([]RecycledTask, error)
     Restore(context.Context, uuid.UUID, uuid.UUID) error
+    DeleteForever(context.Context, uuid.UUID, uuid.UUID) error
 }
 
 // Only tasks the member is eligible to restore are listed: owner or creator.
@@ -77,6 +78,27 @@ func (r *Repository) Restore(ctx context.Context, userID, taskID uuid.UUID) erro
     return err
 }
 
+// DeleteForever removes only an already-recycled task. Authorization is
+// checked within the DELETE, so guessing task IDs never grants access.
+// Unlike restoration, it also works when the parent project is archived.
+func (r *Repository) DeleteForever(ctx context.Context, userID, taskID uuid.UUID) error {
+    var deleted uuid.UUID
+    err := r.pool.QueryRow(ctx, `
+        DELETE FROM public.tasks AS t
+        USING public.projects AS p
+        WHERE t.id = $2 AND t.deleted_at IS NOT NULL
+          AND p.id = t.project_id AND p.workspace_id = t.workspace_id
+          AND EXISTS (
+              SELECT 1 FROM public.workspace_memberships AS m
+              WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
+                AND (m.role = 'owner' OR t.created_by = $1)
+          )
+        RETURNING t.id
+    `, userID, taskID).Scan(&deleted)
+    if errors.Is(err, pgx.ErrNoRows) { return ErrNotFound }
+    return err
+}
+
 type RecycleHandler struct{ store RecycleStore }
 func NewRecycleHandler(store RecycleStore)*RecycleHandler{return &RecycleHandler{store:store}}
 
@@ -107,6 +129,30 @@ func (h *RecycleHandler) Restore(w http.ResponseWriter,r *http.Request){
         if errors.Is(err,ErrNotFound){fail(w,http.StatusNotFound,"Task cannot be restored. Check its project and your permissions.");return}
         log.Println("Recycle bin restore:",err)
         fail(w,http.StatusInternalServerError,"Could not restore task")
+        return
+    }
+    w.WriteHeader(http.StatusNoContent)
+}
+
+// DELETE /api/v1/recycle-bin/tasks/{task_id} permanently deletes a task
+// that has already been moved to the recycle bin.
+func (h *RecycleHandler) DeleteForever(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodDelete {
+        w.Header().Set("Allow", "DELETE")
+        fail(w, http.StatusMethodNotAllowed, "Method not allowed")
+        return
+    }
+    userID, ok := auth.UserIDFromContext(r.Context())
+    if !ok { fail(w, http.StatusUnauthorized, "Not logged in"); return }
+    taskID, err := uuid.FromString(r.PathValue("task_id"))
+    if err != nil { fail(w, http.StatusBadRequest, "Invalid task ID"); return }
+    if err := h.store.DeleteForever(r.Context(), userID, taskID); err != nil {
+        if errors.Is(err, ErrNotFound) {
+            fail(w, http.StatusNotFound, "Task not found in your recycle bin")
+            return
+        }
+        log.Println("Recycle bin permanent deletion:", err)
+        fail(w, http.StatusInternalServerError, "Could not permanently delete task")
         return
     }
     w.WriteHeader(http.StatusNoContent)
