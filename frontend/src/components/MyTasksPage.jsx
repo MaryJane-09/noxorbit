@@ -65,7 +65,7 @@ export default function MyTasksPage() {
                     <h1 id="my-tasks-title">My tasks<span>.</span></h1>
                     <p>Every task assigned to you, across the projects and teams you belong to.</p>
                 </div>
-                <button className="dashboard-feature-action" type="button" disabled={state.loading}
+                <button className="my-tasks-refresh" type="button" disabled={state.loading}
                     onClick={() => { setState((current) => ({ ...current, loading: true, error: '' })); setReload((n) => n + 1) }}>
                     <RefreshCw size={16} aria-hidden="true" /> Refresh
                 </button>
