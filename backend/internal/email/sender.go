@@ -172,3 +172,37 @@ func cleanName(name string) string {
 	}
 	return name
 }
+
+
+// SendWorkspaceInvitation sends a plain-text invitation. An HTTP link must
+// never be assembled from an untrusted request Host header.
+func (s EmailSender) SendWorkspaceInvitation(to, workspaceName, link string) error {
+    recipient,err:=mail.ParseAddress(to)
+    if err!=nil || recipient.Address!=to || strings.ContainsAny(to,"\r\n") {
+        return errors.New("invalid invitation recipient")
+    }
+    subject:="Invitation to join a Noxorbit workspace"
+    if !strings.HasPrefix(link,"https://") && !strings.HasPrefix(link,"http://localhost:") {
+        return errors.New("invitation URL must use HTTPS")
+    }
+    var nonce [16]byte
+    if _,err=rand.Read(nonce[:]);err!=nil{return err}
+    sender,err:=mail.ParseAddress(s.GmailAddress)
+    if err!=nil || sender.Address!=s.GmailAddress {return errors.New("invalid sender address")}
+    name:=cleanName(workspaceName)
+    textBody:=fmt.Sprintf("You've been invited to join %s on Noxorbit.\n\nOpen this link to sign in or register, then accept the invitation:\n%s\n\nThis invitation expires in seven days and can be used once. If unexpected, ignore it.\n",name,link)
+    var body bytes.Buffer
+    qp:=quotedprintable.NewWriter(&body)
+    if _,err=qp.Write([]byte(textBody));err!=nil{return err}
+    if err=qp.Close();err!=nil{return err}
+    msg:="From: "+(&mail.Address{Name:"Noxorbit",Address:sender.Address}).String()+"\r\n"+
+        "To: "+recipient.Address+"\r\n"+
+        "Date: "+time.Now().UTC().Format(time.RFC1123Z)+"\r\n"+
+        "Message-ID: <invite."+hex.EncodeToString(nonce[:])+"@"+strings.Split(sender.Address,"@")[1]+">\r\n"+
+        "Subject: "+subject+"\r\n"+
+        "MIME-Version: 1.0\r\n"+
+        "Content-Type: text/plain; charset=UTF-8\r\n"+
+        "Content-Transfer-Encoding: quoted-printable\r\n\r\n"+body.String()
+    auth:=smtp.PlainAuth("",s.GmailAddress,s.GmailAppPassword,s.SMTPHost)
+    return smtp.SendMail(s.SMTPHost+":"+s.SMTPPort,auth,s.GmailAddress,[]string{recipient.Address},[]byte(msg))
+}
