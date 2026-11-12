@@ -707,6 +707,7 @@ accounts; do not post real verification codes or account passwords in chat.
 If email delivery fails, confirm SMTP credentials and restart the server.
 Do not run the updated Go profile endpoints before migration 010.
 
-**Avatar crop limitation:** The first version crops the center automatically.
-User-controlled repositioning and EXIF-orientation-aware preview remain planned
-UI improvements; the upload format/size limits are enforced server-side.
+**Avatar crop UX:** Settings now opens a drag-and-zoom editor and exports a
+512×512 JPEG before uploading. The Go API independently validates and optimizes
+the received image. The original source photo is not sent by the cropper.
+If the save fails with a database error, confirm that migration 010 is applied.
