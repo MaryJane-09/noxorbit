@@ -269,7 +269,8 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     <button className="dashboard-desktop-sidebar-toggle" type="button"
                         onClick={toggleSidebar} aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         aria-expanded={!sidebarCollapsed} title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
-                        {sidebarCollapsed ? <PanelLeftOpen size={19} aria-hidden="true" /> : <PanelLeftClose size={19} aria-hidden="true" />}
+                        {sidebarCollapsed ? <PanelLeftOpen size={18} aria-hidden="true" /> : <PanelLeftClose size={18} aria-hidden="true" />}
+                        <span className="dashboard-sidebar-toggle-label">{sidebarCollapsed ? 'Expand' : 'Collapse sidebar'}</span>
                     </button>
                 </div>
 
@@ -344,11 +345,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                 </nav>
 
                 <div className="dashboard-sidebar-bottom">
-                    <div className="dashboard-sidebar-note">
-                        <Sparkles size={19} aria-hidden="true" />
-                        <p>Great things start with a shared space.</p>
-                    </div>
-                    <div className="dashboard-profile">
+                    <div className="dashboard-profile" title={sidebarCollapsed ? user.name : undefined}>
                         <span className="dashboard-avatar" aria-hidden="true">{avatarURL ? <img src={avatarURL} alt="" /> : initialLetters(user.name)}</span>
                         <div className="dashboard-profile-info">
                             <strong>{user.name}</strong>
