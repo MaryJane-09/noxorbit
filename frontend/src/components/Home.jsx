@@ -273,7 +273,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
 
                 <div className="dashboard-workspace-indicator">
                     <p className="dashboard-sidebar-label">CURRENT WORKSPACE</p>
-                    <div className="dashboard-workspace-indicator-body">
+                    <div className="dashboard-workspace-indicator-body" title={sidebarCollapsed ? (activeWorkspace?.name || "No workspace selected") : undefined}>
                         <span className="dashboard-workspace-icon"><Layers3 size={19} /></span>
                         <span className="dashboard-workspace-indicator-text">
                             <strong title={activeWorkspace?.name}>
@@ -354,7 +354,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         </div>
                     </div>
                     {error && <p className="dashboard-error" role="alert">{error}</p>}
-                    <button type="button" className="dashboard-signout" onClick={handleLogout} disabled={loggingOut}>
+                    <button type="button" className="dashboard-signout" aria-label="Log out" title={sidebarCollapsed ? "Log out" : undefined} onClick={handleLogout} disabled={loggingOut}>
                         <LogOut size={18} aria-hidden="true" />
                         {loggingOut ? 'Logging out…' : 'Log out'}
                     </button>
