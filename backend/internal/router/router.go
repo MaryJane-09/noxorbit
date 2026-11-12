@@ -71,6 +71,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	taskRepo := task.NewRepository(pool)
 	taskHandler := task.NewHandler(taskRepo)
 	assignedHandler := task.NewAssignedHandler(taskRepo)
+	recycleHandler := task.NewRecycleHandler(taskRepo)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", health.HealthHandler)
 	// Fixed 15-minute IP quotas limit request floods before expensive work.
@@ -96,6 +97,8 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/status", auth.RequireAuth(sessionRepo, projectHandler.Status))
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
+	mux.HandleFunc("/api/v1/recycle-bin/tasks", auth.RequireAuth(sessionRepo, recycleHandler.List))
+	mux.HandleFunc("/api/v1/recycle-bin/tasks/{task_id}/restore", auth.RequireAuth(sessionRepo, recycleHandler.Restore))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks", auth.RequireAuth(sessionRepo, taskHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}", auth.RequireAuth(sessionRepo, taskHandler.Detail))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/tasks/{task_id}/status", auth.RequireAuth(sessionRepo, taskHandler.Status))
