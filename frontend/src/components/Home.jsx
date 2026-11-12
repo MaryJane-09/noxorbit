@@ -280,13 +280,6 @@ export default function Home({ user, onLogout }) {
                         <span>My tasks</span>
                         {page === 'my-tasks' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
-                    <a href="#recycle-bin" className={`dashboard-nav-item${page === 'recycle-bin' ? ' dashboard-nav-item--active' : ''}`}
-                        aria-current={page === 'recycle-bin' ? 'page' : undefined}
-                        onClick={() => goToPage('recycle-bin')}>
-                        <Trash2 size={19} aria-hidden="true" />
-                        <span>Recycle bin</span>
-                        {page === 'recycle-bin' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
-                    </a>
                     {PLANNED_SECTIONS.map(({ name, icon: Icon }) => (
                         <span className="dashboard-nav-item dashboard-nav-item--planned" key={name} title="Available when workspace features are connected">
                             <Icon size={19} aria-hidden="true" />
@@ -294,6 +287,15 @@ export default function Home({ user, onLogout }) {
                             <small>SOON</small>
                         </span>
                     ))}
+                    <div className="dashboard-nav-section-separator" aria-hidden="true" />
+                    <p className="dashboard-sidebar-label dashboard-manage-label">MANAGE</p>
+                    <a href="#recycle-bin" className={`dashboard-nav-item${page === 'recycle-bin' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'recycle-bin' ? 'page' : undefined}
+                        onClick={() => goToPage('recycle-bin')}>
+                        <Trash2 size={19} aria-hidden="true" />
+                        <span>Recycle bin</span>
+                        {page === 'recycle-bin' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
                 </nav>
 
                 <div className="dashboard-sidebar-bottom">
