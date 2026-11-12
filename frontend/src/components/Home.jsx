@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { API, createWorkspace, fetchWorkspaces, updateWorkspace } from '../api'
 import WorkspacesPage from './WorkspacesPage'
+import InvitationPage from './InvitationPage'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
 
@@ -65,6 +66,7 @@ function purposeLabel(purpose) {
 }
 
 function pageFromHash() {
+    if (window.location.hash.startsWith('#invite/')) return 'invite'
     if (window.location.hash === '#workspaces') return 'workspaces'
     if (window.location.hash === '#projects') return 'projects'
     return 'overview'
@@ -103,6 +105,12 @@ export default function Home({ user, onLogout }) {
         setPage(destination)
         setMenuOpen(false)
         window.scrollTo(0, 0)
+    }
+
+    function onInvitationAccepted(workspaceID) {
+        setSelectedWorkspaceId(workspaceID)
+        retryWorkspaces()
+        goToPage('workspaces')
     }
 
     function retryWorkspaces() {
@@ -298,7 +306,7 @@ export default function Home({ user, onLogout }) {
                         </button>
                         <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : 'Overview'}</strong>
+                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <span>Signed in</span>
@@ -307,7 +315,10 @@ export default function Home({ user, onLogout }) {
                 </header>
 
                 <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : 'dashboard-projects'}>
-                    {page === 'workspaces' ? (
+                    {page === 'invite' ? (
+                        <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
+                            onAccepted={onInvitationAccepted} />
+                    ) : page === 'workspaces' ? (
                         <WorkspacesPage
                             workspaces={workspaces}
                             activeWorkspace={activeWorkspace}
