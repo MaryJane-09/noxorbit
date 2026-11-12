@@ -650,8 +650,10 @@ accounts, tasks or projects are changed by this migration.
 - `GET /api/v1/profile/avatar` returns the authenticated user's PNG/JPEG
   image, with private caching, ETag and `nosniff`; 404 means no image exists.
 - `POST /api/v1/profile/avatar` accepts a **raw binary** PNG or JPEG body.
-  The server checks the actual file header and image dimensions; files must
-  be **at most 512 KiB** and **1024×1024 pixels**.
+  The server checks the actual file header and image dimensions; uploads must
+  be **at most 512 KiB** and **1024×1024 pixels**. It then fully decodes
+  and re-encodes the image to strip metadata (including EXIF GPS coordinates)
+  and enforces the 512 KiB cap again on the normalized image.
 - `DELETE /api/v1/profile/avatar` removes the image and reverts to initials.
 - `GET /api/v1/profile/avatar/status` returns `{"has_avatar":true|false}`.
   All four endpoints require an active session. The browser never receives
