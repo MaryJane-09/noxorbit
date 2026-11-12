@@ -79,3 +79,25 @@ func TestEmailFailureRevokesInvitation(t *testing.T){
  handler.Send(rec,req)
  if rec.Code!=502 || !store.revoked {t.Fatalf("status %d, revoked %v",rec.Code,store.revoked)}
 }
+
+func TestEmailInviteSuccessDoesNotExposeToken(t *testing.T){
+ t.Setenv("FRONTEND_URL","https://noxorbit.example")
+ uid:=uuid.Must(uuid.NewV4())
+ wid:=uuid.Must(uuid.NewV4())
+ inviteID:=uuid.Must(uuid.NewV4())
+ store:=&fakeEmailStore{create:func(_ context.Context,_,_ uuid.UUID,address string)(string,uuid.UUID,string,error){
+  if address!="member@example.com"{t.Fatalf("wrong recipient %q",address)}
+  return "private-token",inviteID,"Developers",nil
+ }}
+ sender:=&fakeEmailSender{}
+ handler:=NewEmailInviteHandler(store,sender)
+ req:=httptest.NewRequest(http.MethodPost,"/invite",strings.NewReader(`{"email":"Member@Example.com"}`))
+ req.Header.Set("Content-Type","application/json")
+ req.SetPathValue("workspace_id",wid.String())
+ req=req.WithContext(auth.WithUserID(req.Context(),uid))
+ rec:=httptest.NewRecorder()
+ handler.Send(rec,req)
+ if rec.Code!=201 || !sender.sent || strings.Contains(rec.Body.String(),"private-token") {
+  t.Fatalf("unexpected success response: %d %s",rec.Code,rec.Body.String())
+ }
+}
