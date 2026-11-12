@@ -24,7 +24,8 @@ func TestCreateInvitationRequiresOwner(t *testing.T){
         if userID!=uid||workspaceID!=wid {t.Fatal("wrong scope")}
         return "",ErrOwnerRequired
     }})
-    request:=httptest.NewRequest(http.MethodPost,"/invitations",nil)
+    request:=httptest.NewRequest(http.MethodPost,"/invitations",strings.NewReader("{}"))
+    request.Header.Set("Content-Type","application/json")
     request.SetPathValue("workspace_id",wid.String())
     rec:=httptest.NewRecorder()
     handler.Create(rec,request)
