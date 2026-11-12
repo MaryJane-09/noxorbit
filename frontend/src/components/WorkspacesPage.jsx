@@ -150,17 +150,19 @@ export default function WorkspacesPage({
                                             onClick={() => { onSelect(space.id); onBackToOverview() }}>
                                             Open overview <ArrowRight size={17} aria-hidden="true" />
                                         </button>
-                                        <button type="button" className="workspace-manager-edit"
-                                            onClick={() => setMembersWorkspaceID((current) => current === space.id ? null : space.id)}>
-                                            {membersWorkspaceID === space.id ? 'Hide members' : 'View members'}
-                                        </button>
-                                        {space.role === 'owner' && (
+                                        <div className="workspace-manager-secondary-actions">
                                             <button type="button" className="workspace-manager-edit"
-                                                onClick={() => startEditing(space)}
-                                                aria-label={`Edit settings for ${space.name}`}>
-                                                <Pencil size={17} aria-hidden="true" /> Edit
+                                                onClick={() => setMembersWorkspaceID((current) => current === space.id ? null : space.id)}>
+                                                {membersWorkspaceID === space.id ? 'Hide members' : 'View members'}
                                             </button>
-                                        )}
+                                            {space.role === 'owner' && (
+                                                <button type="button" className="workspace-manager-edit"
+                                                    onClick={() => startEditing(space)}
+                                                    aria-label={`Edit settings for ${space.name}`}>
+                                                    <Pencil size={17} aria-hidden="true" /> Settings
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </article>
                             )
