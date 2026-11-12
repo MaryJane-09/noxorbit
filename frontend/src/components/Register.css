@@ -323,7 +323,7 @@
     gap: 16px;
     margin: 0 0 24px;
     color: #f6e9f2;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: .24em;
     white-space: nowrap;
@@ -357,7 +357,7 @@
     border-radius: 12px;
     background: rgba(94, 27, 39, .8);
     color: #ffd1d1;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .register-form {
@@ -451,7 +451,7 @@
     max-width: 450px;
     margin: 26px auto 0;
     color: #d6cad5;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.65;
     text-align: center;
 }
@@ -484,16 +484,16 @@
     .feature-icon { width: 45px; height: 45px; border-radius: 13px; }
     .feature-icon svg { width: 22px; height: 22px; }
     .feature-title { font-size: 15px; }
-    .feature-text { font-size: 12px; }
+    .feature-text { font-size: 14px; }
     .register-card { --auth-card-corner-radius: 30px; padding-top: 34px; padding-bottom: 30px; border-radius: 30px; }
-    .card-eyebrow { margin-bottom: 14px; font-size: 11px; }
+    .card-eyebrow { margin-bottom: 14px; font-size: 13px; }
     .register-card .card-title { font-size: 36px; }
     .card-subtitle { margin: 6px 0 20px; font-size: 17px; }
     .register-form { gap: 11px; }
     .field { height: 51px; padding: 0 18px; border-radius: 14px; }
     .field input { font-size: 15px; }
     .btn-primary { height: 56px; margin-top: 9px; font-size: 16px; border-radius: 14px; }
-    .card-terms { margin-top: 15px; font-size: 11px; }
+    .card-terms { margin-top: 15px; font-size: 13px; }
 }
 
 @media (max-width: 900px) {
@@ -530,16 +530,16 @@
     .register-layout { padding: 122px 16px 35px; }
     .register-topbar { right: 16px; top: 20px; gap: 0; }
     .register-topbar span { display: none; }
-    .btn-outline { padding: 7px 18px; min-height: 39px; font-size: 13px; }
+    .btn-outline { padding: 7px 18px; min-height: 39px; font-size: 15px; }
     .register-card { --auth-card-corner-radius: 24px; padding: 31px 22px; border-radius: 24px; }
-    .card-eyebrow { font-size: 10px; margin-bottom: 17px; }
+    .card-eyebrow { font-size: 12px; margin-bottom: 17px; }
     .register-card .card-title { font-size: 31px; }
     .card-subtitle { font-size: 16px; margin: 8px 0 24px; }
     .field { height: 54px; border-radius: 14px; padding: 0 15px; }
     .field input { font-size: 15px; }
     .register-form { gap: 12px; }
     .btn-primary { height: 56px; margin-top: 10px; font-size: 16px; }
-    .card-terms { font-size: 11px; }
+    .card-terms { font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -561,7 +561,7 @@
     border-radius: 12px;
     background: rgba(200, 169, 107, 0.1);
     color: var(--gold-soft);
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .otp-input {
@@ -594,7 +594,7 @@
 .otp-timer {
     margin: 0;
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--muted);
 }
 
@@ -625,7 +625,7 @@
     background: transparent;
     color: var(--gold-soft);
     font: inherit;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -717,7 +717,7 @@
     gap: 6px;
     margin: -14px 0 18px;
     color: #9fd9a8;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .forgot-row {
@@ -832,7 +832,7 @@
         text-indent: .17em;
     }
     .otp-actions { align-items: flex-start; }
-    .otp-actions .link-btn { font-size: 13px; }
+    .otp-actions .link-btn { font-size: 15px; }
     .card-terms { overflow-wrap: anywhere; }
 }
 
