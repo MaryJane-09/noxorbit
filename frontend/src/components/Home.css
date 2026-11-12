@@ -908,23 +908,6 @@
     line-height: 1.75;
 }
 
-.dashboard-footer-hint {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    margin-top: 32px;
-    padding: 18px 0 0;
-    border-top: 1px solid var(--dash-line);
-    color: #bca9c1;
-    font-size: 15px;
-    line-height: 1.6;
-}
-
-.dashboard-footer-hint svg {
-    flex: 0 0 auto;
-    color: #c1a176;
-}
-
 .dashboard-mobile-scrim {
     display: none;
 }
