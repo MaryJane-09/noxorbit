@@ -402,3 +402,21 @@ for four tasks or modify task priorities or status.
 Run `npm run test:deadlines` from `frontend` to verify grouped tomorrow
 deadlines, urgency ordering, status filtering, and date boundaries.
 No database migration or new API endpoint is required.
+
+
+## Compact deadline summary and expanded Overview detail panel
+
+The Overview now shows a **compact deadline summary** in its third card:
+counts for overdue, due today, due tomorrow, and other upcoming unfinished
+assignments. Counts are grouped rather than listing each task in the card.
+The `View all deadlines` button toggles a **full-width details panel below
+all three cards**. Within that panel each calendar-date group can be expanded
+independently, showing task title, priority and workspace/project context.
+Date groups remain chronological; task order within each group remains
+urgent → high → medium → low. All groups are based on the same authenticated
+`GET /api/v1/my-tasks` response as the My Tasks card. There is no extra
+request, database migration, email scheduler or automatic status change.
+
+Closing the panel hides its contents without losing the selected expanded
+date groups while the Overview remains mounted. At narrower viewport widths
+summary cards reflow from three columns to two and then one.
