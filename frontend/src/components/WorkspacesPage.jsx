@@ -175,7 +175,7 @@ export default function WorkspacesPage({
 
             <div className="workspace-manager-help">
                 <ShieldCheck size={19} aria-hidden="true" />
-                <p>Workspace settings are available to owners. Team invitations are in development. Projects and tasks are available in their dedicated sections.</p>
+                <p>Workspace owners can manage invitations and members from View members. Projects and tasks are available in their dedicated sections.</p>
             </div>
 
             <dialog ref={editDialogRef} className="dashboard-workspace-dialog"
