@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, Settings2, ShieldAlert, Trash2 } from 'lucide-react'
-import { deleteMyAccount, fetchAccountDeletionImpact } from '../api'
+import { AlertTriangle, LoaderCircle, RefreshCw, Settings2, ShieldAlert, Trash2, UserRound, KeyRound } from 'lucide-react'
+import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName } from '../api'
 import './SettingsPage.css'
 
-export default function SettingsPage({ user, onAccountDeleted }) {
+export default function SettingsPage({ user, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
+    const [tab, setTab] = useState('profile')
+    const [displayName, setDisplayName] = useState(user.name || '')
+    const [savingName, setSavingName] = useState(false)
+    const [profileError, setProfileError] = useState('')
+    const [profileMessage, setProfileMessage] = useState('')
+    const [oldPassword, setOldPassword] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const [repeatedPassword, setRepeatedPassword] = useState('')
+    const [changingPassword, setChangingPassword] = useState(false)
+    const [passwordError, setPasswordError] = useState('')
     const [state, setState] = useState({ impact: null, loading: true, error: '' })
     const [version, setVersion] = useState(0)
     const [password, setPassword] = useState('')
@@ -32,6 +42,55 @@ export default function SettingsPage({ user, onAccountDeleted }) {
         && password.length > 0 && phrase === 'DELETE MY ACCOUNT'
         && (sole.length === 0 || consent)
 
+    async function saveName(event) {
+        event.preventDefault()
+        if (savingName) return
+        const name = displayName.trim().replace(/\\s+/g, ' ')
+        if (name.length < 1 || [...name].length > 100) {
+            setProfileError('Name must be between 1 and 100 characters.')
+            return
+        }
+        setSavingName(true)
+        setProfileError('')
+        setProfileMessage('')
+        try {
+            const profile = await saveProfileName(name)
+            onProfileUpdated(profile)
+            setDisplayName(profile.name)
+            setProfileMessage('Your name has been updated.')
+        } catch (error) {
+            setProfileError(error.message || 'Could not save your name.')
+        } finally {
+            setSavingName(false)
+        }
+    }
+
+    async function updatePassword(event) {
+        event.preventDefault()
+        if (changingPassword) return
+        if (newPassword !== repeatedPassword) {
+            setPasswordError('New passwords do not match.')
+            return
+        }
+        if (newPassword.length < 8 || newPassword.length > 72) {
+            setPasswordError('New password must be between 8 and 72 characters.')
+            return
+        }
+        setChangingPassword(true)
+        setPasswordError('')
+        try {
+            await changeAccountPassword(oldPassword, newPassword)
+            setOldPassword('')
+            setNewPassword('')
+            setRepeatedPassword('')
+            onPasswordChanged()
+        } catch (error) {
+            setPasswordError(error.message || 'Could not change password.')
+        } finally {
+            setChangingPassword(false)
+        }
+    }
+
     async function confirmDeletion(event) {
         event.preventDefault()
         if (!canDelete) return
@@ -58,14 +117,63 @@ export default function SettingsPage({ user, onAccountDeleted }) {
             <h1 id="settings-heading">Settings<span>.</span></h1>
             <p>Manage your account and review important account actions.</p>
         </header>
-        <section className="settings-account" aria-labelledby="settings-account-heading">
+        <nav className="settings-tabs" aria-label="Settings sections">
+            <button type="button" className={tab === 'profile' ? 'settings-tab--active' : ''}
+                aria-current={tab === 'profile' ? 'page' : undefined} onClick={() => setTab('profile')}>
+                <UserRound size={18} aria-hidden="true" /> My profile
+            </button>
+            <button type="button" className={tab === 'security' ? 'settings-tab--active' : ''}
+                aria-current={tab === 'security' ? 'page' : undefined} onClick={() => setTab('security')}>
+                <KeyRound size={18} aria-hidden="true" /> Security
+            </button>
+        </nav>
+        {tab === 'profile' && <section className="settings-account" aria-labelledby="settings-account-heading">
             <div className="settings-section-title">
-                <Settings2 size={21} aria-hidden="true" />
-                <h2 id="settings-account-heading">Your account</h2>
+                <UserRound size={21} aria-hidden="true" />
+                <h2 id="settings-account-heading">My profile</h2>
             </div>
-            <div className="settings-account-row"><span>Name</span><strong>{user.name}</strong></div>
-            <div className="settings-account-row"><span>Email</span><strong>{user.email}</strong></div>
-        </section>
+            <p className="settings-help">Your name is visible to teammates across Noxorbit.</p>
+            <form onSubmit={saveName} className="settings-edit-form">
+                <label htmlFor="settings-display-name">Full name</label>
+                <input id="settings-display-name" value={displayName} autoComplete="name" maxLength={100}
+                    onChange={(event) => setDisplayName(event.target.value)} />
+                <label htmlFor="settings-email-display">Email address</label>
+                <input id="settings-email-display" value={user.email} readOnly aria-describedby="settings-email-note" />
+                <p id="settings-email-note" className="settings-help">Email changes will require verification and are not enabled yet.</p>
+                {profileError && <p role="alert" className="settings-deletion-error">{profileError}</p>}
+                {profileMessage && <p role="status" className="settings-success">{profileMessage}</p>}
+                <div className="settings-edit-actions">
+                    <button type="submit" disabled={savingName || displayName.trim() === user.name}>
+                        {savingName ? 'Saving…' : 'Save changes'}
+                    </button>
+                </div>
+            </form>
+        </section>}
+        {tab === 'security' && <>
+            <section className="settings-account" aria-labelledby="settings-security-heading">
+                <div className="settings-section-title">
+                    <KeyRound size={21} aria-hidden="true" />
+                    <h2 id="settings-security-heading">Change password</h2>
+                </div>
+                <p className="settings-help">After you change your password, Noxorbit signs you out of all devices. Sign in again using your new password.</p>
+                <form onSubmit={updatePassword} className="settings-edit-form">
+                    <label htmlFor="settings-current-password">Current password</label>
+                    <input id="settings-current-password" type="password" autoComplete="current-password"
+                        value={oldPassword} onChange={(event) => setOldPassword(event.target.value)} required />
+                    <label htmlFor="settings-new-password">New password</label>
+                    <input id="settings-new-password" type="password" autoComplete="new-password"
+                        value={newPassword} onChange={(event) => setNewPassword(event.target.value)} required minLength={8} maxLength={72} />
+                    <label htmlFor="settings-repeat-password">Confirm new password</label>
+                    <input id="settings-repeat-password" type="password" autoComplete="new-password"
+                        value={repeatedPassword} onChange={(event) => setRepeatedPassword(event.target.value)} required />
+                    {passwordError && <p role="alert" className="settings-deletion-error">{passwordError}</p>}
+                    <div className="settings-edit-actions">
+                        <button type="submit" disabled={changingPassword || !oldPassword || !newPassword || !repeatedPassword}>
+                            {changingPassword ? 'Changing password…' : 'Change password'}
+                        </button>
+                    </div>
+                </form>
+            </section>
         <section className="settings-danger" aria-labelledby="settings-danger-heading">
             <div className="settings-section-title">
                 <ShieldAlert size={21} aria-hidden="true" />
@@ -120,5 +228,6 @@ export default function SettingsPage({ user, onAccountDeleted }) {
                     </>}
             </div>}
         </section>
+        </>}
     </section>
 }
