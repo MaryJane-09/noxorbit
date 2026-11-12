@@ -235,3 +235,19 @@ export async function fetchMyTasks({ signal } = {}) {
   if (!Array.isArray(items)) throw new Error("The server returned an invalid assigned task list.");
   return items;
 }
+
+
+// Recoverable task deletion: list only records the current member can restore.
+export async function fetchRecycledTasks({ signal } = {}) {
+  const items = await projectRequest(`${API}/api/v1/recycle-bin/tasks`, { signal });
+  if (!Array.isArray(items)) throw new Error("The server returned an invalid recycle bin list.");
+  return items;
+}
+
+export async function restoreRecycledTask(taskID) {
+  const response = await fetch(`${API}/api/v1/recycle-bin/tasks/${encodeURIComponent(taskID)}/restore`, {
+    method: "POST", credentials: "include",
+  }).catch(() => { throw new Error("Cannot reach the NoxOrbit server."); });
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
