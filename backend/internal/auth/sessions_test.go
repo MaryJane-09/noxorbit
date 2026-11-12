@@ -7,7 +7,6 @@ import (
     "net/http/httptest"
     "strings"
     "testing"
-    "time"
 
     "github.com/MaryJane-09/noxorbit/backend/internal/session"
     "github.com/gofrs/uuid"
@@ -37,7 +36,7 @@ func TestSessionListScopedToCurrentUser(t *testing.T){
  uid:=uuid.Must(uuid.NewV4())
  h:=NewSessionsHandler(fakeSessionManager{list:func(_ context.Context,u uuid.UUID,hash string)([]session.DeviceSession,error){
     if u!=uid||hash!=session.HashToken("test-secret"){t.Fatal("untrusted identity or token")}
-    return []session.DeviceSession{{ID:uuid.Must(uuid.NewV4()),UserAgent:"Browser",CreatedAt:time.Now(),Current:true}},nil
+    return []session.DeviceSession{{ID:uuid.Must(uuid.NewV4()),UserAgent:"Browser",Current:true}},nil
  }})
  w:=httptest.NewRecorder()
  h.List(w,sessionReq("GET","/api/v1/account/sessions?user_id=other",uid))
