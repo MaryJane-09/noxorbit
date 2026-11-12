@@ -4,6 +4,22 @@ import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, sav
 import './SettingsPage.css'
 import AvatarCropper from './AvatarCropper'
 
+function deviceLabel(agent) {
+    if (!agent) return 'Unknown device'
+    const browser = agent.includes('Edg/') ? 'Edge'
+        : agent.includes('Firefox/') ? 'Firefox'
+        : agent.includes('Chrome/') ? 'Chrome'
+        : agent.includes('Safari/') ? 'Safari'
+        : 'Browser'
+    const platform = /iPhone|iPad/.test(agent) ? 'iOS'
+        : /Android/.test(agent) ? 'Android'
+        : /Windows/.test(agent) ? 'Windows'
+        : /Macintosh|Mac OS X/.test(agent) ? 'macOS'
+        : /Linux/.test(agent) ? 'Linux'
+        : ''
+    return platform ? `${browser} on ${platform}` : browser
+}
+
 export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
     const [tab, setTab] = useState('profile')
     const [sessions, setSessions] = useState([])
@@ -399,7 +415,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 {!sessionsLoading && sessions.map((item) => <div className="settings-session-row" key={item.id}>
                     <MonitorSmartphone size={21} aria-hidden="true" />
                     <div className="settings-session-details">
-                        <strong>{item.user_agent || 'Unknown device'} {item.current && <span className="settings-session-current">Current</span>}</strong>
+                        <strong>{deviceLabel(item.user_agent)} {item.current && <span className="settings-session-current">Current</span>}</strong>
                         <span>{item.created_at ? `Signed in ${new Date(item.created_at).toLocaleString()}` : "Earlier session"} · Expires {new Date(item.expires_at).toLocaleDateString()}</span>
                     </div>
                     <button type="button" disabled={sessionsBusy} onClick={() => signOutSession(item)}>
