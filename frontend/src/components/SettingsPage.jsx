@@ -57,7 +57,6 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
     useEffect(() => {
         if (tab !== 'security') return undefined
         let live = true
-        setSessionsLoading(true)
         fetchActiveSessions()
             .then((data) => {
                 if (!live) return
@@ -78,6 +77,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
             await revokeSession(item.id)
             if (item.current) { onPasswordChanged(); return }
             setSessionsMessage('Session signed out.')
+            setSessionsLoading(true)
             setSessionsRevision((v) => v + 1)
         } catch (error) {
             setSessionsError(error.message || 'Could not revoke session.')
@@ -94,6 +94,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         try {
             const result = await revokeOtherSessions()
             setSessionsMessage(`${result.revoked || 0} other session(s) signed out.`)
+            setSessionsLoading(true)
             setSessionsRevision((v) => v + 1)
         } catch (error) {
             setSessionsError(error.message || 'Could not revoke other sessions.')
