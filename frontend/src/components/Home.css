@@ -174,6 +174,16 @@
     margin: 0 8px 10px;
 }
 
+/* Utilities are visually separate from day-to-day workspace navigation. */
+.dashboard-nav-section-separator {
+    height: 1px;
+    margin: 15px 8px 13px;
+    background: var(--dash-line);
+}
+.dashboard-nav .dashboard-manage-label {
+    margin-bottom: 8px;
+}
+
 .dashboard-nav-item {
     position: relative;
     display: flex;
