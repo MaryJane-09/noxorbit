@@ -721,7 +721,7 @@ existing sessions. It adds `public_id` (random UUID), `created_at`, and
 `user_agent` to `public.sessions` and indexes the session lookup.
 
 Every new login stores a truncated (up to 256 bytes) browser user-agent
-description. Legacy sessions show **Unknown device** in Settings.
+description. Legacy sessions show **Unknown device** and **Earlier session** in Settings; their original login timestamps were not stored and are not invented.
 
 These authenticated endpoints do not expose token hashes or raw cookies:
 
