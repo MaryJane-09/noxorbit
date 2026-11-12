@@ -183,3 +183,26 @@ The first query should return two rows, and the second should return
 
 Avoid testing address changes against your primary account until the
 backend and frontend checks have passed.
+
+
+## Migration 011 — Active account sessions
+
+After migration 010, run `backend/migrations/011_session_management.sql`
+in Supabase SQL Editor **before** running the session-management backend.
+
+This adds a random `public_id`, `created_at`, and `user_agent` to
+existing `public.sessions` records without invalidating them or exposing
+session tokens. New logins include browser user-agent information; older
+sessions appear as "Unknown device".
+
+Verify:
+```sql
+SELECT column_name FROM information_schema.columns
+WHERE table_schema='public' AND table_name='sessions'
+  AND column_name IN ('public_id','created_at','user_agent')
+ORDER BY column_name;
+```
+Expect three rows. The migration is not intended for repeated execution.
+
+Next, pull the updated code, run the Go tests and vet, then lint/build
+the frontend. Test session revocation with two separate browser sessions.
