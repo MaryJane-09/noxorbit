@@ -195,3 +195,28 @@ export function acceptWorkspaceInvite(token) {
     method: "POST", body: { token },
   });
 }
+
+
+// Owner-only member and invitation administration.
+export function fetchWorkspaceInvites(workspaceID, { signal } = {}) {
+  return projectRequest(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/invitations/manage`, { signal });
+}
+
+async function deleteWorkspaceResource(url) {
+  let response;
+  try {
+    response = await fetch(url, { method: "DELETE", credentials: "include" });
+  } catch {
+    throw new Error("Cannot reach the NoxOrbit server. Check that your Go backend is running.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
+
+export function revokeWorkspaceInvite(workspaceID, invitationID) {
+  return deleteWorkspaceResource(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/invitations/${encodeURIComponent(invitationID)}`);
+}
+
+export function removeWorkspaceMember(workspaceID, userID) {
+  return deleteWorkspaceResource(`${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/members/${encodeURIComponent(userID)}`);
+}
