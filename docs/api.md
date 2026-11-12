@@ -532,3 +532,64 @@ Verify after migration: `go test ./backend/...`,
 `go vet ./backend/...`, and from `frontend` run `npm run lint`
 and `npm run build`. Then create a task, change its status,
 soft-delete and restore it, and inspect the workspace Activity feed.
+
+
+## Account deletion — Settings
+
+**No migration is required** when migrations 003, 005, 006, 007, 008,
+and 009 are already installed. The existing authentication tables
+(`public.users`, `public.sessions`, and `public.otps`) must exist.
+
+`GET /api/v1/account` — requires a valid signed-in session. Returns
+the current account's owned workspace impact, separated into
+`sole_owned` (the user is the only member) and `shared_owned`
+(workspaces with other members). Each item includes its ID, name and
+current member count. No data is modified by this preview.
+
+`DELETE /api/v1/account` — requires a valid session and a JSON body:
+```json
+{
+  "password": "your current password",
+  "confirmation": "DELETE MY ACCOUNT",
+  "delete_sole_owned_workspaces": true
+}
+```
+The password is revalidated against the stored bcrypt hash. The
+confirmation phrase must match exactly. The server rechecks workspace
+ownership inside a serializable PostgreSQL transaction, independently of
+what the frontend preview showed.
+
+**Ownership safety:**
+- If the user owns *any* workspace with other members, the API returns
+  **409 Conflict**. Shared workspaces and their data are not deleted.
+  Ownership transfer must be completed separately before account deletion.
+  The initial Settings release does not implement ownership transfer.
+- If the account owns sole-member workspaces, those workspaces can be
+  removed only when `delete_sole_owned_workspaces` is true. They and their
+  dependent projects, tasks, invitations and workspace activity are
+  **permanently** deleted via the existing database cascades. Without
+  explicit consent the API returns 409.
+- Memberships in other people's workspaces are removed by the existing
+  FK `ON DELETE CASCADE`, but their teams' projects and tasks remain.
+  Original creator and actor FK columns using `ON DELETE SET NULL`
+  retain these records without personal attribution.
+- Pending invitations created by the account are removed, as their
+  `created_by` FK would otherwise block user deletion. All its login
+  sessions are explicitly revoked and OTPs for its email are deleted.
+- The user row is deleted only after those steps succeed. Every step
+  is inside the **same transaction**; if a database constraint or
+  concurrent change prevents completion, the entire operation rolls
+  back and no partial deletion is committed.
+
+On success, returns **204 No Content**, clears the browser session
+cookie and transitions the frontend to the signed-out state. Bad
+password returns 401, missing confirmations 400, ownership conflicts
+409, and unexpected database errors 500 without revealing raw SQL.
+
+**Important:** This feature is intentionally irreversible and should
+be tested with a disposable account, *not* the primary development
+account. There is no generic workspace deletion endpoint or ownership
+transfer UI in this milestone. It does not implement bulk test-data
+cleanup. Review any additional foreign keys added to the schema before
+extending account deletion; unexpected dependencies must fail closed
+with transaction rollback.
