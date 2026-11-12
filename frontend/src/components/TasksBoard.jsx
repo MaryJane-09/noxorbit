@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowLeft, CalendarDays, Check, LoaderCircle, Pencil, Plus, Trash2, X } from 'lucide-react'
+import { ArrowLeft, CalendarDays, Check, LoaderCircle, MoreHorizontal, Pencil, Plus, Trash2, X } from 'lucide-react'
 import { changeTaskStatus, createTask, deleteTask, fetchTasks, fetchWorkspaceMembers, updateTask } from '../api'
 import './TasksBoard.css'
 
@@ -9,6 +9,15 @@ const COLUMNS = [
     { id: 'done', label: 'Done' },
 ]
 const PRIORITIES = ['low', 'medium', 'high', 'urgent']
+const PRIORITY_RANK = { urgent: 0, high: 1, medium: 2, low: 3 }
+
+// Surface high-priority work first, then the closest deadline; use IDs for stable ties.
+function compareTasks(a, b) {
+    const rank = (PRIORITY_RANK[a.priority] ?? 4) - (PRIORITY_RANK[b.priority] ?? 4)
+    if (rank) return rank
+    if (a.due_date !== b.due_date) return !a.due_date ? 1 : !b.due_date ? -1 : a.due_date.localeCompare(b.due_date)
+    return a.id.localeCompare(b.id)
+}
 
 function emptyForm() {
     return { title: '', description: '', priority: 'medium', due_date: '', assignee_id: '' }
@@ -214,14 +223,39 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     </div>
                     <div className="tasks-columns">
                         {COLUMNS.map((column) => {
-                            const tasks = items.filter((task) => task.status === column.id)
+                            const tasks = items.filter((task) => task.status === column.id).sort(compareTasks)
                             return (
                                 <section key={column.id} className="tasks-column" aria-label={column.label}>
                                     <div className="tasks-column-heading"><h2>{column.label}</h2><span>{tasks.length}</span></div>
                                     {tasks.length === 0 && <p className="tasks-empty">No tasks here yet.</p>}
                                     {tasks.map((task) => (
                                         <article className="tasks-card" key={task.id}>
-                                            <div className="tasks-card-top"><span className={`tasks-priority tasks-priority--${task.priority}`}>{task.priority}</span></div>
+                                            <div className="tasks-card-top">
+                                                <span className={`tasks-priority tasks-priority--${task.priority}`}>{task.priority}</span>
+                                                {canEdit(task) && (
+                                                    <details className="tasks-card-menu">
+                                                        <summary aria-label={`Actions for ${task.title}`} title="Task actions">
+                                                            <MoreHorizontal size={19} aria-hidden="true" />
+                                                        </summary>
+                                                        <div className="tasks-card-menu-items">
+                                                            <button type="button" disabled={busyID !== null}
+                                                                onClick={(event) => {
+                                                                    event.currentTarget.closest('details')?.removeAttribute('open')
+                                                                    openEditor(task)
+                                                                }}>
+                                                                <Pencil size={15} /> Edit task
+                                                            </button>
+                                                            <button type="button" disabled={busyID !== null}
+                                                                onClick={(event) => {
+                                                                    event.currentTarget.closest('details')?.removeAttribute('open')
+                                                                    askDelete(task)
+                                                                }}>
+                                                                <Trash2 size={15} /> Delete task
+                                                            </button>
+                                                        </div>
+                                                    </details>
+                                                )}
+                                            </div>
                                             <h3>{task.title}</h3>
                                             {task.description && <p className="tasks-description">{task.description}</p>}
                                             <div className="tasks-meta">
@@ -238,12 +272,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                                                         </select>
                                                     </label>
                                                 )}
-                                                {canEdit(task) && (
-                                                    <>
-                                                        <button type="button" disabled={busyID !== null} onClick={() => openEditor(task)} aria-label={`Edit ${task.title}`}><Pencil size={15} /> Edit</button>
-                                                        <button type="button" disabled={busyID !== null} onClick={() => askDelete(task)} aria-label={`Delete ${task.title}`}><Trash2 size={15} /> Delete</button>
-                                                    </>
-                                                )}
+
                                             </div>
                                         </article>
                                     ))}
