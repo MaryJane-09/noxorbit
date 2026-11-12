@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { ArchiveRestore, LoaderCircle, RefreshCw, Trash2 } from 'lucide-react'
-import { fetchRecycledTasks, restoreRecycledTask } from '../api'
+import { useEffect, useRef, useState } from 'react'
+import { ArchiveRestore, LoaderCircle, RefreshCw, Trash2, X } from 'lucide-react'
+import { deleteRecycledTaskForever, fetchRecycledTasks, restoreRecycledTask } from '../api'
 import './RecycleBinPage.css'
 
 // Only tasks are recoverable in this phase; project archiving remains separate.
@@ -10,6 +10,8 @@ export default function RecycleBinPage() {
     const [busyID, setBusyID] = useState(null)
     const [actionError, setActionError] = useState('')
     const [notice, setNotice] = useState('')
+    const [pendingDelete, setPendingDelete] = useState(null)
+    const confirmDialogRef = useRef(null)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -22,6 +24,12 @@ export default function RecycleBinPage() {
             })
         return () => controller.abort()
     }, [version])
+
+    useEffect(() => {
+        const dialog = confirmDialogRef.current
+        if (pendingDelete && dialog && !dialog.open) dialog.showModal()
+        if (!pendingDelete && dialog?.open) dialog.close()
+    }, [pendingDelete])
 
     function refresh() {
         setActionError('')
@@ -43,6 +51,28 @@ export default function RecycleBinPage() {
             setNotice(`Restored "${item.title}" to its project board.`)
         } catch (error) {
             setActionError(error.message || 'Could not restore task.')
+        } finally {
+            setBusyID(null)
+        }
+    }
+
+    async function deleteForever(event) {
+        event.preventDefault()
+        if (!pendingDelete || busyID) return
+        const task = pendingDelete
+        setBusyID(task.id)
+        setActionError('')
+        setNotice('')
+        try {
+            await deleteRecycledTaskForever(task.id)
+            setState((current) => ({
+                ...current,
+                items: current.items.filter((entry) => entry.id !== task.id),
+            }))
+            setPendingDelete(null)
+            setNotice(`Permanently deleted "${task.title}". This action cannot be undone.`)
+        } catch (error) {
+            setActionError(error.message || 'Could not permanently delete task.')
         } finally {
             setBusyID(null)
         }
@@ -75,12 +105,46 @@ export default function RecycleBinPage() {
                         <h2>{task.title}</h2>
                         <p>Deleted {new Date(task.deleted_at).toLocaleString()}</p>
                     </div>
-                    <button type="button" onClick={() => restore(task)} disabled={Boolean(busyID)}>
-                        {busyID === task.id ? <LoaderCircle size={17} className="dashboard-spin" aria-hidden="true" />
-                            : <ArchiveRestore size={17} aria-hidden="true" />}
-                        Restore task
-                    </button>
+                    <div className="recycle-item-actions">
+                        <button type="button" className="recycle-restore" onClick={() => restore(task)} disabled={Boolean(busyID)}>
+                            {busyID === task.id ? <LoaderCircle size={17} className="dashboard-spin" aria-hidden="true" />
+                                : <ArchiveRestore size={17} aria-hidden="true" />}
+                            Restore task
+                        </button>
+                        <button type="button" className="recycle-delete-forever"
+                            onClick={() => { setActionError(''); setPendingDelete(task) }}
+                            disabled={Boolean(busyID)}>
+                            <Trash2 size={16} aria-hidden="true" /> Delete forever
+                        </button>
+                    </div>
                 </article>)}
             </div>}
+        <dialog ref={confirmDialogRef} className="dashboard-workspace-dialog recycle-delete-dialog"
+            aria-labelledby="recycle-delete-title" aria-describedby="recycle-delete-description"
+            onCancel={(event) => { if (busyID) event.preventDefault(); else setPendingDelete(null) }}
+            onClose={() => { if (!busyID) setPendingDelete(null) }}>
+            <div className="dashboard-dialog-header">
+                <span className="dashboard-dialog-icon recycle-delete-icon"><Trash2 size={22} aria-hidden="true" /></span>
+                <button type="button" className="dashboard-dialog-close"
+                    disabled={Boolean(busyID)} onClick={() => setPendingDelete(null)}
+                    aria-label="Close permanent deletion confirmation"><X size={19} aria-hidden="true" /></button>
+            </div>
+            <p className="dashboard-eyebrow">PERMANENT DELETION</p>
+            <h2 id="recycle-delete-title">Delete forever?</h2>
+            <p id="recycle-delete-description" className="dashboard-dialog-description">
+                Permanently delete <strong>{pendingDelete?.title}</strong> from
+                <strong> {pendingDelete?.workspace_name} / {pendingDelete?.project_name}</strong>?
+                This removes the task permanently and it cannot be restored.
+            </p>
+            {actionError && <p role="alert" className="dashboard-form-error">{actionError}</p>}
+            <form className="dashboard-dialog-actions" onSubmit={deleteForever}>
+                <button type="button" className="dashboard-dialog-cancel" disabled={Boolean(busyID)}
+                    onClick={() => setPendingDelete(null)}>Cancel</button>
+                <button type="submit" className="recycle-confirm-delete" disabled={Boolean(busyID)}>
+                    {busyID ? <><LoaderCircle size={16} className="dashboard-spin" /> Deleting…</>
+                        : <><Trash2 size={16} aria-hidden="true" /> Delete forever</>}
+                </button>
+            </form>
+        </dialog>
     </section>
 }
