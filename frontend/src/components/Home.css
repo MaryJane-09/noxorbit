@@ -1269,3 +1269,22 @@
         justify-content: center;
     }
 }
+
+/* Live overview metrics share one clear visual hierarchy across all three cards. */
+.dashboard-overview-grid { align-items: stretch; }
+.dashboard-overview-data-card { min-height: 250px; }
+.dashboard-overview-data-card .dashboard-empty-top { margin-bottom: 19px; }
+.dashboard-data-tag { align-self: center; color: #ebc995; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-align: right; }
+.dashboard-data-value { margin: 1px 0 10px; font: 800 clamp(30px, 3vw, 38px)/1.1 var(--dash-display); color: #ffdda5; }
+.dashboard-data-value span { font: 650 15px/1.5 var(--font-body); color: #d6c1d5; }
+.dashboard-overview-data-card p { max-width: none; margin-bottom: 14px; overflow-wrap: anywhere; }
+.dashboard-deadline-date { margin: 3px 0 8px; color: #ffe0a5; font: 750 19px/1.4 var(--dash-display); }
+.dashboard-overview-data-card .dashboard-deadline-label { margin-bottom: 2px; font-weight: 750; color: #f5e7f2; }
+.dashboard-overview-data-card .dashboard-deadline-context { margin-bottom: 12px; color: #bda8c3; font-size: 13px; }
+.dashboard-deadline-clear { color: #e5c485; margin-bottom: 9px; }
+.dashboard-card-link { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding: 8px 0 0; border: 0; background: transparent; color: #ffda9a; font-size: 14px; font-weight: 800; text-align: left; cursor: pointer; }
+.dashboard-card-link:hover { color: #fff0c9; }
+.dashboard-card-link:focus-visible { outline: 2px solid #ffe0a4; outline-offset: 3px; }
+@media (max-width: 760px) {
+    .dashboard-overview-data-card { min-height: 215px; }
+}
