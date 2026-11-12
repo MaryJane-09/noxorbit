@@ -44,6 +44,7 @@ func TestTrustedInvitationBase(t *testing.T){
  }
 }
 func TestEmailInviteRequiresOwner(t *testing.T){
+ t.Setenv("FRONTEND_URL","https://noxorbit.example")
  uid:=uuid.Must(uuid.NewV4())
  wid:=uuid.Must(uuid.NewV4())
  store:=&fakeEmailStore{create:func(_ context.Context,actor,workspace uuid.UUID,email string)(string,uuid.UUID,string,error){
@@ -61,6 +62,7 @@ func TestEmailInviteRequiresOwner(t *testing.T){
  if rec.Code!=403 || sender.sent {t.Fatalf("status %d sent %v",rec.Code,sender.sent)}
 }
 func TestEmailFailureRevokesInvitation(t *testing.T){
+ t.Setenv("FRONTEND_URL","https://noxorbit.example")
  uid:=uuid.Must(uuid.NewV4())
  wid:=uuid.Must(uuid.NewV4())
  inviteID:=uuid.Must(uuid.NewV4())
