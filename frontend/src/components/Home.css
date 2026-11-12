@@ -110,7 +110,7 @@
 .dashboard-sidebar-label {
     margin: 0 0 12px;
     color: #ccb9d3;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: .14em;
 }
@@ -153,14 +153,14 @@
 
 .dashboard-workspace-indicator-body strong {
     color: #eee3ec;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
 }
 
 .dashboard-workspace-indicator-body small {
     margin-top: 4px;
     color: #c4b5ca;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .dashboard-nav {
@@ -244,7 +244,7 @@
 }
 
 .dashboard-sidebar-note p {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.6;
 }
 
@@ -267,7 +267,7 @@
     border: 1px solid rgba(225, 182, 121, .36);
     background: linear-gradient(135deg, #614564, #352338);
     color: #f7deaf;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     letter-spacing: .025em;
 }
@@ -283,7 +283,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #f0e7f0;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 750;
 }
 
@@ -292,7 +292,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #c0b0c6;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .dashboard-signout {
@@ -307,7 +307,7 @@
     border-radius: 11px;
     background: transparent;
     color: #c5b5c8;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 650;
     cursor: pointer;
 }
@@ -326,7 +326,7 @@
 .dashboard-error {
     margin: 8px 0;
     color: #ffd0d5;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
@@ -355,14 +355,14 @@
     align-items: center;
     gap: 14px;
     color: #bca8c2;
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: .12em;
     font-weight: 750;
 }
 
 .dashboard-breadcrumbs strong {
     color: #e2d4de;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 650;
     letter-spacing: 0;
 }
@@ -372,14 +372,14 @@
     align-items: center;
     gap: 13px;
     color: #b4a6b7;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .dashboard-avatar--small {
     width: 35px;
     height: 35px;
     border-radius: 50%;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .dashboard-menu-toggle {
@@ -406,7 +406,7 @@
     gap: 9px;
     margin-bottom: 13px;
     color: var(--dash-gold-soft);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: .12em;
 }
@@ -453,7 +453,7 @@
     border-radius: 999px;
     color: #ffe1a8;
     background: rgba(239, 173, 99, .1);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: .085em;
     white-space: nowrap;
@@ -504,7 +504,7 @@
     gap: 9px;
     margin-bottom: 20px;
     color: #ffe0a3;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: .14em;
 }
@@ -547,7 +547,7 @@
     border-radius: 11px;
     background: linear-gradient(115deg, #fff1c8 0%, #ffd581 48%, #e9b45f 100%);
     color: #271528;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 800;
     cursor: pointer;
     transition: transform .2s ease, filter .2s ease;
@@ -564,7 +564,7 @@
     display: block;
     margin-top: 13px;
     color: #d3c2d6;
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.6;
 }
 
@@ -638,7 +638,7 @@
     gap: 8px;
     margin-bottom: 18px;
     color: #ffe8b5;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: .12em;
 }
@@ -677,7 +677,7 @@
 .dashboard-collab-center > p {
     margin-top: 17px;
     color: #f0dff1;
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.55;
 }
 
@@ -728,19 +728,19 @@
 .dashboard-collab-chip small {
     display: block;
     white-space: nowrap;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .dashboard-collab-chip strong {
     color: #fff2e5;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 800;
 }
 
 .dashboard-collab-chip small {
     margin-top: 3px;
     color: #dfc6e0;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .dashboard-collab-spark {
@@ -788,7 +788,7 @@
 
 .dashboard-section-heading > span {
     color: #b7a4ba;
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .dashboard-overview-grid {
@@ -837,14 +837,14 @@
     max-width: 265px;
     margin-bottom: 19px;
     color: #cbbbd0;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
 }
 
 .dashboard-empty-status {
     margin-top: auto;
     color: #ffda97;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: .065em;
 }
@@ -891,7 +891,7 @@
 
 .dashboard-guide-step > span {
     color: #ffe09a;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 800;
 }
 
@@ -904,7 +904,7 @@
 
 .dashboard-guide-step p {
     color: #cfbdd3;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.75;
 }
 
@@ -916,7 +916,7 @@
     padding: 18px 0 0;
     border-top: 1px solid var(--dash-line);
     color: #bca9c1;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.6;
 }
 
@@ -1033,7 +1033,7 @@
     border: 0;
     background: none;
     color: #f6d79c;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 4px;
@@ -1052,7 +1052,7 @@
     border-radius: 14px;
     background: rgba(135, 48, 85, .20);
     color: #ffe5e9;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.55;
 }
 .dashboard-notice button {
@@ -1062,7 +1062,7 @@
     border-radius: 9px;
     background: rgba(255, 218, 179, .08);
     color: #ffe6d6;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 750;
     cursor: pointer;
 }
@@ -1123,13 +1123,13 @@
     max-width: 380px;
     margin-bottom: 26px;
     color: #ddcadf;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.7;
 }
 .dashboard-workspace-form { display: flex; flex-direction: column; gap: 11px; }
 .dashboard-workspace-form label {
     color: #f5e9f4;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
 }
 .dashboard-workspace-form input,
@@ -1141,7 +1141,7 @@
     border-radius: 11px;
     background: #1c1325;
     color: #f8f0f8;
-    font-size: 14px;
+    font-size: 16px;
     outline: none;
 }
 .dashboard-workspace-form input:focus-visible,
@@ -1154,13 +1154,13 @@
 .dashboard-form-hint {
     margin: -5px 0 8px;
     color: #c8b6cf;
-    font-size: 11px;
+    font-size: 13px;
     line-height: 1.55;
 }
 .dashboard-form-error {
     margin: 0 0 7px;
     color: #ffccd7;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.5;
 }
 .dashboard-dialog-actions {
@@ -1176,7 +1176,7 @@
     border-radius: 10px;
     background: transparent;
     color: #f5e9f4;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 750;
     cursor: pointer;
 }
@@ -1222,7 +1222,7 @@
 }
 .dashboard-active-summary-details .dashboard-eyebrow {
     margin-bottom: 8px;
-    font-size: 10px;
+    font-size: 12px;
 }
 .dashboard-active-summary-details h2 {
     margin: 0 0 4px;
@@ -1236,7 +1236,7 @@
 }
 .dashboard-active-summary-details > p:last-child {
     color: #d0bbd1;
-    font-size: 12px;
+    font-size: 14px;
     text-transform: capitalize;
 }
 .dashboard-active-summary-action {
@@ -1249,7 +1249,7 @@
     border-radius: 10px;
     background: rgba(247, 188, 111, .075);
     color: #f8d8a0;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     cursor: pointer;
 }
