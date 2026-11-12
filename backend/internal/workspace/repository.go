@@ -28,10 +28,10 @@ func (r *Repository) Create(ctx context.Context, ownerID uuid.UUID, name, purpos
 
 	var w Workspace
 	err = tx.QueryRow(ctx, `
-		INSERT INTO public.workspaces (name, purpose)
-		VALUES ($1, $2)
+		INSERT INTO public.workspaces (name, purpose, activity_actor_id)
+		VALUES ($1, $2, $3)
 		RETURNING id, name, purpose, created_at, updated_at
-	`, name, purpose).Scan(&w.ID, &w.Name, &w.Purpose, &w.CreatedAt, &w.UpdatedAt)
+	`, name, purpose, ownerID).Scan(&w.ID, &w.Name, &w.Purpose, &w.CreatedAt, &w.UpdatedAt)
 	if err != nil {
 		return Workspace{}, err
 	}
@@ -106,7 +106,7 @@ func (r *Repository) UpdateForOwner(ctx context.Context, userID, workspaceID uui
 	var w Workspace
 	err := r.pool.QueryRow(ctx, `
 		UPDATE public.workspaces AS w
-		SET name = $1, purpose = $2, updated_at = NOW()
+		SET name = $1, purpose = $2, activity_actor_id = $4, updated_at = NOW()
 		WHERE w.id = $3
 		  AND EXISTS (
 			SELECT 1 FROM public.workspace_memberships AS m
