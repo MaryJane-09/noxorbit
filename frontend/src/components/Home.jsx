@@ -23,6 +23,7 @@ import { API, createWorkspace, fetchWorkspaces, updateWorkspace } from '../api'
 import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
+import OverviewTaskCards from './OverviewTaskCards'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
 
@@ -483,27 +484,7 @@ export default function Home({ user, onLogout }) {
                         <ProjectOverviewCard workspaceID={activeWorkspace?.id}
                             onOpen={() => goToPage('projects')} />
 
-                        <section className="dashboard-empty-card" aria-labelledby="dashboard-tasks-heading">
-                            <div className="dashboard-empty-top">
-                                <span className="dashboard-tile-icon"><ListTodo size={23} aria-hidden="true" /></span>
-                                <ArrowUpRight size={19} aria-hidden="true" />
-                            </div>
-                            <h3 id="dashboard-tasks-heading">My tasks</h3>
-                            <p>Find tasks assigned to you across all your workspaces and projects.</p>
-                            <button type="button" className="dashboard-feature-action" onClick={() => goToPage('my-tasks')}>
-                                Open my tasks <ArrowRight size={16} aria-hidden="true" />
-                            </button>
-                        </section>
-
-                        <section className="dashboard-empty-card" aria-labelledby="dashboard-deadlines-heading">
-                            <div className="dashboard-empty-top">
-                                <span className="dashboard-tile-icon"><CalendarDays size={23} aria-hidden="true" /></span>
-                                <ArrowUpRight size={19} aria-hidden="true" />
-                            </div>
-                            <h3 id="dashboard-deadlines-heading">Upcoming deadlines</h3>
-                            <p>Your important dates will appear here when tasks and deadlines are connected.</p>
-                            <span className="dashboard-empty-status">{hasWorkspace ? 'Coming next' : 'Not set up yet'}</span>
-                        </section>
+                        <OverviewTaskCards onOpenTasks={() => goToPage('my-tasks')} />
                     </div>
 
                     <div className="dashboard-footer-hint">
