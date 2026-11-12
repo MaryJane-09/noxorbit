@@ -635,3 +635,68 @@ Run `go test ./backend/...` and `go vet ./backend/...`; then run
 `npm run lint` and `npm run build` inside `frontend`. Test with a
 disposable account for password changes, as successful changes invalidate
 all its existing sessions.
+
+
+## Settings Phase 1B — avatars and verified email change (migration 010)
+
+**Apply `backend/migrations/010_profile_avatar_email.sql` to Supabase SQL
+Editor after migration 009 before running the updated Go backend.** It adds
+optional avatar data/MIME columns to `public.users` and creates the
+private, RLS-protected `pending_email_changes` table. No existing user
+accounts, tasks or projects are changed by this migration.
+
+### Private avatar
+
+- `GET /api/v1/profile/avatar` returns the authenticated user's PNG/JPEG
+  image, with private caching, ETag and `nosniff`; 404 means no image exists.
+- `POST /api/v1/profile/avatar` accepts a **raw binary** PNG or JPEG body.
+  The server checks the actual file header and image dimensions; files must
+  be **at most 512 KiB** and **1024×1024 pixels**.
+- `DELETE /api/v1/profile/avatar` removes the image and reverts to initials.
+- `GET /api/v1/profile/avatar/status` returns `{"has_avatar":true|false}`.
+  All four endpoints require an active session. The browser never receives
+  Supabase credentials or uses a public image bucket.
+- Uploaded pictures are stored in `users.avatar_data`, so deleting an
+  account removes its avatar automatically. For this initial version, small
+  bounded pictures live in PostgreSQL; a future scale-up could use private
+  object storage without changing the visible Settings workflow.
+
+### Verified email change
+
+1. `POST /api/v1/profile/email/request` with
+   `{"new_email":"new@example.com","password":"current password"}`.
+   Only the signed-in account may request this operation. The current
+   password is verified with bcrypt and the proposed email must be valid,
+   different from the current address and not already registered.
+2. A six-character code is sent **only to the new address** using the branded
+   Noxorbit email template. The database stores a bcrypt hash of the code,
+   rather than the code itself. The code expires after **5 minutes**.
+   Requests are subject to a **60-second database-enforced cooldown**,
+   a **5-attempt cap**, and an additional per-IP API rate limit.
+3. `POST /api/v1/profile/email/confirm` with `{"code":"ABC123"}`:
+   the server takes a row lock and commits incorrect-attempt counters so
+   concurrent requests cannot bypass the cap. Only successful verification
+   updates `users.email`, removes pending verification and revokes **all**
+   sessions in a single transaction. The HTTP response clears the session
+   cookie; the UI returns to the login screen to sign in with the new email.
+
+The current email remains unchanged if the code expires, verification fails,
+a conflict occurs, or sending the email fails. The UI provides a request and
+confirm step, and existing registration/password-reset OTPs remain separate.
+
+### Verification
+
+```sh
+git pull origin main
+go test ./backend/...
+go vet ./backend/...
+cd frontend
+npm run lint
+npm run build
+npm run dev
+```
+
+Test image upload/removal and an email-change request using disposable test
+accounts; do not post real verification codes or account passwords in chat.
+If email delivery fails, confirm SMTP credentials and restart the server.
+Do not run the updated Go profile endpoints before migration 010.
