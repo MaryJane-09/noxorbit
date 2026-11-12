@@ -1,0 +1,31 @@
+/* My Tasks inherits Noxorbit's dashboard palette and accessible type scale. */
+.my-tasks-page { padding-top: 10px; }
+.my-tasks-heading { display:flex; align-items:end; justify-content:space-between; flex-wrap:wrap; gap:20px; padding-bottom:30px; border-bottom:1px solid var(--dash-line); }
+.my-tasks-heading h1 { margin:12px 0; font:700 clamp(32px,4vw,48px)/1.2 var(--dash-display); letter-spacing:-.045em; color:#f8eef5; }
+.my-tasks-heading h1 span { color:var(--dash-gold-rich); }
+.my-tasks-heading p:not(.dashboard-eyebrow) { max-width:600px; color:#d7c3db; font-size:15px; line-height:1.75; }
+.my-tasks-summary { display:flex; flex-wrap:wrap; gap:20px; margin:25px 0; font-size:15px; color:#d8c6db; }
+.my-tasks-summary strong { color:#ffe3b2; }
+.my-tasks-filters { display:flex; flex-wrap:wrap; gap:8px; margin:21px 0; }
+.my-tasks-filters button { padding:10px 15px; border:1px solid rgba(239,194,153,.24); border-radius:10px; background:#2a1b34; color:#d7c3db; font-size:14px; font-weight:700; cursor:pointer; }
+.my-tasks-filters button.is-active { background:rgba(235,186,118,.16); color:#ffe0a8; border-color:rgba(245,201,136,.65); }
+.my-tasks-message { display:flex; flex-direction:column; align-items:center; gap:13px; padding:45px 18px; text-align:center; border:1px solid var(--dash-line); border-radius:16px; color:#d5bfd7; background:#24182e; font-size:15px; }
+.my-tasks-message h2 { font-size:22px; margin:0; }
+.my-tasks-message p { margin:0; }
+.my-tasks-list { display:grid; gap:14px; }
+.my-tasks-item { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:18px; padding:23px; border:1px solid rgba(242,198,154,.25); border-radius:16px; background:linear-gradient(145deg,#32213d,#21182b); }
+.my-tasks-item-body { flex:1 1 320px; min-width:0; }
+.my-tasks-location { display:flex; align-items:center; flex-wrap:wrap; gap:8px; color:#e3c795; font-size:13px; font-weight:700; }
+.my-tasks-item h2 { font:700 20px/1.4 var(--dash-display); margin:11px 0 8px; color:#fff1fa; overflow-wrap:anywhere; }
+.my-tasks-description { color:#d2bfd5; line-height:1.7; font-size:15px; white-space:pre-wrap; overflow-wrap:anywhere; margin:0 0 14px; }
+.my-tasks-meta { display:flex; gap:12px; flex-wrap:wrap; align-items:center; color:#d6c5d9; font-size:14px; margin-top:14px; }
+.my-tasks-meta > span { display:inline-flex; align-items:center; gap:6px; }
+.my-tasks-meta .tasks-priority { padding:5px 11px; border-radius:100px; text-transform:capitalize; font-size:13px; font-weight:750; background:#403046; color:#f7dbb9; }
+.my-tasks-meta .tasks-priority--urgent { color:#ffc7d0; background:rgba(211,79,94,.25); }
+.my-tasks-meta .tasks-priority--high { color:#ffd5a6; background:rgba(221,129,73,.2); }
+.my-tasks-meta .tasks-priority--low { color:#c1ead1; background:rgba(82,167,119,.22); }
+.my-tasks-control { display:flex; flex-direction:column; gap:8px; min-width:175px; }
+.my-tasks-control label { color:#dbc8de; font-size:13px; font-weight:750; }
+.my-tasks-control select { width:100%; min-height:43px; padding:9px 12px; border:1px solid rgba(235,193,146,.4); border-radius:9px; color:#f9e7fa; background:#21152d; font-size:14px; }
+.my-tasks-control select:disabled { opacity:.65; }
+@media (max-width:600px) { .my-tasks-item { padding:17px; } .my-tasks-control { width:100%; } }
