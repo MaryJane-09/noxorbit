@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, Settings2, ShieldAlert, Trash2, UserRound, KeyRound } from 'lucide-react'
+import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound } from 'lucide-react'
 import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName } from '../api'
 import './SettingsPage.css'
 
