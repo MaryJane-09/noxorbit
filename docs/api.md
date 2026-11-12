@@ -232,3 +232,42 @@ and verify the project is not displayed there. Edit and archive using the
 owner account, then refresh and confirm that changes persist.
 
 Actual project/task deadlines and board features are a separate stage.
+
+
+## Workspace members and invitation links (new)
+
+### GET /api/v1/workspaces/{workspace_id}/members
+Authenticated workspace members can list only their own workspace's members.
+Returns `[{ "user_id": "uuid", "name": "Display name", "role": "owner", "joined_at": "timestamp" }]`.
+No global user directory or passwords are returned. Nonmembers receive 404.
+
+### POST /api/v1/workspaces/{workspace_id}/invitations
+Authenticated owners only. Send `Content-Type: application/json` and `{}`.
+Returns 201 with a one-use, seven-day invitation token. The UI wraps the
+token in an app link using `#invite/<token>` and lets the owner copy it.
+Treat the token as a secret: anyone with it can join the workspace.
+The server stores only SHA-256(token), not the raw token.
+
+### POST /api/v1/invitations/accept
+Authenticated users only. Send `{ "token": "<invitation-token>" }`.
+A valid unused invitation creates a `member` membership in the workspace,
+returning `{ "workspace_id": "uuid" }`.
+Claims are serialized with a PostgreSQL row lock so two users cannot consume
+one use simultaneously. Invalid tokens return 404; expired/used/revoked
+tokens return 410. Repeating an acceptance from an existing member is safe.
+
+**Deployment prerequisite:** Apply `007_workspace_invitations.sql` in Supabase
+after the workspace migration. Member lists work without 007; link creation
+and acceptance require it.
+
+**Not implemented yet:** Sending email invitations, owner revocation UI/API,
+removing members, invitation audit UI and rate limits for link generation.
+The schema contains `revoked_at` for a future safe revocation workflow.
+
+## Task deadline validation (new)
+
+New tasks and new/changed deadlines reject dates earlier than today's
+calendar date in the current MVP's Africa/Lagos timezone (400). Existing
+overdue dates may be left unchanged while editing other task details.
+The backend also guards SQL mutations against date-validation races.
+Existing historic task dates are not automatically changed.
