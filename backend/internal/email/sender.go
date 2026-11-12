@@ -72,6 +72,22 @@ func (s EmailSender) SendVerification(name, to, code string) error {
 	})
 }
 
+// SendEmailChangeCode verifies that the account owner controls the proposed
+// new email address. Do not include the old email or account identifiers.
+func (s EmailSender) SendEmailChangeCode(name, to, code string) error {
+    return s.sendCode(to, "Confirm your new Noxorbit email", codeEmail{
+        Eyebrow: "CONFIRM NEW EMAIL",
+        Heading: "Verify your new email address",
+        Name: name,
+        Intro: "Use this code to confirm your new email for Noxorbit. If you did not request this, ignore this message.",
+        Code: code,
+        CodeLabel: "YOUR EMAIL CHANGE CODE",
+        Minutes: otp.Time,
+        Footer: "Your email is not changed until this verification succeeds.",
+        Preheader: "Verify your new Noxorbit email address.",
+    })
+}
+
 func (s EmailSender) SendPasswordReset(name, to, code string) error {
 	return s.sendCode(to, "Reset your Noxorbit password", codeEmail{
 		Eyebrow:   "RESET YOUR PASSWORD",
