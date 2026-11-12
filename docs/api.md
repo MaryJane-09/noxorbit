@@ -271,3 +271,14 @@ calendar date in the current MVP's Africa/Lagos timezone (400). Existing
 overdue dates may be left unchanged while editing other task details.
 The backend also guards SQL mutations against date-validation races.
 Existing historic task dates are not automatically changed.
+
+
+## Workspace management (owner-only)
+
+- `GET /api/v1/workspaces/{workspace_id}/invitations/manage` lists up to 100 latest invitation records with status fields. Original invitation tokens are never returned.
+- `DELETE /api/v1/workspaces/{workspace_id}/invitations/{invitation_id}` revokes an active invitation (204). After revocation, any previously shared link is rejected.
+- `DELETE /api/v1/workspaces/{workspace_id}/members/{member_id}` removes an ordinary workspace member (204). The owner cannot be removed. Existing task assignments to the removed user become unassigned through the composite foreign key in migration 006; their task creations are preserved.
+
+All these operations require an authenticated workspace owner. They use workspace-scoped database permissions rather than trusting the React UI. Removed users lose access on subsequent authenticated API requests. No new migration is required beyond 007 for these operations.
+
+Invitation email delivery and invitation creation rate limiting are still pending, and generated links must currently be shared privately. Use a disposable test member when checking removal, because removal revokes their workspace access immediately.
