@@ -266,3 +266,15 @@ export async function deleteRecycledTaskForever(taskID) {
   if (response.status === 204) return;
   return workspaceResponse(response);
 }
+
+
+// Read-only activity history for the selected workspace; backend enforces
+// authenticated membership on every read.
+export async function fetchWorkspaceActivity(workspaceID, { signal } = {}) {
+  const events = await projectRequest(
+    `${API}/api/v1/workspaces/${encodeURIComponent(workspaceID)}/activity`,
+    { signal },
+  );
+  if (!Array.isArray(events)) throw new Error("The server returned an invalid activity list.");
+  return events;
+}
