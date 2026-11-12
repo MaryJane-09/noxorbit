@@ -248,3 +248,12 @@
     .projects-page-workspace { max-width: 100%; }
     .projects-card { padding: 20px; }
 }
+
+/* Phase 2: keep the approved card design, with less decorative empty space. */
+.projects-card { min-height: 252px; }
+.projects-card-top { margin-bottom: 19px; }
+.projects-card > p { margin-bottom: 15px; }
+.projects-card-bottom { gap: 12px; padding-top: 15px; }
+.projects-card-actions button:first-child { background: rgba(243, 193, 133, .13); border-color: rgba(243, 204, 154, .5); color: #ffe0ad; }
+.projects-card-actions button:first-child:hover:not(:disabled) { background: rgba(243, 193, 133, .21); }
+@media (max-width: 680px) { .projects-card { min-height: 0; } }
