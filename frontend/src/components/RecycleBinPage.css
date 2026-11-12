@@ -19,3 +19,27 @@
 .recycle-item button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 10px 15px; border: 1px solid rgba(244,204,154,.5); border-radius: 10px; background: rgba(244,204,154,.11); color: #ffe1af; font-size: 14px; font-weight: 800; cursor: pointer; }
 .recycle-item button:disabled { opacity: .55; cursor: wait; }
 @media(max-width:600px) { .recycle-item button { width: 100%; } }
+
+/* Keep recovery primary; permanent deletion is intentionally secondary and red. */
+.recycle-item-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.recycle-item-actions .recycle-delete-forever {
+    border-color: rgba(243, 135, 155, .34);
+    background: rgba(164, 62, 88, .08);
+    color: #ffc7d2;
+}
+.recycle-item-actions .recycle-delete-forever:hover:not(:disabled) { background: rgba(164, 62, 88, .18); }
+.recycle-delete-dialog { width: min(460px, calc(100vw - 32px)); }
+.recycle-delete-dialog .dashboard-dialog-description strong { color: #fff1f4; overflow-wrap: anywhere; }
+.recycle-delete-icon { color: #ffc7d2; border-color: rgba(255, 155, 177, .37); background: rgba(165, 54, 83, .12); }
+.recycle-confirm-delete {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    min-height: 43px; padding: 10px 16px; border: 1px solid rgba(255, 157, 173, .52);
+    border-radius: 10px; background: #953a53; color: #fff7f8;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+}
+.recycle-confirm-delete:hover:not(:disabled) { background: #ab4661; }
+.recycle-confirm-delete:disabled { opacity: .58; cursor: wait; }
+@media (max-width: 680px) {
+    .recycle-item-actions { width: 100%; }
+    .recycle-item-actions button { flex: 1 1 150px; }
+}
