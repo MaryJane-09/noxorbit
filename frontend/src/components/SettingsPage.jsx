@@ -45,7 +45,7 @@ export default function SettingsPage({ user, onAccountDeleted, onProfileUpdated,
     async function saveName(event) {
         event.preventDefault()
         if (savingName) return
-        const name = displayName.trim().replace(/\\s+/g, ' ')
+        const name = displayName.trim().replace(/\s+/g, ' ')
         if (name.length < 1 || [...name].length > 100) {
             setProfileError('Name must be between 1 and 100 characters.')
             return
