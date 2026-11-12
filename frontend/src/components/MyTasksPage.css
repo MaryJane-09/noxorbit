@@ -34,3 +34,7 @@
 .my-tasks-refresh { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:44px; padding:10px 16px; border:1px solid rgba(239,194,153,.38); border-radius:10px; background:rgba(242,195,145,.065); color:#f1d6a8; font-size:14px; font-weight:750; cursor:pointer; }
 .my-tasks-refresh:hover:not(:disabled) { background:rgba(242,195,145,.15); }
 .my-tasks-refresh:disabled { opacity:.6; cursor:wait; }
+
+.my-tasks-meta .my-tasks-due-indicator { padding: 4px 9px; border-radius: 7px; font-size: 13px; font-weight: 800; }
+.my-tasks-due-indicator--overdue, .my-tasks-due-indicator--today { background: rgba(192,69,86,.22); color: #ffd0d9; }
+.my-tasks-due-indicator--tomorrow, .my-tasks-due-indicator--soon { background: rgba(196,132,51,.22); color: #ffe1a8; }
