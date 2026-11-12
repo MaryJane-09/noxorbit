@@ -573,7 +573,7 @@ what the frontend preview showed.
   FK `ON DELETE CASCADE`, but their teams' projects and tasks remain.
   Original creator and actor FK columns using `ON DELETE SET NULL`
   retain these records without personal attribution.
-- Pending invitations created by the account are removed, as their
+- Pending invitations created by the account **or addressed to its email** are removed, as their
   `created_by` FK would otherwise block user deletion. All its login
   sessions are explicitly revoked and OTPs for its email are deleted.
 - The user row is deleted only after those steps succeed. Every step
@@ -593,3 +593,7 @@ transfer UI in this milestone. It does not implement bulk test-data
 cleanup. Review any additional foreign keys added to the schema before
 extending account deletion; unexpected dependencies must fail closed
 with transaction rollback.
+
+For member-join/removal history, account deletion anonymizes the deleted
+account's `entity_name` snapshot to **Former member**. Events themselves
+remain available to authorized workspace members without exposing that name.
