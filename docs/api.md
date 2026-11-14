@@ -749,3 +749,62 @@ session list shows the current device; use a second browser/private window
 to test individual session removal and "sign out all other sessions".
 Do not test revocation with the only browser session unless you're
 prepared to log in again.
+
+
+## Project Membership & Roles — migration 012
+
+**Run `backend/migrations/012_project_memberships.sql` in Supabase SQL
+Editor after migrations 008, 009, 010 and 011, before restarting the backend.**
+The migration is one-time and transactional. It does not delete workspaces,
+projects, tasks or users.
+
+It creates `public.project_memberships` with `project_id`, `workspace_id`,
+`user_id`, `role` (`lead` or `member`) and `joined_at`. Composite foreign
+keys ensure participants belong to the same workspace and project. Existing
+project creators and workspace owners become project leads; existing task
+assignees become project members, including assignments to soft-deleted tasks.
+New project creators are enrolled as leads by an AFTER INSERT trigger.
+
+It also adds a composite foreign key from task assignments to project
+membership: **only project participants can be task assignees**. When someone
+is removed from a project (or leaves the workspace), PostgreSQL sets their
+project task `assignee_id` to NULL without deleting tasks. This applies
+to both current and recoverable tasks.
+
+### API
+
+All endpoints require a valid session and the workspace/project IDs in the
+URL. Project visibility remains workspace-scoped; membership does not make
+projects private.
+
+- `GET /api/v1/workspaces/{workspace_id}/projects/{project_id}/members`:
+  any workspace member can list project participants (ID, name, role,
+  joined_at). No email/password or private account fields are exposed.
+- `POST .../members`: body `{"user_id":"uuid","role":"member"}` or
+  `"lead"`. Workspace owners can add either role. Project leads may add
+  ordinary project members. Target must already be in the workspace.
+- `PATCH .../members/{user_id}`: body `{"role":"lead"}` or
+  `{"role":"member"}`. Only the workspace owner can change participant roles.
+- `DELETE .../members/{user_id}`: workspace owners may remove participants;
+  project leads may remove ordinary project members, but not other leads.
+  The operation returns 204.
+
+Project participants can be managed on **Projects → Open board → Project
+members**. Task-assignment choices are filtered to the project members.
+Authorization is enforced by server queries and database constraints, not
+merely by the dropdown.
+
+**Role boundaries for this phase:** Workspace owners still control archive
+and restore; existing workspace member visibility, project-detail editing,
+task creation and task creator/assignee permissions are unchanged. These
+roles control participant management and assignment eligibility; project
+privacy is deliberately *not* included.
+
+### Test checklist
+
+After migration 012, run `go test ./backend/...` and `go vet
+./backend/...`. In `frontend`, run `npm run lint` and `npm run build`.
+Then test with at least two accounts in one workspace: add a participant,
+change a role, assign them a task, remove them and confirm that the task
+becomes unassigned without disappearing. Confirm a non-project workspace
+member can still view the project but cannot be assigned its tasks.
