@@ -12,6 +12,7 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
     const [refresh, setRefresh] = useState(0)
     const [pending, setPending] = useState(false)
     const [target, setTarget] = useState('')
+    const [personToRemove, setPersonToRemove] = useState(null)
     const [role, setRole] = useState('member')
     const workspaceOwner = workspace.role === 'owner'
     const isLead = members.some((member) => member.user_id === user?.id && member.role === 'lead')
@@ -73,13 +74,15 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
         }
     }
     async function remove(person) {
-        if (pending || !canManage || (!workspaceOwner && person.role === 'lead')) return
-        if (!window.confirm(`Remove ${person.name} from this project? Their project task assignments will be cleared.`)) return
+        if (pending || !canManage || person.user_id === user?.id
+            || workspaceMembers.some((member) => member.user_id === person.user_id && member.role === 'owner')
+            || (!workspaceOwner && person.role === 'lead')) return
         setPending(true)
         setError('')
         setNotice('')
         try {
             await removeProjectMember(workspace.id, project.id, person.user_id)
+            setPersonToRemove(null)
             setNotice('Participant removed.')
             setLoading(true)
             setRefresh((v) => v + 1)
@@ -112,13 +115,25 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
                             <option value="member">Member</option><option value="lead">Lead</option>
                         </select>
                     </label> : person.role === 'lead' ? <Crown size={17} aria-label="Project lead" /> : null}
-                    {canManage && (workspaceOwner || person.role === 'member') && <button type="button"
-                        className="project-members-remove" onClick={() => remove(person)}
+                    {canManage && person.user_id !== user?.id
+                        && !workspaceMembers.some((member) => member.user_id === person.user_id && member.role === 'owner')
+                        && (workspaceOwner || person.role === 'member') && <button type="button"
+                        className="project-members-remove" onClick={() => setPersonToRemove(person)}
                         disabled={pending || project.status !== 'active'} aria-label={`Remove ${person.name} from project`}>
                         <X size={17} aria-hidden="true" />
                     </button>}
                 </div>)}
             </div>
+            {personToRemove && <div className="project-members-confirm" role="group"
+                aria-label={`Confirm removal of ${personToRemove.name}`}>
+                <p><strong>Remove {personToRemove.name}?</strong><br />
+                    Their tasks will remain, but assignments to them will be cleared.</p>
+                <div className="project-members-confirm-actions">
+                    <button type="button" disabled={pending} onClick={() => setPersonToRemove(null)}>Cancel</button>
+                    <button type="button" className="project-members-confirm-remove" disabled={pending}
+                        onClick={() => remove(personToRemove)}>{pending ? 'Removing…' : 'Remove member'}</button>
+                </div>
+            </div>}
             {canManage && project.status === 'active' && available.length > 0 && <form className="project-members-add" onSubmit={add}>
                 <label htmlFor="project-member-select">Add a workspace member</label>
                 <select id="project-member-select" value={target} onChange={(e) => setTarget(e.target.value)} required disabled={pending}>
