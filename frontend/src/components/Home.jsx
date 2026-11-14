@@ -29,6 +29,7 @@ import MyTasksPage from './MyTasksPage'
 import RecycleBinPage from './RecycleBinPage'
 import ActivityPage from './ActivityPage'
 import SettingsPage from './SettingsPage'
+import NotificationCenter from './NotificationCenter'
 import OverviewTaskCards from './OverviewTaskCards'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
@@ -371,6 +372,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
+                        <NotificationCenter />
                         <span>Signed in</span>
                         <span className="dashboard-avatar dashboard-avatar--small" title={user.name} aria-label={user.name}>{avatarURL ? <img src={avatarURL} alt="" /> : initialLetters(user.name)}</span>
                     </div>
