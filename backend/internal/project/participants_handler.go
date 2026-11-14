@@ -24,6 +24,8 @@ func participantError(w http.ResponseWriter,err error){
  case errors.Is(err,ErrForbidden):fail(w,403,"You do not have permission to manage project members")
  case errors.Is(err,ErrInvalidProjectMember):fail(w,400,"Choose a current workspace member")
  case errors.Is(err,ErrProjectMemberConflict):fail(w,409,"Already a project participant")
+ case errors.Is(err,ErrSelfRemoval):fail(w,409,"You cannot remove yourself from a project")
+ case errors.Is(err,ErrWorkspaceOwnerProtected):fail(w,409,"The workspace owner cannot be removed from the project")
  default:log.Println("Project members:",err);fail(w,500,"Could not manage project members")
  }
 }
