@@ -12,6 +12,8 @@ import (
 var ErrProjectMemberConflict=errors.New("already a project participant")
 var ErrNotProjectMember=errors.New("project participant not found")
 var ErrInvalidProjectMember=errors.New("user must belong to this workspace")
+var ErrSelfRemoval=errors.New("cannot remove yourself from the project")
+var ErrWorkspaceOwnerProtected=errors.New("workspace owner cannot be removed from project")
 
 type Participant struct{
  UserID uuid.UUID `json:"user_id"`
@@ -132,13 +134,17 @@ func (r *ParticipantsRepository) SetRole(ctx context.Context,actor,wid,pid,targe
  return v,ErrForbidden
 }
 func (r *ParticipantsRepository) Remove(ctx context.Context,actor,wid,pid,target uuid.UUID)error{
- // The workspace owner can remove any participant. A project lead may
+ if actor==target{return ErrSelfRemoval}
+ // A workspace owner cannot be removed from a project; a project lead may
  // remove ordinary members but cannot demote/remove other leads.
  tag,err:=r.pool.Exec(ctx,`
  DELETE FROM public.project_memberships pm
  USING public.projects p,public.workspace_memberships a
  WHERE pm.project_id=p.id AND pm.workspace_id=p.workspace_id
  AND p.workspace_id=$2 AND p.id=$3 AND pm.user_id=$4 AND p.status='active'
+ AND NOT EXISTS (SELECT 1 FROM public.workspace_memberships owner_check
+   WHERE owner_check.workspace_id=p.workspace_id
+     AND owner_check.user_id=pm.user_id AND owner_check.role='owner')
  AND a.workspace_id=p.workspace_id AND a.user_id=$1
  AND (a.role='owner' OR (
     pm.role='member' AND EXISTS(SELECT 1 FROM public.project_memberships lead
@@ -151,5 +157,10 @@ func (r *ParticipantsRepository) Remove(ctx context.Context,actor,wid,pid,target
  if e!=nil{return e}
  if !visible{return ErrNotFound}
  if !manager{return ErrForbidden}
+ var ownerTarget bool
+ e=r.pool.QueryRow(ctx,`SELECT EXISTS(SELECT 1 FROM public.workspace_memberships
+ WHERE workspace_id=$1 AND user_id=$2 AND role='owner')`,wid,target).Scan(&ownerTarget)
+ if e!=nil{return e}
+ if ownerTarget{return ErrWorkspaceOwnerProtected}
  return ErrNotProjectMember
 }
