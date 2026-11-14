@@ -12,6 +12,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
+	"github.com/MaryJane-09/noxorbit/backend/internal/notification"
 	"github.com/MaryJane-09/noxorbit/backend/internal/otp"
 	"github.com/MaryJane-09/noxorbit/backend/internal/project"
 	"github.com/MaryJane-09/noxorbit/backend/internal/ratelimit"
@@ -77,6 +78,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	taskHandler := task.NewHandler(taskRepo)
 	assignedHandler := task.NewAssignedHandler(taskRepo)
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
+	notificationHandler := notification.NewHandler(notification.NewRepository(pool))
 	accountHandler := account.NewHandler(account.NewRepository(pool))
 	profileRepo := profile.NewRepository(pool)
 	profileHandler := profile.NewHandler(profileRepo)
@@ -120,6 +122,10 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/members/{user_id}", auth.RequireAuth(sessionRepo, projectParticipantsHandler.Detail))
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
+	mux.HandleFunc("/api/v1/notifications", auth.RequireAuth(sessionRepo, notificationHandler.List))
+	mux.HandleFunc("/api/v1/notifications/preferences", auth.RequireAuth(sessionRepo, notificationHandler.Preferences))
+	mux.HandleFunc("/api/v1/notifications/read-all", auth.RequireAuth(sessionRepo, notificationHandler.MarkAllRead))
+	mux.HandleFunc("/api/v1/notifications/{notification_id}/read", auth.RequireAuth(sessionRepo, notificationHandler.MarkRead))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/activity", auth.RequireAuth(sessionRepo, activityHandler.List))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks", auth.RequireAuth(sessionRepo, recycleHandler.List))
 	mux.HandleFunc("/api/v1/recycle-bin/tasks/{task_id}/restore", auth.RequireAuth(sessionRepo, recycleHandler.Restore))
