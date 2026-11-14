@@ -1542,3 +1542,50 @@
     .dashboard-nav-item,
     .dashboard-desktop-sidebar-toggle { transition: none; }
 }
+
+
+/* Sidebar scrolling: navigation scrolls, but branding and account controls
+   stay anchored. Scoped to desktop to preserve the mobile drawer. */
+@media (min-width: 901px) {
+    .dashboard-sidebar {
+        overflow: hidden;
+        min-height: 0;
+    }
+    .dashboard-sidebar-top,
+    .dashboard-sidebar-toggle-row,
+    .dashboard-workspace-indicator,
+    .dashboard-sidebar-bottom {
+        flex-shrink: 0;
+    }
+    .dashboard-nav {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(220, 176, 135, .26) transparent;
+        padding-bottom: 12px;
+    }
+    .dashboard-sidebar-bottom {
+        margin-top: 0;
+        background: linear-gradient(180deg, rgba(26, 16, 36, .92), #1a1024);
+    }
+    .dashboard-desktop-sidebar-toggle {
+        opacity: .77;
+    }
+    .dashboard-desktop-sidebar-toggle:hover,
+    .dashboard-desktop-sidebar-toggle:focus-visible {
+        opacity: 1;
+    }
+    .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle {
+        border-color: transparent;
+        box-shadow: none;
+        background: transparent;
+        color: #b7a6c1;
+    }
+    .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle:hover,
+    .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle:focus-visible {
+        color: #f1d8b1;
+        background: rgba(243, 195, 139, .08);
+    }
+}
