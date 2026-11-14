@@ -440,3 +440,27 @@ export function revokeOtherSessions() {
     method: "POST", body: {},
   });
 }
+
+
+// A project has its own participant list; workspace visibility is unchanged.
+export async function fetchProjectMembers(workspaceID, projectID, { signal } = {}) {
+  const items = await projectRequest(`${projectsURL(workspaceID, projectID)}/members`, { signal });
+  if (!Array.isArray(items)) throw new Error("The server returned an invalid participant list.");
+  return items;
+}
+
+export function addProjectMember(workspaceID, projectID, userID, role = "member") {
+  return projectRequest(`${projectsURL(workspaceID, projectID)}/members`, {
+    method: "POST", body: { user_id: userID, role },
+  });
+}
+
+export function updateProjectMemberRole(workspaceID, projectID, userID, role) {
+  return projectRequest(`${projectsURL(workspaceID, projectID)}/members/${encodeURIComponent(userID)}`, {
+    method: "PATCH", body: { role },
+  });
+}
+
+export function removeProjectMember(workspaceID, projectID, userID) {
+  return deleteWorkspaceResource(`${projectsURL(workspaceID, projectID)}/members/${encodeURIComponent(userID)}`);
+}
