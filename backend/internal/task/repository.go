@@ -51,14 +51,14 @@ func (r *Repository) classifyWriteFailure(ctx context.Context, userID, workspace
 
 func mapAssigneeFK(err error) error {
 	var pgErr *pgconn.PgError
-	if errors.As(err, &pgErr) && pgErr.Code == "23503" && pgErr.ConstraintName == "tasks_workspace_assignee_fk" {
+	if errors.As(err, &pgErr) && pgErr.Code == "23503" && (pgErr.ConstraintName == "tasks_workspace_assignee_fk" || pgErr.ConstraintName == "tasks_project_assignee_fk") {
 		return ErrInvalidAssignee
 	}
 	return err
 }
 
 // Any workspace member can create tasks in active projects and assign them to
-// current members. The assignee and membership checks run in the INSERT itself.
+// current project participants. The assignee and membership checks run in the INSERT itself.
 func (r *Repository) Create(ctx context.Context, userID, workspaceID, projectID uuid.UUID, in DetailsInput) (Task, error) {
 	t, err := scanTask(r.pool.QueryRow(ctx, `
 		INSERT INTO public.tasks AS t
@@ -72,8 +72,8 @@ func (r *Repository) Create(ctx context.Context, userID, workspaceID, projectID 
 		  )
 		  AND ($7::date IS NULL OR $7::date >= (NOW() AT TIME ZONE 'Africa/Lagos')::date)
 		  AND ($8::uuid IS NULL OR EXISTS (
-			SELECT 1 FROM public.workspace_memberships a
-			WHERE a.workspace_id = p.workspace_id AND a.user_id = $8
+			SELECT 1 FROM public.project_memberships a
+			WHERE a.project_id = p.id AND a.user_id = $8
 		  ))
 		RETURNING `+taskColumns+`
 	`, userID, workspaceID, projectID, in.Title, in.Description, in.Priority, in.DueDate, in.AssigneeID))
@@ -123,7 +123,7 @@ func (r *Repository) Get(ctx context.Context, userID, workspaceID, projectID, ta
 }
 
 // Only task creators and workspace owners can change task details, priorities,
-// assignees, and deadlines. Assignments must target current workspace members.
+// assignees, and deadlines. Assignments must target current project participants.
 func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, projectID, taskID uuid.UUID, in DetailsInput) (Task, error) {
 	t, err := scanTask(r.pool.QueryRow(ctx, `
 		UPDATE public.tasks AS t SET
@@ -141,8 +141,8 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 		  )
 		  AND ($8::date IS NULL OR $8::date = t.due_date OR $8::date >= (NOW() AT TIME ZONE 'Africa/Lagos')::date)
 		  AND ($9::uuid IS NULL OR EXISTS (
-			SELECT 1 FROM public.workspace_memberships a
-			WHERE a.workspace_id = t.workspace_id AND a.user_id = $9
+			SELECT 1 FROM public.project_memberships a
+			WHERE a.project_id = t.project_id AND a.user_id = $9
 		  ))
 		RETURNING `+taskColumns+`
 	`, userID, workspaceID, projectID, taskID, in.Title, in.Description, in.Priority, in.DueDate, in.AssigneeID))
