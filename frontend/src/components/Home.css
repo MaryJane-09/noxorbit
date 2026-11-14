@@ -1589,3 +1589,42 @@
         background: rgba(243, 195, 139, .08);
     }
 }
+
+/* Final sidebar polish: keep keyboard focus visible without a persistent mouse-click ring. */
+@media (min-width: 901px) {
+    /* Focus only when keyboard navigation warrants it; never suppress
+       the visible keyboard indicator. */
+    .dashboard-desktop-sidebar-toggle:focus:not(:focus-visible) {
+        outline: none;
+        box-shadow: none;
+    }
+    .dashboard-desktop-sidebar-toggle:focus-visible {
+        outline: 2px solid rgba(255, 218, 153, .85);
+        outline-offset: 2px;
+        box-shadow: none;
+    }
+
+    /* Scrollbar is still usable, but doesn't compete with the nav items. */
+    .dashboard-nav {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(220, 176, 135, .13) transparent;
+    }
+    .dashboard-nav:hover,
+    .dashboard-nav:focus-within {
+        scrollbar-color: rgba(220, 176, 135, .27) transparent;
+    }
+    .dashboard-nav::-webkit-scrollbar {
+        width: 4px;
+    }
+    .dashboard-nav::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .dashboard-nav::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(220, 176, 135, .13);
+    }
+    .dashboard-nav:hover::-webkit-scrollbar-thumb,
+    .dashboard-nav:focus-within::-webkit-scrollbar-thumb {
+        background: rgba(220, 176, 135, .27);
+    }
+}
