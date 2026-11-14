@@ -105,7 +105,7 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
                     <div className="project-members-person-name"><strong>{person.name}{person.user_id === user?.id ? ' (you)' : ''}</strong>
                         <small>{person.role === 'lead' ? 'Project lead' : 'Project member'}</small></div>
                     {workspaceOwner ? <label className="project-members-role">
-                        <span className="sr-only">Role for {person.name}</span>
+                        <span className="project-members-sr-only">Role for {person.name}</span>
                         <select value={person.role} onChange={(e) => changeRole(person, e.target.value)} disabled={pending || project.status !== 'active'}>
                             <option value="member">Member</option><option value="lead">Lead</option>
                         </select>
