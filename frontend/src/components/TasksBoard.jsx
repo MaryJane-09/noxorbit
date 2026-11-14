@@ -361,10 +361,10 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     <input id="task-due" type="date" min={form.due_date && form.due_date < today ? form.due_date : today} value={form.due_date} onChange={(event) => change('due_date', event.target.value)} disabled={saving} />
                     <label htmlFor="task-assignee">Assignee</label>
                     <select id="task-assignee" value={form.assignee_id}
-                        disabled={saving || memberState.workspaceID !== workspaceID || Boolean(memberState.error)}
+                        disabled={saving || memberState.workspaceID !== workspaceID || Boolean(memberState.error) || !projectParticipantsReady}
                         onChange={(event) => change('assignee_id', event.target.value)}>
                         <option value="">Unassigned</option>
-                        {memberState.members.filter((member) => !projectParticipantsReady || projectParticipants.some((participant) => participant.user_id === member.user_id)).map((member) => (
+                        {memberState.members.filter((member) => projectParticipants.some((participant) => participant.user_id === member.user_id)).map((member) => (
                             <option key={member.user_id} value={member.user_id}>
                                 {member.name}{member.user_id === currentUserID ? ' (you)' : ''} · {member.role}
                             </option>
@@ -372,7 +372,8 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     </select>
                     {memberState.error && <p className="dashboard-form-error" role="alert">{memberState.error}</p>}
                     {memberState.workspaceID !== workspaceID && <p className="dashboard-form-hint">Loading workspace members…</p>}
-                    {projectParticipantsReady && <p className="dashboard-form-hint">Only project participants can be assigned tasks. Add someone under Project members above.</p>}
+                    {!projectParticipantsReady && <p className="dashboard-form-hint">Project participants are unavailable. Refresh the board before assigning tasks.</p>}
+                    {projectParticipantsReady && <p className="dashboard-form-hint">Assign tasks to project participants. Add someone under Project members above.</p>}
                     {formError && <p role="alert" className="dashboard-form-error">{formError}</p>}
                     <div className="dashboard-dialog-actions">
                         <button type="button" className="dashboard-dialog-cancel" disabled={saving} onClick={closeEditor}>Cancel</button>
