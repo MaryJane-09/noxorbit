@@ -811,3 +811,36 @@ Then test with at least two accounts in one workspace: add a participant,
 change a role, assign them a task, remove them and confirm that the task
 becomes unassigned without disappearing. Confirm a non-project workspace
 member can still view the project but cannot be assigned its tasks.
+
+
+## Notifications — migration 013 (Settings Phase 2, part 1)
+
+The browser talks only to the authenticated Go API. In-app notifications
+are **personal** and do not expose other users' alerts. Apply
+`backend/migrations/013_notifications.sql` after 012 before using these APIs.
+
+| Method | Endpoint | Action |
+| --- | --- | --- |
+| GET | `/api/v1/notifications` | List latest 100 personal notifications, including read status; generate due reminders on visit |
+| PATCH | `/api/v1/notifications/{notification_id}/read` | Mark one owned notification read; 204 or 404 |
+| POST | `/api/v1/notifications/read-all` | Mark all owned notifications read; 204 |
+| GET | `/api/v1/notifications/preferences` | Load personal notification toggles (defaults true) |
+| PUT | `/api/v1/notifications/preferences` | Save **all four** booleans, using JSON with strict validation |
+
+Preferences JSON example:
+```json
+{"task_assigned":true,"due_tomorrow":true,"due_today":true,"overdue":true}
+```
+
+The assignment trigger creates events for assignments by another person,
+not for self-assignment. Deadline reminders for current, tomorrow, and
+overdue tasks are generated when the authenticated user requests their
+notifications (the UI polls while open); these are deduplicated by task,
+kind, and Africa/Lagos calendar date. The user can disable categories in
+Settings → Notifications. Existing historical notifications are not erased
+when a category is disabled.
+
+**Not delivered in this milestone:** background reminders while the app
+is closed, emails, push, individual time zone/date format, language,
+invitation alerts, project update alerts, and appearance. No settings
+controls falsely claim these deliveries exist.
