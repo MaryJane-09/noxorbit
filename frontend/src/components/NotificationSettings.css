@@ -1,0 +1,12 @@
+.notification-settings{max-width:850px}
+.notification-settings-note{padding:13px 16px;margin:14px 0 20px;border:1px solid rgba(239,197,143,.26);border-radius:11px;background:rgba(240,190,135,.055);color:#dbcae0;font-size:13px;line-height:1.7}
+.notification-settings-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 2px;border-top:1px solid rgba(240,199,145,.18);cursor:pointer}
+.notification-settings-row span{display:grid;gap:6px}
+.notification-settings-row strong{font-size:14px;color:#f8eaf4}
+.notification-settings-row small{font-size:13px;color:#cbb9d2;line-height:1.6}
+.notification-settings-row input{flex:0 0 20px;width:20px;height:20px;accent-color:#e7bb79;cursor:pointer}
+.notification-settings-row input:focus-visible{outline:2px solid #ffe2a1;outline-offset:3px}
+.notification-settings-actions{display:flex;justify-content:flex-end;border-top:1px solid rgba(240,199,145,.18);padding-top:18px}
+.notification-settings-actions button{display:inline-flex;gap:8px;align-items:center;justify-content:center;padding:12px 19px;min-height:42px;border:1px solid rgba(239,195,143,.5);border-radius:10px;background:linear-gradient(115deg,#e8c58b,#e5b26a);color:#25192a;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.notification-settings-actions button:disabled{opacity:.5;cursor:default}
+.notification-settings-actions button:focus-visible{outline:2px solid #ffe2a1;outline-offset:2px}
