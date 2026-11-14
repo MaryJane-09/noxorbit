@@ -233,3 +233,40 @@ Expect `public.project_memberships` and `tasks_project_assignee_fk`.
 Test project membership management and assignments with disposable
 workspace accounts. Avoid manually deleting membership records while
 testing; use Noxorbit's project-member controls.
+
+
+## Migration 013 — In-app notifications (Settings Phase 2, first milestone)
+
+Apply `backend/migrations/013_notifications.sql` **once**, after migration
+012, in Supabase SQL Editor **before** starting the updated backend. It
+creates user-specific notification preferences and notification records,
+plus an AFTER INSERT/assignee-change trigger on tasks. Existing tasks,
+accounts, and projects are not deleted.
+
+Verify:
+```sql
+SELECT to_regclass('public.notifications'), to_regclass('public.notification_preferences');
+SELECT tgname FROM pg_trigger WHERE tgrelid='public.tasks'::regclass
+  AND tgname='noxorbit_task_assignment_notification';
+```
+
+**Notifications available now:** other-user task assignments (recorded
+when assigned); due tomorrow, due today, and overdue reminders (generated
+on a signed-in notification refresh). Repeated visits deduplicate deadline
+reminders per task, category and local date; no background scheduler,
+push alerts, or email delivery is currently provided. Due dates are
+temporarily evaluated using the Africa/Lagos calendar until individual
+time zone preferences are implemented.
+
+The notification center appears in the signed-in header. Settings →
+Notifications saves all four notification types. Turning a preference off
+stops future notifications of that type; previously recorded messages
+remain in notification history. The app polls while open approximately
+once per minute, and also refreshes when the bell is clicked.
+
+Test with a normal authenticated user after the migration: open the
+notification bell, change a preference, reload and confirm persistence;
+assign yourself a task with a near deadline and open the bell to see the
+appropriate reminder. A separate account is required to test a
+non-self assignment notification. The server enforces that only the
+authenticated user can read or mark their own notifications.
