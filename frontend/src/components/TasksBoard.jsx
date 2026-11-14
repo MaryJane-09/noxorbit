@@ -78,7 +78,6 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
 
     useEffect(() => {
         const controller = new AbortController()
-        setProjectParticipantsReady(false)
         fetchProjectMembers(workspaceID, projectID, { signal: controller.signal })
             .then((members) => {
                 if (!controller.signal.aborted) {
@@ -223,6 +222,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
             </header>
             <ProjectMembers workspace={workspace} project={project} user={user}
                 onMembersChanged={() => {
+                    setProjectParticipantsReady(false)
                     setParticipantVersion((v) => v + 1)
                     setReload((v) => v + 1)
                 }} />
