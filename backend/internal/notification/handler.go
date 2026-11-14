@@ -37,16 +37,22 @@ func readPreferences(w http.ResponseWriter,r *http.Request)(Preferences,bool){
  media,_,err:=mime.ParseMediaType(r.Header.Get("Content-Type"))
  if err!=nil||media!="application/json"{fail(w,415,"Content-Type must be application/json");return p,false}
  defer r.Body.Close()
+ var input struct{
+  TaskAssigned *bool `json:"task_assigned"`
+  DueTomorrow *bool `json:"due_tomorrow"`
+  DueToday *bool `json:"due_today"`
+  Overdue *bool `json:"overdue"`
+ }
  dec:=json.NewDecoder(http.MaxBytesReader(w,r.Body,4<<10))
  dec.DisallowUnknownFields()
- if err:=dec.Decode(&p);err!=nil{fail(w,400,"Invalid notification preferences");return p,false}
+ if err:=dec.Decode(&input);err!=nil{fail(w,400,"Invalid notification preferences");return p,false}
  var extra any
  if err:=dec.Decode(&extra);!errors.Is(err,io.EOF){fail(w,400,"Invalid notification preferences");return p,false}
- // All boolean fields are required; omission must not silently switch settings off.
- var fields map[string]json.RawMessage
- // The request body has already been consumed; use raw decode in the
- // handler instead of relying on default false values.
- return p,true
+ if input.TaskAssigned==nil||input.DueTomorrow==nil||input.DueToday==nil||input.Overdue==nil{
+  fail(w,400,"All notification preferences are required");return p,false
+ }
+ return Preferences{TaskAssigned:*input.TaskAssigned,DueTomorrow:*input.DueTomorrow,
+  DueToday:*input.DueToday,Overdue:*input.Overdue},true
 }
 func (h *Handler) Preferences(w http.ResponseWriter,r *http.Request){
  if r.Method!=http.MethodGet&&r.Method!=http.MethodPut{
