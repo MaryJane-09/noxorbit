@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut } from 'lucide-react'
+import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut, Bell } from 'lucide-react'
 import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange, fetchActiveSessions, revokeSession, revokeOtherSessions } from '../api'
 import './SettingsPage.css'
 import AvatarCropper from './AvatarCropper'
+import NotificationSettings from './NotificationSettings'
 
 function deviceLabel(agent) {
     if (!agent) return 'Unknown device'
@@ -290,11 +291,16 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 aria-current={tab === 'profile' ? 'page' : undefined} onClick={() => setTab('profile')}>
                 <UserRound size={18} aria-hidden="true" /> My profile
             </button>
+            <button type="button" className={tab === 'notifications' ? 'settings-tab--active' : ''}
+                aria-current={tab === 'notifications' ? 'page' : undefined} onClick={() => setTab('notifications')}>
+                <Bell size={18} aria-hidden="true" /> Notifications
+            </button>
             <button type="button" className={tab === 'security' ? 'settings-tab--active' : ''}
                 aria-current={tab === 'security' ? 'page' : undefined} onClick={() => { setSessionsLoading(true); setTab('security'); setSessionsRevision((v) => v + 1) }}>
                 <KeyRound size={18} aria-hidden="true" /> Security
             </button>
         </nav>
+        {tab === 'notifications' && <NotificationSettings />}
         {tab === 'profile' && <section className="settings-account" aria-labelledby="settings-account-heading">
             <div className="settings-section-title">
                 <UserRound size={21} aria-hidden="true" />
