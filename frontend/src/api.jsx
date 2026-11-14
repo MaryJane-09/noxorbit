@@ -464,3 +464,37 @@ export function updateProjectMemberRole(workspaceID, projectID, userID, role) {
 export function removeProjectMember(workspaceID, projectID, userID) {
   return deleteWorkspaceResource(`${projectsURL(workspaceID, projectID)}/members/${encodeURIComponent(userID)}`);
 }
+
+
+// Settings Phase 2: authenticated, user-scoped in-app notifications.
+// Deadline reminders are prepared on reads, while task assignments are
+// recorded by database triggers. No background or email delivery yet.
+export async function fetchNotifications({ signal } = {}) {
+  const items = await projectRequest(`${API}/api/v1/notifications`, { signal });
+  if (!Array.isArray(items)) throw new Error("Invalid notifications response.");
+  return items;
+}
+export function fetchNotificationPreferences({ signal } = {}) {
+  return projectRequest(`${API}/api/v1/notifications/preferences`, { signal });
+}
+export function saveNotificationPreferences(preferences) {
+  return projectRequest(`${API}/api/v1/notifications/preferences`, {
+    method: "PUT", body: preferences,
+  });
+}
+async function notificationNoContent(url, method) {
+  let response;
+  try {
+    response = await fetch(url, { method, credentials: "include" });
+  } catch {
+    throw new Error("Cannot reach the Noxorbit server.");
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
+export function markNotificationRead(id) {
+  return notificationNoContent(`${API}/api/v1/notifications/${encodeURIComponent(id)}/read`, "PATCH");
+}
+export function markAllNotificationsRead() {
+  return notificationNoContent(`${API}/api/v1/notifications/read-all`, "POST");
+}
