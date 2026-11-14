@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, CalendarDays, Check, LoaderCircle, MoreHorizontal, Pencil, Plus, Trash2, X } from 'lucide-react'
-import { changeTaskStatus, createTask, deleteTask, fetchTasks, fetchWorkspaceMembers, updateTask } from '../api'
+import { changeTaskStatus, createTask, deleteTask, fetchTasks, fetchWorkspaceMembers, fetchProjectMembers, updateTask } from '../api'
 import { deadlineLabel } from './deadlines'
+import ProjectMembers from './ProjectMembers'
 import './TasksBoard.css'
 
 const COLUMNS = [
@@ -30,6 +31,9 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
     const [data, setData] = useState({ key: '', items: [], error: '' })
     const [reload, setReload] = useState(0)
     const [memberState, setMemberState] = useState({ workspaceID: null, members: [], error: '' })
+    const [projectParticipants, setProjectParticipants] = useState([])
+    const [projectParticipantsReady, setProjectParticipantsReady] = useState(false)
+    const [participantVersion, setParticipantVersion] = useState(0)
     const [editor, setEditor] = useState(null)
     const [form, setForm] = useState(emptyForm)
     const [saving, setSaving] = useState(false)
@@ -71,6 +75,20 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
             })
         return () => controller.abort()
     }, [workspaceID])
+
+    useEffect(() => {
+        const controller = new AbortController()
+        setProjectParticipantsReady(false)
+        fetchProjectMembers(workspaceID, projectID, { signal: controller.signal })
+            .then((members) => {
+                if (!controller.signal.aborted) {
+                    setProjectParticipants(members)
+                    setProjectParticipantsReady(true)
+                }
+            })
+            .catch(() => { if (!controller.signal.aborted) setProjectParticipantsReady(false) })
+        return () => controller.abort()
+    }, [workspaceID, projectID, participantVersion])
 
     useEffect(() => {
         const dialog = deleteDialogRef.current
@@ -203,6 +221,11 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     </button>
                 )}
             </header>
+            <ProjectMembers workspace={workspace} project={project} user={user}
+                onMembersChanged={() => {
+                    setParticipantVersion((v) => v + 1)
+                    setReload((v) => v + 1)
+                }} />
             {archived && <p className="tasks-notice">This project is archived. Tasks are read-only until it is restored.</p>}
             {error && <p className="dashboard-form-error" role="alert">{error}</p>}
             {!ready && <div className="projects-message" role="status"><LoaderCircle className="dashboard-spin" /> Loading tasks…</div>}
