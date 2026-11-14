@@ -3,7 +3,6 @@ package project
 import (
  "context"
  "errors"
- "net/http"
  "net/http/httptest"
  "strings"
  "testing"
@@ -80,7 +79,7 @@ func TestParticipantsAddAndRoleReturnStatus(t *testing.T){
 }
 func TestParticipantsForbiddenAndPrivateError(t *testing.T){
  for _,tc:=range []struct{err error;want int}{
-  {ErrForbidden,403},{ErrInvalidProjectMember,400},{ErrProjectMemberConflict,409},{ErrNotFound,404},{errors.New("private db details"),500},
+  {ErrForbidden,403},{ErrInvalidProjectMember,400},{ErrProjectMemberConflict,409},{ErrSelfRemoval,409},{ErrWorkspaceOwnerProtected,409},{ErrNotFound,404},{errors.New("private db details"),500},
  }{
   h:=NewParticipantsHandler(fakeParticipants{list:func(context.Context,uuid.UUID,uuid.UUID,uuid.UUID)([]Participant,error){return nil,tc.err}})
   w:=httptest.NewRecorder()
