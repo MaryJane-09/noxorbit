@@ -5,7 +5,6 @@ import (
  "time"
 
  "github.com/gofrs/uuid"
- "github.com/jackc/pgx/v5"
  "github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -118,4 +117,3 @@ func (r *Repository) MarkAllRead(ctx context.Context,user uuid.UUID)error{
  WHERE user_id=$1 AND read_at IS NULL`,user)
  return err
 }
-var _ pgx.Row
