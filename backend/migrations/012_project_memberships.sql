@@ -25,10 +25,18 @@ FROM public.projects p
 JOIN public.workspace_memberships m ON m.workspace_id=p.workspace_id
 WHERE m.role='owner' OR m.user_id=p.created_by OR EXISTS (
     SELECT 1 FROM public.tasks t
-    WHERE t.project_id=p.id AND t.assignee_id=m.user_id AND t.deleted_at IS NULL
+    WHERE t.project_id=p.id AND t.assignee_id=m.user_id
 )
 ON CONFLICT (project_id,user_id) DO UPDATE SET
     role=CASE WHEN EXCLUDED.role='lead' THEN 'lead' ELSE project_memberships.role END;
+
+-- Enforce eligibility for all task assignments, including API calls from
+-- older clients. Participant removal clears only assignee_id.
+ALTER TABLE public.tasks
+  ADD CONSTRAINT tasks_project_assignee_fk
+  FOREIGN KEY (project_id, assignee_id)
+  REFERENCES public.project_memberships(project_id,user_id)
+  ON DELETE SET NULL (assignee_id);
 
 -- New projects automatically enroll their creator as a lead.
 -- Their membership is already required by the project creation handler.
