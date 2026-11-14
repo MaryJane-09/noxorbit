@@ -785,9 +785,12 @@ projects private.
   ordinary project members. Target must already be in the workspace.
 - `PATCH .../members/{user_id}`: body `{"role":"lead"}` or
   `{"role":"member"}`. Only the workspace owner can change participant roles.
-- `DELETE .../members/{user_id}`: workspace owners may remove participants;
-  project leads may remove ordinary project members, but not other leads.
-  The operation returns 204.
+- `DELETE .../members/{user_id}`: workspace owners may remove other
+  participants; project leads may remove ordinary project members but not
+  leads. **Self-removal and removal of the workspace owner are prohibited,**
+  including through direct API requests. Tasks assigned to a removed person
+  become unassigned. Successful removal returns 204; protected participants
+  return 409.
 
 Project participants can be managed on **Projects → Open board → Project
 members**. Task-assignment choices are filtered to the project members.
