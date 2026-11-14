@@ -21,11 +21,13 @@ func(f testStore)SavePreferences(c context.Context,u uuid.UUID,p Preferences)(Pr
 func(f testStore)List(c context.Context,u uuid.UUID)([]Item,error){if f.list==nil{panic("unexpected list")};return f.list(c,u)}
 func(f testStore)MarkRead(c context.Context,u,i uuid.UUID)(bool,error){if f.one==nil{panic("unexpected read")};return f.one(c,u,i)}
 func(f testStore)MarkAllRead(c context.Context,u uuid.UUID)error{if f.all==nil{panic("unexpected all")};return f.all(c,u)}
-var userID=uuid.Must(uuid.FromString("f49ab8ea-cae0-4e1b-a1be-737316b96917"))
-var notificationID=uuid.Must(uuid.FromString("a699b087-0b92-4c0d-becd-b9799cd2460d"))
-func req(method,path,body string,authorized bool)*httptest.ResponseRecorder{
- return httptest.NewRecorder()
+func testUUID(value string)uuid.UUID{
+ id,err:=uuid.FromString(value)
+ if err!=nil{panic(err)}
+ return id
 }
+var userID=testUUID("f49ab8ea-cae0-4e1b-a1be-737316b96917")
+var notificationID=testUUID("a699b087-0b92-4c0d-becd-b9799cd2460d")
 func TestPreferencesRequireLogin(t *testing.T){
  h:=NewHandler(testStore{})
  r:=httptest.NewRequest("GET","/api/v1/notifications/preferences",nil)
