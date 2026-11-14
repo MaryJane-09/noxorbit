@@ -364,7 +364,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                         disabled={saving || memberState.workspaceID !== workspaceID || Boolean(memberState.error)}
                         onChange={(event) => change('assignee_id', event.target.value)}>
                         <option value="">Unassigned</option>
-                        {memberState.members.map((member) => (
+                        {memberState.members.filter((member) => !projectParticipantsReady || projectParticipants.some((participant) => participant.user_id === member.user_id)).map((member) => (
                             <option key={member.user_id} value={member.user_id}>
                                 {member.name}{member.user_id === currentUserID ? ' (you)' : ''} · {member.role}
                             </option>
@@ -372,6 +372,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                     </select>
                     {memberState.error && <p className="dashboard-form-error" role="alert">{memberState.error}</p>}
                     {memberState.workspaceID !== workspaceID && <p className="dashboard-form-hint">Loading workspace members…</p>}
+                    {projectParticipantsReady && <p className="dashboard-form-hint">Only project participants can be assigned tasks. Add someone under Project members above.</p>}
                     {formError && <p role="alert" className="dashboard-form-error">{formError}</p>}
                     <div className="dashboard-dialog-actions">
                         <button type="button" className="dashboard-dialog-cancel" disabled={saving} onClick={closeEditor}>Cancel</button>
