@@ -72,6 +72,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	emailInvitationHandler := membership.NewEmailInviteHandler(invitationStore,sender)
 	managementHandler := membership.NewManagementHandler(invitationStore,membership.NewMemberManagementRepository(pool))
 	projectHandler := project.NewHandler(project.NewRepository(pool))
+	projectParticipantsHandler := project.NewParticipantsHandler(project.NewParticipantsRepository(pool))
 	taskRepo := task.NewRepository(pool)
 	taskHandler := task.NewHandler(taskRepo)
 	assignedHandler := task.NewAssignedHandler(taskRepo)
@@ -115,6 +116,8 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects", auth.RequireAuth(sessionRepo, projectHandler.Collection))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}", auth.RequireAuth(sessionRepo, projectHandler.Detail))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/status", auth.RequireAuth(sessionRepo, projectHandler.Status))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/members", auth.RequireAuth(sessionRepo, projectParticipantsHandler.Collection))
+	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/members/{user_id}", auth.RequireAuth(sessionRepo, projectParticipantsHandler.Detail))
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/activity", auth.RequireAuth(sessionRepo, activityHandler.List))
