@@ -206,3 +206,30 @@ Expect three rows. The migration is not intended for repeated execution.
 
 Next, pull the updated code, run the Go tests and vet, then lint/build
 the frontend. Test session revocation with two separate browser sessions.
+
+
+## Migration 012 — Project membership and roles
+
+Apply `backend/migrations/012_project_memberships.sql` **once** in
+Supabase SQL Editor after migration 011 and before starting the updated
+project/task backend. This migration does **not** erase accounts, projects,
+or tasks. It enrolls existing project creators, workspace owners and
+existing assignees as project participants, including assignments in the
+Recycle Bin. New project creators become project leads automatically.
+
+Project participants must also belong to their workspace. A new task
+foreign key prevents assigning tasks to non-participants and clears only
+the assignee when participation ends.
+
+Verify:
+```sql
+SELECT to_regclass('public.project_memberships');
+SELECT conname FROM pg_constraint
+WHERE conrelid='public.tasks'::regclass
+AND conname='tasks_project_assignee_fk';
+```
+Expect `public.project_memberships` and `tasks_project_assignee_fk`.
+
+Test project membership management and assignments with disposable
+workspace accounts. Avoid manually deleting membership records while
+testing; use Noxorbit's project-member controls.
