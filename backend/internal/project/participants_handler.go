@@ -2,7 +2,6 @@ package project
 
 import (
  "context"
- "encoding/json"
  "errors"
  "log"
  "net/http"
@@ -74,4 +73,3 @@ func(h *ParticipantsHandler) Detail(w http.ResponseWriter,r *http.Request){
  respond(w,200,changed)
 }
 var _ ParticipantsStore=(*ParticipantsRepository)(nil)
-var _=json.Valid
