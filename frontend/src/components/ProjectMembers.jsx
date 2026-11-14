@@ -19,7 +19,6 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
 
     useEffect(() => {
         const controller = new AbortController()
-        setLoading(true)
         Promise.all([
             fetchProjectMembers(workspace.id, project.id, { signal: controller.signal }),
             fetchWorkspaceMembers(workspace.id, { signal: controller.signal }),
@@ -48,6 +47,7 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
             setTarget('')
             setRole('member')
             setNotice('Participant added.')
+            setLoading(true)
             setRefresh((v) => v + 1)
             onMembersChanged?.()
         } catch (err) {
@@ -64,6 +64,7 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
         try {
             await updateProjectMemberRole(workspace.id, project.id, person.user_id, nextRole)
             setNotice('Role updated.')
+            setLoading(true)
             setRefresh((v) => v + 1)
         } catch (err) {
             setError(err.message || 'Could not update role.')
@@ -80,6 +81,7 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
         try {
             await removeProjectMember(workspace.id, project.id, person.user_id)
             setNotice('Participant removed.')
+            setLoading(true)
             setRefresh((v) => v + 1)
             onMembersChanged?.()
         } catch (err) {
