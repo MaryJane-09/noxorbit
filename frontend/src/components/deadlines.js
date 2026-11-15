@@ -12,7 +12,7 @@ export function calendarToday(now = new Date(), zone = DEFAULT_PREFERENCES.time_
 
 // Format a YYYY-MM-DD DATE directly, without UTC/local midnight conversion.
 export function formatCalendarDate(value, format = DEFAULT_PREFERENCES.date_format) {
-  if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value || '')) return value || '';
+  if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value || '')) return value || '';
   const [year, month, day] = value.split('-');
   if (format === 'DD/MM/YYYY') return `${day}/${month}/${year}`;
   if (format === 'MM/DD/YYYY') return `${month}/${day}/${year}`;
