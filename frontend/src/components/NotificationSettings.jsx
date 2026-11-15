@@ -41,6 +41,8 @@ export default function NotificationSettings() {
             const updated = await saveNotificationPreferences(draft)
             setSettings(updated)
             setDraft(updated)
+            // Refresh the header bell immediately after a successful save.
+            window.dispatchEvent(new Event('noxorbit:notification-preferences-saved'))
             setMessage('Notification preferences saved.')
         } catch (err) {
             setError(err.message || 'Could not save notification preferences.')
