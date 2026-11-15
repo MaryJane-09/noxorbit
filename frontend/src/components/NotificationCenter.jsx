@@ -2,8 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { Bell, CheckCheck, RefreshCw } from 'lucide-react'
 import { fetchNotifications, markAllNotificationsRead, markNotificationRead } from '../api'
 import './NotificationCenter.css'
+import { formatInstant } from './deadlines'
 
-export default function NotificationCenter() {
+export default function NotificationCenter({ preferences }) {
     const [items, setItems] = useState([])
     const [open, setOpen] = useState(false)
     const [error, setError] = useState('')
@@ -89,7 +90,7 @@ export default function NotificationCenter() {
                     : items.length === 0 ? <p className="notification-empty">You're all caught up. New task assignments and deadline reminders will appear here.</p>
                         : items.map((item) => <article key={item.id} className={`notification-item${item.read_at ? '' : ' notification-item--unread'}`}>
                             <div><strong>{item.title}</strong><p>{item.body}</p>
-                                <small>{new Date(item.created_at).toLocaleString()}</small></div>
+                                <small>{formatInstant(item.created_at, preferences)}</small></div>
                             {!item.read_at && <button type="button" disabled={busy}
                                 onClick={() => markOne(item.id)}>Mark read</button>}
                         </article>)}
