@@ -838,7 +838,12 @@ overdue tasks are generated when the authenticated user requests their
 notifications (the UI polls while open); these are deduplicated by task,
 kind, and Africa/Lagos calendar date. The user can disable categories in
 Settings → Notifications. Existing historical notifications are not erased
-when a category is disabled.
+when a category is disabled. If a deadline category is switched **off and then
+back on**, that day's existing reminders for tasks that are **still assigned,
+unfinished, and due in that category** are reactivated (marked unread) without
+inserting duplicate notification rows. The change is atomic with preference
+saving. The header notification bell refreshes after saving. Turning a
+category off doesn't remove previously generated notifications.
 
 **Not delivered in this milestone:** background reminders while the app
 is closed, emails, push, individual time zone/date format, language,
