@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, CalendarDays, CheckCircle2, ChevronDown, ListTodo } from 'lucide-react'
 import { fetchMyTasks } from '../api'
-import { calendarToday, groupAssignedDeadlines } from './deadlines'
+import { calendarToday, formatCalendarDate, groupAssignedDeadlines } from './deadlines'
 
 // The two summary cards and expandable panel share a single authenticated request.
-export default function OverviewTaskCards({ onOpenTasks }) {
+export default function OverviewTaskCards({ onOpenTasks, preferences }) {
     const [state, setState] = useState({ items: [], loading: true, error: '', today: '' })
     const [detailsOpen, setDetailsOpen] = useState(false)
     const [expandedDates, setExpandedDates] = useState([])
@@ -13,19 +13,19 @@ export default function OverviewTaskCards({ onOpenTasks }) {
         const controller = new AbortController()
         fetchMyTasks({ signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) setState({ items, loading: false, error: '', today: calendarToday() })
+                if (!controller.signal.aborted) setState({ items, loading: false, error: '', today: calendarToday(new Date(), preferences?.time_zone) })
             })
             .catch((error) => {
                 if (!controller.signal.aborted) setState({
                     items: [], loading: false,
-                    error: error.message || 'Could not load your tasks.', today: calendarToday(),
+                    error: error.message || 'Could not load your tasks.', today: calendarToday(new Date(), preferences?.time_zone),
                 })
             })
         const interval = window.setInterval(() => {
-            if (!controller.signal.aborted) setState((current) => ({ ...current, today: calendarToday() }))
+            if (!controller.signal.aborted) setState((current) => ({ ...current, today: calendarToday(new Date(), preferences?.time_zone) }))
         }, 60_000)
         return () => { controller.abort(); window.clearInterval(interval) }
-    }, [])
+    }, [preferences?.time_zone])
 
     const unfinished = state.items.filter((task) => task.status !== 'done')
     const completed = state.items.length - unfinished.length
@@ -130,7 +130,7 @@ export default function OverviewTaskCards({ onOpenTasks }) {
                                         onClick={() => toggleGroup(group.date)}>
                                         <span className="dashboard-deadline-group-title">
                                             <span className={`dashboard-deadline-badge dashboard-deadline-badge--${group.timing.kind}`}>{group.timing.label}</span>
-                                            <span className="dashboard-deadline-group-date">{group.date}</span>
+                                            <span className="dashboard-deadline-group-date">{formatCalendarDate(group.date, preferences?.date_format)}</span>
                                         </span>
                                         <span className="dashboard-deadline-group-count">
                                             {group.items.length} {group.items.length === 1 ? 'task' : 'tasks'}
