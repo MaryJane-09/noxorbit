@@ -498,3 +498,12 @@ export function markNotificationRead(id) {
 export function markAllNotificationsRead() {
   return notificationNoContent(`${API}/api/v1/notifications/read-all`, "POST");
 }
+
+
+// Account-specific calendar/display preferences.
+export function fetchUserPreferences({ signal } = {}) {
+  return projectRequest(`${API}/api/v1/preferences`, { signal });
+}
+export function saveUserPreferences(settings) {
+  return projectRequest(`${API}/api/v1/preferences`, { method: "PUT", body: settings });
+}
