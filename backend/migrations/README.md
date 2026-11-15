@@ -270,3 +270,43 @@ assign yourself a task with a near deadline and open the bell to see the
 appropriate reminder. A separate account is required to test a
 non-self assignment notification. The server enforces that only the
 authenticated user can read or mark their own notifications.
+
+
+## Migration 014 — Time zone and date format preferences
+
+Apply `backend/migrations/014_user_preferences.sql` **once** in Supabase
+SQL Editor, after 013, **before** starting the updated backend. The API and
+notification queries now reference `public.user_preferences`, so they
+will fail if the migration is skipped.
+
+Creates an account-scoped `public.user_preferences` table with validated
+IANA `time_zone` and `date_format` fields. Existing accounts use
+`Africa/Lagos` and `YYYY-MM-DD` defaults without changing their old
+task deadlines. Tasks continue to store date-only values (YYYY-MM-DD);
+display settings never rewrite or shift those values.
+
+Verify:
+```sql
+SELECT to_regclass('public.user_preferences');
+```
+Expect `public.user_preferences`.
+
+Use **Settings → Preferences** to save a time zone and date format.
+The chosen time zone changes the calendar day used for due-today,
+tomorrow, overdue notifications and creation/editing of future task
+dates. Date-format changes affect task, overview, history, notification
+and session displays; they do not affect HTML date inputs or API DATE
+strings. This release supports nine explicitly listed time zones and
+three date formats. Language preferences and email delivery are not yet
+implemented.
+
+After pulling changes, run:
+```bash
+go test ./backend/...
+go vet ./backend/...
+cd frontend
+npm run lint
+npm run build
+npm run test:deadlines
+```
+Test saving and reloading the preferences, plus local-midnight behavior.
