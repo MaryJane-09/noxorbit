@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut, Bell } from 'lucide-react'
+import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut, Bell, CalendarRange } from 'lucide-react'
 import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange, fetchActiveSessions, revokeSession, revokeOtherSessions } from '../api'
 import './SettingsPage.css'
 import AvatarCropper from './AvatarCropper'
 import NotificationSettings from './NotificationSettings'
+import UserPreferences from './UserPreferences'
 
 function deviceLabel(agent) {
     if (!agent) return 'Unknown device'
@@ -21,7 +22,7 @@ function deviceLabel(agent) {
     return platform ? `${browser} on ${platform}` : browser
 }
 
-export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged }) {
+export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged, preferences, onPreferencesSaved }) {
     const [tab, setTab] = useState('profile')
     const [sessions, setSessions] = useState([])
     const [sessionsLoading, setSessionsLoading] = useState(false)
@@ -295,12 +296,17 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 aria-current={tab === 'notifications' ? 'page' : undefined} onClick={() => setTab('notifications')}>
                 <Bell size={18} aria-hidden="true" /> Notifications
             </button>
+            <button type="button" className={tab === 'preferences' ? 'settings-tab--active' : ''}
+                aria-current={tab === 'preferences' ? 'page' : undefined} onClick={() => setTab('preferences')}>
+                <CalendarRange size={18} aria-hidden="true" /> Preferences
+            </button>
             <button type="button" className={tab === 'security' ? 'settings-tab--active' : ''}
                 aria-current={tab === 'security' ? 'page' : undefined} onClick={() => { setSessionsLoading(true); setTab('security'); setSessionsRevision((v) => v + 1) }}>
                 <KeyRound size={18} aria-hidden="true" /> Security
             </button>
         </nav>
         {tab === 'notifications' && <NotificationSettings />}
+        {tab === 'preferences' && <UserPreferences preferences={preferences} onSaved={onPreferencesSaved} />}
         {tab === 'profile' && <section className="settings-account" aria-labelledby="settings-account-heading">
             <div className="settings-section-title">
                 <UserRound size={21} aria-hidden="true" />
