@@ -26,11 +26,19 @@ export default function NotificationCenter() {
 
     useEffect(() => {
         const controller = new AbortController()
-        refresh(controller.signal)
-        const timer = window.setInterval(() => {
-            if (!document.hidden) refresh(controller.signal)
+        // Schedule the first fetch outside the synchronous effect body.
+        // The abort signal also prevents updates after unmount.
+        const initialTimer = window.setTimeout(() => {
+            void refresh(controller.signal)
+        }, 0)
+        const pollTimer = window.setInterval(() => {
+            if (!document.hidden) void refresh(controller.signal)
         }, 60_000)
-        return () => { controller.abort(); window.clearInterval(timer) }
+        return () => {
+            controller.abort()
+            window.clearTimeout(initialTimer)
+            window.clearInterval(pollTimer)
+        }
     }, [refresh])
 
     const unread = items.filter((item) => !item.read_at).length
