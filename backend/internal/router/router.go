@@ -9,6 +9,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/activity"
 	"github.com/MaryJane-09/noxorbit/backend/internal/account"
 	"github.com/MaryJane-09/noxorbit/backend/internal/profile"
+	"github.com/MaryJane-09/noxorbit/backend/internal/preference"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
@@ -79,6 +80,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	assignedHandler := task.NewAssignedHandler(taskRepo)
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
 	notificationHandler := notification.NewHandler(notification.NewRepository(pool))
+	preferenceHandler := preference.NewHandler(preference.NewRepository(pool))
 	accountHandler := account.NewHandler(account.NewRepository(pool))
 	profileRepo := profile.NewRepository(pool)
 	profileHandler := profile.NewHandler(profileRepo)
@@ -122,6 +124,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/workspaces/{workspace_id}/projects/{project_id}/members/{user_id}", auth.RequireAuth(sessionRepo, projectParticipantsHandler.Detail))
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
+	mux.HandleFunc("/api/v1/preferences", auth.RequireAuth(sessionRepo, preferenceHandler.Handle))
 	mux.HandleFunc("/api/v1/notifications", auth.RequireAuth(sessionRepo, notificationHandler.List))
 	mux.HandleFunc("/api/v1/notifications/preferences", auth.RequireAuth(sessionRepo, notificationHandler.Preferences))
 	mux.HandleFunc("/api/v1/notifications/read-all", auth.RequireAuth(sessionRepo, notificationHandler.MarkAllRead))
