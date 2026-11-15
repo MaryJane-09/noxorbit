@@ -23,6 +23,7 @@ const FORMATS = [
 
 export default function UserPreferences({ preferences, onSaved }) {
     const [draft, setDraft] = useState(preferences || DEFAULT_PREFERENCES)
+    const [saved, setSaved] = useState(null)
     const [loaded, setLoaded] = useState(false)
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState('')
@@ -33,6 +34,8 @@ export default function UserPreferences({ preferences, onSaved }) {
         fetchUserPreferences({ signal: controller.signal }).then((value) => {
             if (!controller.signal.aborted) {
                 setDraft(value)
+                setSaved(value)
+                onSaved(value)
                 setLoaded(true)
                 setError('')
             }
@@ -40,9 +43,9 @@ export default function UserPreferences({ preferences, onSaved }) {
             if (!controller.signal.aborted) { setError(err.message || 'Could not load preferences.'); setLoaded(false) }
         })
         return () => controller.abort()
-    }, [])
+    }, [onSaved])
 
-    const dirty = loaded && (draft.time_zone !== preferences.time_zone || draft.date_format !== preferences.date_format)
+    const dirty = loaded && saved && (draft.time_zone !== saved.time_zone || draft.date_format !== saved.date_format)
     const today = calendarToday(new Date(), draft.time_zone)
     async function save(event) {
         event.preventDefault()
@@ -53,6 +56,7 @@ export default function UserPreferences({ preferences, onSaved }) {
         try {
             const saved = await saveUserPreferences(draft)
             setDraft(saved)
+            setSaved(saved)
             onSaved(saved)
             setNotice('Preferences saved. Deadline labels and dates now use your choices.')
         } catch (err) {
