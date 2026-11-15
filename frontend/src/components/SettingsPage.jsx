@@ -5,6 +5,7 @@ import './SettingsPage.css'
 import AvatarCropper from './AvatarCropper'
 import NotificationSettings from './NotificationSettings'
 import UserPreferences from './UserPreferences'
+import { formatInstant } from './deadlines'
 
 function deviceLabel(agent) {
     if (!agent) return 'Unknown device'
@@ -428,7 +429,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                     <MonitorSmartphone size={21} aria-hidden="true" />
                     <div className="settings-session-details">
                         <strong>{deviceLabel(item.user_agent)} {item.current && <span className="settings-session-current">Current</span>}</strong>
-                        <span>{item.created_at ? `Signed in ${new Date(item.created_at).toLocaleString()}` : "Earlier session"} · Expires {new Date(item.expires_at).toLocaleDateString()}</span>
+                        <span>{item.created_at ? `Signed in ${formatInstant(item.created_at, preferences)}` : "Earlier session"} · Expires {formatInstant(item.expires_at, preferences)}</span>
                     </div>
                     <button type="button" disabled={sessionsBusy} onClick={() => signOutSession(item)}>
                         <LogOut size={15} aria-hidden="true" /> Sign out
