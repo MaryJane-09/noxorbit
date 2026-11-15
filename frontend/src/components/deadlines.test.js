@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { calendarOffset, deadlineLabel, groupAssignedDeadlines } from './deadlines.js'
+import { calendarToday, calendarOffset, deadlineLabel, groupAssignedDeadlines, formatCalendarDate, formatInstant } from './deadlines.js'
 
 const TODAY = '2026-11-12'
 const task = (id, due_date, priority = 'medium', status = 'todo') => ({
@@ -47,4 +47,21 @@ test('orders date groups chronologically and leaves source array untouched', () 
   const groups = groupAssignedDeadlines(tasks, TODAY)
   assert.deepEqual(groups.map((group) => group.date), ['2026-11-11', '2026-11-20'])
   assert.equal(tasks[0].id, 'later')
+})
+
+
+test('uses chosen time zone for calendar today across midnight', () => {
+  const instant = new Date('2026-11-16T00:30:00Z')
+  assert.equal(calendarToday(instant, 'Asia/Tokyo'), '2026-11-16')
+  assert.equal(calendarToday(instant, 'America/Los_Angeles'), '2026-11-15')
+  assert.equal(calendarToday(instant, 'Africa/Lagos'), '2026-11-16')
+})
+
+test('formats date-only fields without shifting their day', () => {
+  assert.equal(formatCalendarDate('2026-11-15', 'YYYY-MM-DD'), '2026-11-15')
+  assert.equal(formatCalendarDate('2026-11-15', 'DD/MM/YYYY'), '15/11/2026')
+  assert.equal(formatCalendarDate('2026-11-15', 'MM/DD/YYYY'), '11/15/2026')
+  assert.equal(formatInstant('2026-11-16T00:30:00Z', {
+    time_zone: 'America/Los_Angeles', date_format: 'DD/MM/YYYY',
+  }).startsWith('15/11/2026'), true)
 })
