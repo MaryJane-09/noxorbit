@@ -381,7 +381,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
-                        <NotificationCenter />
+                        <NotificationCenter preferences={preferences} />
                         <span>Signed in</span>
                         <span className="dashboard-avatar dashboard-avatar--small" title={user.name} aria-label={user.name}>{avatarURL ? <img src={avatarURL} alt="" /> : initialLetters(user.name)}</span>
                     </div>
@@ -406,9 +406,9 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     ) : page === 'my-tasks' ? (
                         <MyTasksPage preferences={preferences} />
                     ) : page === 'recycle-bin' ? (
-                        <RecycleBinPage />
+                        <RecycleBinPage preferences={preferences} />
                     ) : page === 'activity' ? (
-                        <ActivityPage activeWorkspace={activeWorkspace}
+                        <ActivityPage preferences={preferences} activeWorkspace={activeWorkspace}
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
