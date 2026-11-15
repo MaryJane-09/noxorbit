@@ -16,6 +16,11 @@ type stubStore struct{
 }
 func(s stubStore)Get(ctx context.Context,id uuid.UUID)(Settings,error){return s.get(ctx,id)}
 func(s stubStore)Save(ctx context.Context,id uuid.UUID,p Settings)(Settings,error){return s.save(ctx,id,p)}
+func testID()uuid.UUID{
+ id,err:=uuid.FromString("126a39be-7194-47b0-9071-b750d11f17c7")
+ if err!=nil{panic(err)}
+ return id
+}
 func TestPreferencesRequireSession(t *testing.T){
  h:=NewHandler(stubStore{})
  for _,method:=range []string{"GET","PUT"}{
@@ -36,7 +41,7 @@ func TestPreferencesRejectUnsupportedValues(t *testing.T){
   `{"time_zone":"UTC","date_format":"YYYY-MM-DD","extra":"not allowed"}`,
  }{
   r:=httptest.NewRequest("PUT","/api/v1/preferences",strings.NewReader(body))
-  r=r.WithContext(auth.WithUserID(r.Context(),uuid.Must(uuid.NewV4())))
+  r=r.WithContext(auth.WithUserID(r.Context(),testID()))
   r.Header.Set("Content-Type","application/json")
   w:=httptest.NewRecorder()
   h.Handle(w,r)
@@ -44,7 +49,7 @@ func TestPreferencesRejectUnsupportedValues(t *testing.T){
  }
 }
 func TestPreferencesSaveUsesSessionAccount(t *testing.T){
- user:=uuid.Must(uuid.NewV4())
+ user:=testID()
  h:=NewHandler(stubStore{save:func(_ context.Context,id uuid.UUID,p Settings)(Settings,error){
   if id!=user||p.TimeZone!="Asia/Tokyo"||p.DateFormat!="DD/MM/YYYY"{
    t.Fatalf("wrong account or payload: %v %#v",id,p)
@@ -59,7 +64,7 @@ func TestPreferencesSaveUsesSessionAccount(t *testing.T){
  if w.Code!=200||!strings.Contains(w.Body.String(),"Asia/Tokyo"){t.Fatalf("response %d %s",w.Code,w.Body.String())}
 }
 func TestPreferencesListUsesSessionAccount(t *testing.T){
- user:=uuid.Must(uuid.NewV4())
+ user:=testID()
  h:=NewHandler(stubStore{get:func(_ context.Context,id uuid.UUID)(Settings,error){
   if id!=user{t.Fatalf("wrong requester: %s",id)}
   return Settings{TimeZone:"UTC",DateFormat:"MM/DD/YYYY"},nil
