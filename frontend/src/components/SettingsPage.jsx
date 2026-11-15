@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut, Bell, CalendarRange } from 'lucide-react'
+import { AlertTriangle, LoaderCircle, RefreshCw, ShieldAlert, Trash2, UserRound, KeyRound, Camera, Mail, MonitorSmartphone, LogOut, Bell, CalendarRange, Palette } from 'lucide-react'
 import { changeAccountPassword, deleteMyAccount, fetchAccountDeletionImpact, saveProfileName, saveMyAvatar, removeMyAvatar, requestEmailChange, confirmEmailChange, fetchActiveSessions, revokeSession, revokeOtherSessions } from '../api'
 import './SettingsPage.css'
 import AvatarCropper from './AvatarCropper'
 import NotificationSettings from './NotificationSettings'
 import UserPreferences from './UserPreferences'
+import AppearanceSettings from './AppearanceSettings'
 import { formatInstant } from './deadlines'
 
 function deviceLabel(agent) {
@@ -23,7 +24,7 @@ function deviceLabel(agent) {
     return platform ? `${browser} on ${platform}` : browser
 }
 
-export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged, preferences, onPreferencesSaved }) {
+export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmailChanged, onAccountDeleted, onProfileUpdated, onPasswordChanged, preferences, onPreferencesSaved, appearance, onAppearanceSaved }) {
     const [tab, setTab] = useState('profile')
     const [sessions, setSessions] = useState([])
     const [sessionsLoading, setSessionsLoading] = useState(false)
@@ -301,6 +302,10 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
                 aria-current={tab === 'preferences' ? 'page' : undefined} onClick={() => setTab('preferences')}>
                 <CalendarRange size={18} aria-hidden="true" /> Preferences
             </button>
+            <button type="button" className={tab === 'appearance' ? 'settings-tab--active' : ''}
+                aria-current={tab === 'appearance' ? 'page' : undefined} onClick={() => setTab('appearance')}>
+                <Palette size={18} aria-hidden="true" /> Appearance
+            </button>
             <button type="button" className={tab === 'security' ? 'settings-tab--active' : ''}
                 aria-current={tab === 'security' ? 'page' : undefined} onClick={() => { setSessionsLoading(true); setTab('security'); setSessionsRevision((v) => v + 1) }}>
                 <KeyRound size={18} aria-hidden="true" /> Security
@@ -308,6 +313,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         </nav>
         {tab === 'notifications' && <NotificationSettings />}
         {tab === 'preferences' && <UserPreferences preferences={preferences} onSaved={onPreferencesSaved} />}
+        {tab === 'appearance' && <AppearanceSettings appearance={appearance} onSaved={onAppearanceSaved} />}
         {tab === 'profile' && <section className="settings-account" aria-labelledby="settings-account-heading">
             <div className="settings-section-title">
                 <UserRound size={21} aria-hidden="true" />
