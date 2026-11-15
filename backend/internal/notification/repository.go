@@ -2,9 +2,11 @@ package notification
 
 import (
  "context"
+ "errors"
  "time"
 
  "github.com/gofrs/uuid"
+ "github.com/jackc/pgx/v5"
  "github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -37,18 +39,59 @@ func (r *Repository) Preferences(ctx context.Context,user uuid.UUID)(Preferences
  `,user).Scan(&p.TaskAssigned,&p.DueTomorrow,&p.DueToday,&p.Overdue)
  return p,err
 }
+// SavePreferences updates settings atomically. If a deadline category changes
+// from disabled to enabled, reactivate that day's still-relevant reminders.
+// The same dedupe keys remain in place; no duplicate history is inserted.
 func (r *Repository) SavePreferences(ctx context.Context,user uuid.UUID,p Preferences)(Preferences,error){
+ tx,err:=r.pool.Begin(ctx)
+ if err!=nil{return Preferences{},err}
+ defer tx.Rollback(ctx)
+
+ previous:=Preferences{TaskAssigned:true,DueTomorrow:true,DueToday:true,Overdue:true}
+ err=tx.QueryRow(ctx,`
+  SELECT task_assigned,due_tomorrow,due_today,overdue
+  FROM public.notification_preferences WHERE user_id=$1 FOR UPDATE
+ `,user).Scan(&previous.TaskAssigned,&previous.DueTomorrow,&previous.DueToday,&previous.Overdue)
+ if err!=nil && !errors.Is(err,pgx.ErrNoRows){return Preferences{},err}
+
  var updated Preferences
- err:=r.pool.QueryRow(ctx,`
- INSERT INTO public.notification_preferences(user_id,task_assigned,due_tomorrow,due_today,overdue)
- VALUES ($1,$2,$3,$4,$5)
- ON CONFLICT(user_id) DO UPDATE SET
- task_assigned=EXCLUDED.task_assigned,due_tomorrow=EXCLUDED.due_tomorrow,
- due_today=EXCLUDED.due_today,overdue=EXCLUDED.overdue,updated_at=NOW()
- RETURNING task_assigned,due_tomorrow,due_today,overdue
+ err=tx.QueryRow(ctx,`
+  INSERT INTO public.notification_preferences(user_id,task_assigned,due_tomorrow,due_today,overdue)
+  VALUES ($1,$2,$3,$4,$5)
+  ON CONFLICT(user_id) DO UPDATE SET
+   task_assigned=EXCLUDED.task_assigned,due_tomorrow=EXCLUDED.due_tomorrow,
+   due_today=EXCLUDED.due_today,overdue=EXCLUDED.overdue,updated_at=NOW()
+  RETURNING task_assigned,due_tomorrow,due_today,overdue
  `,user,p.TaskAssigned,p.DueTomorrow,p.DueToday,p.Overdue).
  Scan(&updated.TaskAssigned,&updated.DueTomorrow,&updated.DueToday,&updated.Overdue)
- return updated,err
+ if err!=nil{return Preferences{},err}
+
+ // Only a false -> true preference change is eligible. Limit reactivation
+ // to currently assigned, unfinished tasks due in that same category.
+ if (!previous.DueTomorrow && updated.DueTomorrow) ||
+    (!previous.DueToday && updated.DueToday) ||
+    (!previous.Overdue && updated.Overdue) {
+  _,err=tx.Exec(ctx,`
+   UPDATE public.notifications n
+   SET read_at=NULL
+   FROM public.tasks t
+   JOIN public.projects pr ON pr.id=t.project_id AND pr.status='active'
+   JOIN public.workspace_memberships wm ON wm.workspace_id=t.workspace_id AND wm.user_id=$1
+   WHERE n.user_id=$1 AND n.task_id=t.id
+     AND t.assignee_id=$1 AND t.status<>'done' AND t.deleted_at IS NULL
+     AND t.due_date IS NOT NULL
+     AND (n.created_at AT TIME ZONE 'Africa/Lagos')::date=(NOW() AT TIME ZONE 'Africa/Lagos')::date
+     AND (
+      (n.kind='due_tomorrow' AND $2 AND t.due_date=(NOW() AT TIME ZONE 'Africa/Lagos')::date+1)
+      OR (n.kind='due_today' AND $3 AND t.due_date=(NOW() AT TIME ZONE 'Africa/Lagos')::date)
+      OR (n.kind='overdue' AND $4 AND t.due_date<(NOW() AT TIME ZONE 'Africa/Lagos')::date)
+     )
+  `,user,!previous.DueTomorrow && updated.DueTomorrow,
+    !previous.DueToday && updated.DueToday,!previous.Overdue && updated.Overdue)
+  if err!=nil{return Preferences{},err}
+ }
+ if err:=tx.Commit(ctx);err!=nil{return Preferences{},err}
+ return updated,nil
 }
 // Reminders are generated on authenticated notification reads, not via a
 // fictitious background scheduler. A daily per-task key prevents duplicates.
