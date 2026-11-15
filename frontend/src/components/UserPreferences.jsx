@@ -69,7 +69,7 @@ export default function UserPreferences({ preferences, onSaved }) {
             <h2 id="user-preferences-heading">Preferences</h2></div>
         <p className="settings-help">Choose the calendar time zone Noxorbit uses for your task reminders, and how dates are displayed.</p>
         <p className="user-preferences-note">Task deadlines are saved as calendar dates, not times. Changing your time zone changes what counts as today or tomorrow for your account; it does not move the task's due date.</p>
-        {!loaded ? <p role="status">Loading preferences…</p> : <form onSubmit={save}>
+        {!loaded ? (!error && <p role="status">Loading preferences…</p>) : <form onSubmit={save}>
             <label htmlFor="user-preference-zone">Time zone</label>
             <select id="user-preference-zone" value={draft.time_zone} disabled={saving}
                 onChange={(event) => setDraft((current) => ({ ...current, time_zone: event.target.value }))}>
