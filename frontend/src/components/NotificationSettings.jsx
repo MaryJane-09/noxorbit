@@ -52,7 +52,7 @@ export default function NotificationSettings() {
     return <section className="notification-settings settings-account" aria-labelledby="notification-settings-heading">
         <div className="settings-section-title"><BellRing size={21} aria-hidden="true" />
             <h2 id="notification-settings-heading">Notifications</h2></div>
-        <p className="settings-help">Choose which in-app notifications you receive. Changes are saved when you select Save preferences.</p>
+        <p className="settings-help">Choose which in-app notifications you receive. Select Save preferences after each change. Re-enabling a deadline reminder can make today's existing reminder unread again if the task is still due.</p>
         <p className="notification-settings-note">Notifications appear in the bell at the top of your dashboard. Deadline reminders are checked while you're using Noxorbit; background and email delivery are not active yet. Until time zone preferences are available, deadline reminders use Africa/Lagos calendar dates.</p>
         {loading ? <p role="status">Loading preferences…</p>
             : draft && <form onSubmit={save}>
