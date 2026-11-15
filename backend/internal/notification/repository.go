@@ -80,7 +80,7 @@ func (r *Repository) SavePreferences(ctx context.Context,user uuid.UUID,p Prefer
    WHERE n.user_id=$1 AND n.task_id=t.id
      AND t.assignee_id=$1 AND t.status<>'done' AND t.deleted_at IS NULL
      AND t.due_date IS NOT NULL
-     AND (n.created_at AT TIME ZONE 'Africa/Lagos')::date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date
+     AND (n.created_at AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date
      AND (
       (n.kind='due_tomorrow' AND $2 AND t.due_date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date+1)
       OR (n.kind='due_today' AND $3 AND t.due_date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date)
