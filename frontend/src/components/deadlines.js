@@ -19,6 +19,19 @@ export function formatCalendarDate(value, format = DEFAULT_PREFERENCES.date_form
   return value;
 }
 
+// UTC timestamps represent real instants: show date AND time in the chosen zone.
+export function formatInstant(value, preferences = DEFAULT_PREFERENCES) {
+  if (!value) return '';
+  const instant = new Date(value);
+  if (Number.isNaN(instant.getTime())) return '';
+  const zone = preferences?.time_zone || DEFAULT_PREFERENCES.time_zone;
+  const date = formatCalendarDate(calendarToday(instant, zone), preferences?.date_format);
+  const time = new Intl.DateTimeFormat('en-US', {
+    timeZone: zone, hour: 'numeric', minute: '2-digit',
+  }).format(instant);
+  return `${date} · ${time}`;
+}
+
 export function calendarOffset(today, days) {
   const [year, month, date] = today.split('-').map(Number);
   return new Date(Date.UTC(year, month - 1, date + days)).toISOString().slice(0, 10);
