@@ -22,7 +22,7 @@ import {
     Users,
     X,
 } from 'lucide-react'
-import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar } from '../api'
+import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar, fetchUserPreferences } from '../api'
 import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
@@ -31,6 +31,7 @@ import ActivityPage from './ActivityPage'
 import SettingsPage from './SettingsPage'
 import NotificationCenter from './NotificationCenter'
 import OverviewTaskCards from './OverviewTaskCards'
+import { DEFAULT_PREFERENCES } from './deadlines'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
 
@@ -80,6 +81,14 @@ function pageFromHash() {
 }
 
 export default function Home({ user, onLogout, onUserUpdated }) {
+    const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES)
+    useEffect(() => {
+        const controller = new AbortController()
+        fetchUserPreferences({ signal: controller.signal })
+            .then((value) => { if (!controller.signal.aborted) setPreferences(value) })
+            .catch((error) => { if (!controller.signal.aborted) console.error('Preferences unavailable:', error) })
+        return () => controller.abort()
+    }, [])
     const [loggingOut, setLoggingOut] = useState(false)
     const [error, setError] = useState('')
     const [avatarURL, setAvatarURL] = useState(null)
@@ -395,7 +404,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                             onBackToOverview={() => goToPage('overview')}
                         />
                     ) : page === 'my-tasks' ? (
-                        <MyTasksPage />
+                        <MyTasksPage preferences={preferences} />
                     ) : page === 'recycle-bin' ? (
                         <RecycleBinPage />
                     ) : page === 'activity' ? (
@@ -403,7 +412,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
-                        <SettingsPage user={user} avatarURL={avatarURL}
+                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences}
                             onAvatarUpdated={() => { setAvatarURL(null); setAvatarRevision((value) => value + 1) }}
                             onEmailChanged={() => { window.location.hash = ''; onLogout() }}
                             onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
@@ -415,6 +424,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         }} />
                     ) : page === 'projects' ? (
                         <ProjectsPage
+                            preferences={preferences}
                             user={user}
                             activeWorkspace={activeWorkspace}
                             workspacesLoading={workspacesLoading}
@@ -556,7 +566,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <ProjectOverviewCard workspaceID={activeWorkspace?.id}
                             onOpen={() => goToPage('projects')} />
 
-                        <OverviewTaskCards onOpenTasks={() => goToPage('my-tasks')} />
+                        <OverviewTaskCards preferences={preferences} onOpenTasks={() => goToPage('my-tasks')} />
                     </div>
 
                         </>
