@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, CalendarDays, Check, LoaderCircle, MoreHorizontal, Pencil, Plus, Trash2, X } from 'lucide-react'
 import { changeTaskStatus, createTask, deleteTask, fetchTasks, fetchWorkspaceMembers, fetchProjectMembers, updateTask } from '../api'
-import { deadlineLabel } from './deadlines'
+import { calendarToday, deadlineLabel, formatCalendarDate } from './deadlines'
 import ProjectMembers from './ProjectMembers'
 import './TasksBoard.css'
 
@@ -25,7 +25,7 @@ function emptyForm() {
     return { title: '', description: '', priority: 'medium', due_date: '', assignee_id: '' }
 }
 
-export default function TasksBoard({ workspace, project, user, onBack }) {
+export default function TasksBoard({ workspace, project, user, onBack, preferences }) {
     const workspaceID = workspace.id
     const projectID = project.id
     const [data, setData] = useState({ key: '', items: [], error: '' })
@@ -50,7 +50,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
     const archived = project.status === 'archived'
     const currentUserID = user?.id || null
     const isOwner = workspace.role === 'owner'
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Lagos', year: 'numeric', month: '2-digit', day: '2-digit' })
+    const today = calendarToday(new Date(), preferences?.time_zone)
 
     useEffect(() => {
         const controller = new AbortController()
@@ -283,7 +283,7 @@ export default function TasksBoard({ workspace, project, user, onBack }) {
                                             <h3>{task.title}</h3>
                                             {task.description && <p className="tasks-description">{task.description}</p>}
                                             <div className="tasks-meta">
-                                                {task.due_date && <span><CalendarDays size={14} /> {task.due_date}</span>}
+                                                {task.due_date && <span><CalendarDays size={14} /> {formatCalendarDate(task.due_date, preferences?.date_format)}</span>}
                                                 <span>{task.assignee_id ? (task.assignee_id === currentUserID ? 'Assigned to you' : 'Assigned to member') : 'Unassigned'}</span>
                                                 {task.status !== 'done' && task.due_date && deadlineLabel(task.due_date, today)?.kind !== 'upcoming' && (
                                                     <span className={`tasks-due-indicator tasks-due-indicator--${deadlineLabel(task.due_date, today).kind}`}>
