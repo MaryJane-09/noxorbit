@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ArchiveRestore, LoaderCircle, RefreshCw, Trash2, X } from 'lucide-react'
 import { deleteRecycledTaskForever, fetchRecycledTasks, restoreRecycledTask } from '../api'
 import './RecycleBinPage.css'
+import { formatInstant } from './deadlines'
 
 // Only tasks are recoverable in this phase; project archiving remains separate.
 export default function RecycleBinPage({ preferences }) {
