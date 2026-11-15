@@ -22,7 +22,7 @@ import {
     Users,
     X,
 } from 'lucide-react'
-import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar, fetchUserPreferences } from '../api'
+import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar, fetchUserPreferences, fetchAppearancePreferences } from '../api'
 import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
@@ -34,6 +34,7 @@ import OverviewTaskCards from './OverviewTaskCards'
 import { DEFAULT_PREFERENCES } from './deadlines'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
+import './AppearanceTheme.css'
 
 const SETUP_STEPS = [
     {
@@ -81,6 +82,22 @@ function pageFromHash() {
 }
 
 export default function Home({ user, onLogout, onUserUpdated }) {
+    const [appearance, setAppearance] = useState({ theme: 'dark', reduced_motion: false })
+    const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
+    useEffect(() => {
+        const media = window.matchMedia('(prefers-color-scheme: dark)')
+        const update = () => setSystemDark(media.matches)
+        media.addEventListener('change', update)
+        return () => media.removeEventListener('change', update)
+    }, [])
+    useEffect(() => {
+        const controller = new AbortController()
+        fetchAppearancePreferences({ signal: controller.signal })
+            .then((value) => { if (!controller.signal.aborted) setAppearance(value) })
+            .catch((error) => { if (!controller.signal.aborted) console.error('Appearance unavailable:', error) })
+        return () => controller.abort()
+    }, [])
+    const resolvedTheme = appearance.theme === 'system' ? (systemDark ? 'dark' : 'light') : appearance.theme
     const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES)
     useEffect(() => {
         const controller = new AbortController()
@@ -252,7 +269,9 @@ export default function Home({ user, onLogout, onUserUpdated }) {
     }
 
     return (
-        <div className={sidebarCollapsed ? "home-page home-page--sidebar-collapsed" : "home-page"}>
+        <div className={sidebarCollapsed ? "home-page home-page--sidebar-collapsed" : "home-page"}
+            data-theme={resolvedTheme} data-motion={appearance.reduced_motion ? 'reduced' : 'normal'}
+            style={{ colorScheme: resolvedTheme }}>
             {menuOpen && (
                 <button
                     className="dashboard-mobile-scrim"
@@ -412,7 +431,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
-                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences}
+                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences} appearance={appearance} onAppearanceSaved={setAppearance}
                             onAvatarUpdated={() => { setAvatarURL(null); setAvatarRevision((value) => value + 1) }}
                             onEmailChanged={() => { window.location.hash = ''; onLogout() }}
                             onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
