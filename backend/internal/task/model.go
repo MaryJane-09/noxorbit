@@ -96,15 +96,16 @@ func NormalizeStatus(value string) (string, error) {
 	
 // ValidateNewDueDate rejects past dates. Existing overdue dates can be
 // preserved when editing other fields; moving one earlier is not allowed.
-func ValidateNewDueDate(date *string, previous *string, now time.Time) error {
+func ValidateNewDueDate(date *string, previous *string, now time.Time, zones ...string) error {
 	if date == nil || (previous != nil && *date == *previous) {
 		return nil
 	}
 	parsed, err := time.Parse("2006-01-02", *date)
 	if err != nil { return ErrInvalidDueDate }
-	// Workspace deadlines are calendar dates. Use the app's Nigerian
-	// business timezone, independently of the deployment server timezone.
-	location, err := time.LoadLocation("Africa/Lagos")
+	// Defaults preserve older callers and existing accounts.
+	zone := "Africa/Lagos"
+	if len(zones)>0 { zone=zones[0] }
+	location, err := time.LoadLocation(zone)
 	if err != nil { return err }
 	today := now.In(location).Format("2006-01-02")
 	if parsed.Format("2006-01-02") < today { return ErrPastDueDate }
