@@ -4,7 +4,7 @@ import { deleteRecycledTaskForever, fetchRecycledTasks, restoreRecycledTask } fr
 import './RecycleBinPage.css'
 
 // Only tasks are recoverable in this phase; project archiving remains separate.
-export default function RecycleBinPage() {
+export default function RecycleBinPage({ preferences }) {
     const [state, setState] = useState({ items: [], loading: true, error: '' })
     const [version, setVersion] = useState(0)
     const [busyID, setBusyID] = useState(null)
@@ -103,7 +103,7 @@ export default function RecycleBinPage() {
                     <div className="recycle-item-info">
                         <span>{task.workspace_name} / {task.project_name}</span>
                         <h2>{task.title}</h2>
-                        <p>Deleted {new Date(task.deleted_at).toLocaleString()}</p>
+                        <p>Deleted {formatInstant(task.deleted_at, preferences)}</p>
                     </div>
                     <div className="recycle-item-actions">
                         <button type="button" className="recycle-restore" onClick={() => restore(task)} disabled={Boolean(busyID)}>
