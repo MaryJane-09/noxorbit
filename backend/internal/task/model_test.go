@@ -84,3 +84,20 @@ func TestValidateNewDueDate(t *testing.T) {
 		}
 	}
 }
+
+
+func TestValidateNewDueDateUsesActorTimeZone(t *testing.T) {
+ // 00:30 UTC is still yesterday in Los Angeles, but already tomorrow in Tokyo.
+ now:=time.Date(2026,11,16,0,30,0,0,time.UTC)
+ previousDay:="2026-11-15"
+ nextDay:="2026-11-16"
+ if err:=ValidateNewDueDate(&previousDay,nil,now,"America/Los_Angeles");err!=nil{
+  t.Fatalf("Los Angeles should accept local today: %v",err)
+ }
+ if err:=ValidateNewDueDate(&previousDay,nil,now,"Asia/Tokyo");!errors.Is(err,ErrPastDueDate){
+  t.Fatalf("Tokyo must reject a past local date: %v",err)
+ }
+ if err:=ValidateNewDueDate(&nextDay,nil,now,"Asia/Tokyo");err!=nil{
+  t.Fatalf("Tokyo should accept local today: %v",err)
+ }
+}
