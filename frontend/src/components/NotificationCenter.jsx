@@ -34,10 +34,13 @@ export default function NotificationCenter() {
         const pollTimer = window.setInterval(() => {
             if (!document.hidden) void refresh(controller.signal)
         }, 60_000)
+        const onPreferencesSaved = () => { void refresh(controller.signal) }
+        window.addEventListener('noxorbit:notification-preferences-saved', onPreferencesSaved)
         return () => {
             controller.abort()
             window.clearTimeout(initialTimer)
             window.clearInterval(pollTimer)
+            window.removeEventListener('noxorbit:notification-preferences-saved', onPreferencesSaved)
         }
     }, [refresh])
 
