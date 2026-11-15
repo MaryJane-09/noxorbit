@@ -1,0 +1,22 @@
+.appearance-settings{max-width:900px}
+.appearance-theme-options{padding:0;margin:0 0 20px;border:0}
+.appearance-theme-options legend{font-size:14px;font-weight:800;color:#f7e7f3;margin-bottom:14px}
+.appearance-theme-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.appearance-theme-choice{position:relative;display:grid;align-content:start;gap:10px;min-height:163px;padding:17px;border:1px solid rgba(237,196,148,.3);border-radius:12px;background:rgba(22,14,31,.25);color:#e4d0e6;cursor:pointer}
+.appearance-theme-choice--selected{border-color:#ebbf81;background:rgba(238,190,127,.11);box-shadow:inset 0 0 0 1px rgba(235,192,131,.2)}
+.appearance-theme-choice input{position:absolute;top:16px;right:15px;width:17px;height:17px;accent-color:#d9a85f}
+.appearance-theme-choice svg{color:#e8c18a}
+.appearance-theme-choice strong{font-size:15px;color:#fff1f6}
+.appearance-theme-choice small{color:#d0bdd5;font-size:12px;line-height:1.6}
+.appearance-motion-choice{display:flex;align-items:center;gap:15px;padding:17px 15px;border:1px solid rgba(235,194,144,.24);border-radius:12px;cursor:pointer}
+.appearance-motion-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:rgba(231,185,128,.1);color:#e8c18a;flex:0 0 auto}
+.appearance-motion-choice>span:nth-child(2){display:grid;gap:5px;flex:1}
+.appearance-motion-choice strong{font-size:14px;color:#fff0f8}
+.appearance-motion-choice small{font-size:12px;color:#cfbdd3;line-height:1.6}
+.appearance-motion-choice input{width:20px;height:20px;accent-color:#d9a85f}
+.appearance-description{font-size:12px;line-height:1.65;color:#c8b5cd;margin-top:13px}
+.appearance-save{display:flex;justify-content:flex-end;margin-top:24px}
+.appearance-save button{display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:43px;padding:10px 17px;border:0;border-radius:9px;background:linear-gradient(120deg,#f3ce92,#dcb06a);color:#291d2a;font:inherit;font-size:13px;font-weight:800;cursor:pointer}
+.appearance-save button:disabled{opacity:.5;cursor:default}
+.appearance-theme-choice:focus-within,.appearance-motion-choice:focus-within{outline:2px solid #e9c488;outline-offset:2px}
+@media(max-width:640px){.appearance-theme-grid{grid-template-columns:1fr}.appearance-theme-choice{min-height:90px;grid-template-columns:auto 1fr;align-items:center}.appearance-theme-choice small{grid-column:1 / -1}.appearance-theme-choice input{right:13px;top:15px}}
