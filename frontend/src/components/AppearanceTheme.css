@@ -1,0 +1,211 @@
+/* Signed-in appearance variations. The original dark CSS is unchanged.
+   These overrides apply only when Light (or System->Light) is resolved.
+   The auth flow keeps its cinematic dark appearance. */
+.home-page[data-theme="light"] {
+  --dash-bg:#f6f1eb;
+  --dash-sidebar:#eae1e9;
+  --dash-panel:#fffaf4;
+  --dash-muted:#63516c;
+  --dash-line:rgba(89,54,100,.22);
+  --dash-gold:#87571e;
+  --dash-gold-soft:#81541c;
+  --dash-gold-rich:#996329;
+  --ivory:#30203c;
+  --muted:#60516a;
+  --muted-strong:#3d2b48;
+  --surface:#fffaf5;
+  --plum:#eee5ed;
+  --obsidian:#f6f1eb;
+  color:#30203c;
+  background:#f6f1eb;
+}
+.home-page[data-theme="light"] .dashboard-area{
+  background:radial-gradient(ellipse 65% 45% at 95% 0%,rgba(216,185,215,.33),transparent 80%),#f6f1eb;
+  color:#30203c;
+}
+.home-page[data-theme="light"] .dashboard-sidebar{
+  background:linear-gradient(165deg,#f0e7ef,#e7dce9 70%,#e4d9e7);
+  border-right-color:rgba(90,59,103,.23);
+}
+.home-page[data-theme="light"] .dashboard-brand-copy small{color:#795823}
+.home-page[data-theme="light"] .dashboard-sidebar-label{color:#65516b}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body{background:linear-gradient(125deg,#f8f0e5,#ede2eb);border-color:rgba(125,84,44,.35)}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body strong,
+.home-page[data-theme="light"] .dashboard-profile-info strong{color:#35243d}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body small,
+.home-page[data-theme="light"] .dashboard-profile-info span{color:#62506a}
+.home-page[data-theme="light"] .dashboard-nav-item{color:#65546b}
+.home-page[data-theme="light"] .dashboard-nav-item--active{
+  background:linear-gradient(90deg,rgba(180,125,65,.20),rgba(121,74,120,.08));
+  border-color:rgba(136,91,44,.4);color:#66421e;
+}
+.home-page[data-theme="light"] .dashboard-nav-item:hover:not(.dashboard-nav-item--active){background:rgba(112,73,119,.09);color:#392944}
+.home-page[data-theme="light"] .dashboard-signout{color:#65516c}
+.home-page[data-theme="light"] .dashboard-signout:hover:not(:disabled){color:#704821;background:rgba(166,114,57,.13)}
+.home-page[data-theme="light"] .dashboard-profile,
+.home-page[data-theme="light"] .dashboard-sidebar-bottom{border-color:rgba(90,59,103,.19)}
+.home-page[data-theme="light"] .dashboard-sidebar-toggle-label,
+.home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle{color:#614b6b}
+.home-page[data-theme="light"] .dashboard-topbar{
+  background:rgba(252,248,244,.96);
+  border-bottom:1px solid rgba(101,65,102,.19);
+}
+.home-page[data-theme="light"] .dashboard-topbar-account,
+.home-page[data-theme="light"] .dashboard-topbar strong,
+.home-page[data-theme="light"] .dashboard-topbar-breadcrumb{color:#594364}
+.home-page[data-theme="light"] .dashboard-main{color:#34263e}
+.home-page[data-theme="light"] .dashboard-eyebrow{color:#805224}
+.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3,h4){color:#34243e}
+.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3) span{color:#946023}
+.home-page[data-theme="light"] .dashboard-main :is(p,small){color:#64526d}
+.home-page[data-theme="light"] .dashboard-main :is(strong,label){color:#3d2c46}
+.home-page[data-theme="light"] .dashboard-main :is(button,select,input,textarea){color:inherit}
+.home-page[data-theme="light"] .dashboard-main :is(input,textarea,select):not([type="checkbox"]):not([type="radio"]){
+  background:#fffdf9;color:#352540;border-color:rgba(115,79,118,.34);
+}
+.home-page[data-theme="light"] .dashboard-main :is(input,textarea)::placeholder{color:#86768a}
+
+/* Reusable cards and surfaces across Overview / Workspaces / Projects. */
+.home-page[data-theme="light"] :is(
+ .dashboard-empty-card,.dashboard-overview-data-card,.dashboard-deadline-details,
+ .dashboard-deadline-group,.dashboard-deadline-group-toggle,.dashboard-workspace-card,
+ .workspace-manager-card,.workspace-manager-card--active,
+ .workspace-manager-empty,.workspace-manager-help,.projects-card,.projects-message,
+ .my-tasks-item,.my-tasks-message,.activity-event,.activity-message,
+ .recycle-item,.recycle-message,.tasks-column,.tasks-card,.tasks-notice,
+ .project-members,.settings-account,.settings-danger,.notification-settings-note,
+ .user-preferences-note,.user-preferences-preview,.appearance-theme-choice,
+ .appearance-motion-choice,.dashboard-workspace-dialog,.tasks-dialog
+ ){
+  background:#fffaf5;
+  border-color:rgba(115,80,116,.22);
+  color:#3d2a46;
+  box-shadow:0 7px 24px rgba(74,51,71,.05);
+}
+.home-page[data-theme="light"] :is(
+ .dashboard-empty-card,.dashboard-deadline-details,.workspace-manager-card,
+ .projects-card,.my-tasks-item,.activity-event,.recycle-item,.tasks-column,.tasks-card,
+ .project-members,.settings-account,.settings-danger
+ ) :is(h1,h2,h3,strong){color:#32233c}
+.home-page[data-theme="light"] :is(.tasks-description,.tasks-meta,.tasks-empty,
+ .projects-card>p,.projects-card-date,.workspace-manager-meta,
+ .workspace-manager-section-top p,.my-tasks-description,.activity-event small,
+ .recycle-item p,.project-members-heading p,.project-members-person-name small,
+ .settings-help,.settings-account-row,.appearance-description){color:#685770}
+.home-page[data-theme="light"] .projects-page-tabs,
+.home-page[data-theme="light"] .my-tasks-filters button,
+.home-page[data-theme="light"] .tasks-status-label select,
+.home-page[data-theme="light"] .project-members-person,
+.home-page[data-theme="light"] .notification-settings-row,
+.home-page[data-theme="light"] .project-members-confirm,
+.home-page[data-theme="light"] .dashboard-deadline-group-toggle {
+  background:#f5edf3;border-color:rgba(107,72,112,.23);color:#493650;
+}
+.home-page[data-theme="light"] :is(.projects-page-tabs button,.my-tasks-filters button,
+ .settings-tabs button,.project-members-count,.project-members-remove,
+ .tasks-actions button,.workspace-manager-edit,.activity-refresh,.recycle-refresh){
+  color:#65466d;border-color:rgba(107,74,111,.25);
+}
+.home-page[data-theme="light"] :is(.projects-page-tabs button.is-active,.my-tasks-filters button.is-active,
+ .settings-tabs button.settings-tab--active){
+  color:#70451d;background:#f1e3d1;border-color:rgba(142,94,42,.42);
+}
+.home-page[data-theme="light"] :is(.dashboard-feature-action,.appearance-save button,
+ .notification-settings-actions button,.user-preferences-actions button,
+ .project-members-add button,.workspace-manager-open,.projects-create){
+  color:#2f2433;background:linear-gradient(115deg,#edc58d,#d9a96a);
+  border-color:rgba(140,91,42,.38);
+}
+.home-page[data-theme="light"] :is(.tasks-priority--high,.tasks-priority--urgent,
+ .tasks-priority--low,.dashboard-deadline-badge,.dashboard-data-tag,
+ .dashboard-eyebrow){color:#81512b}
+.home-page[data-theme="light"] .settings-heading h1{color:#32253d}
+.home-page[data-theme="light"] .settings-heading>p:not(.dashboard-eyebrow){color:#64536b}
+.home-page[data-theme="light"] .settings-section-title,
+.home-page[data-theme="light"] .settings-section-title h2{color:#3d2d48}
+.home-page[data-theme="light"] .settings-tabs button{background:#f9f2ed;color:#5b4864}
+.home-page[data-theme="light"] .settings-tabs button.settings-tab--active{background:#f2e2ce;color:#704a22}
+.home-page[data-theme="light"] :is(.settings-account-row strong,.settings-edit-form label,
+ .user-preferences form>label,.notification-settings-row strong,
+ .appearance-theme-options legend,.appearance-theme-choice strong,
+ .appearance-motion-choice strong){color:#382744}
+.home-page[data-theme="light"] .appearance-theme-choice--selected{
+ background:#f1e0ca;border-color:#9a6e34;box-shadow:inset 0 0 0 1px rgba(147,99,46,.2);
+}
+.home-page[data-theme="light"] .appearance-theme-choice small,
+.home-page[data-theme="light"] .appearance-motion-choice small{color:#66566c}
+.home-page[data-theme="light"] .user-preferences-preview{background:#f2e9ee}
+.home-page[data-theme="light"] .user-preferences-preview :is(strong,span){color:#694923}
+.home-page[data-theme="light"] .user-preferences-preview small{color:#66566c}
+.home-page[data-theme="light"] .notification-settings-row input,
+.home-page[data-theme="light"] .appearance-motion-choice input,
+.home-page[data-theme="light"] .appearance-theme-choice input{accent-color:#996625}
+.home-page[data-theme="light"] .notification-settings-note,
+.home-page[data-theme="light"] .user-preferences-note{background:#f4ebef}
+.home-page[data-theme="light"] .notification-settings-note,
+.home-page[data-theme="light"] .user-preferences-note,
+.home-page[data-theme="light"] .appearance-description{color:#65546d}
+
+/* Project member management needs its own light treatment for the form. */
+.home-page[data-theme="light"] .project-members-person{background:#f8f0f4}
+.home-page[data-theme="light"] .project-members-person-name strong{color:#352540}
+.home-page[data-theme="light"] .project-members-role select,
+.home-page[data-theme="light"] .project-members-add select{background:#fffaf5;color:#352540;border-color:rgba(110,79,111,.3)}
+.home-page[data-theme="light"] .project-members-add label{color:#4f3a59}
+.home-page[data-theme="light"] .project-members-success,
+.home-page[data-theme="light"] .settings-success{color:#256745}
+.home-page[data-theme="light"] .project-members-confirm p,
+.home-page[data-theme="light"] .project-members-confirm strong{color:#543347}
+.home-page[data-theme="light"] .project-members-confirm-remove{background:#a23e59;color:#fff}
+
+/* Notification popover lives in the header, outside dashboard-main. */
+.home-page[data-theme="light"] .notification-bell{
+ background:#f4e9f0;color:#62446d;border-color:rgba(117,79,118,.3);
+}
+.home-page[data-theme="light"] .notification-panel{
+ background:#fffaf6;color:#382744;border-color:rgba(107,73,110,.25);
+ box-shadow:0 20px 50px rgba(49,31,49,.18);
+}
+.home-page[data-theme="light"] .notification-panel-header,
+.home-page[data-theme="light"] .notification-panel-actions,
+.home-page[data-theme="light"] .notification-panel-footnote,
+.home-page[data-theme="light"] .notification-item{border-color:rgba(105,74,107,.15)}
+.home-page[data-theme="light"] .notification-panel-header strong,
+.home-page[data-theme="light"] .notification-item strong{color:#352540}
+.home-page[data-theme="light"] .notification-panel :is(small,p,.notification-panel-actions){color:#66556a}
+.home-page[data-theme="light"] .notification-panel button{color:#754822}
+.home-page[data-theme="light"] .notification-item--unread{background:#f6e8d7}
+.home-page[data-theme="light"] .notification-unread-count{background:#a96f2d;color:#fff}
+
+/* Light theme applies to both closed and open dialogs. */
+.home-page[data-theme="light"] :is(dialog,.dashboard-dialog,.tasks-delete-dialog){
+ background:#fffaf6;color:#342740;border-color:rgba(102,70,106,.32);
+}
+.home-page[data-theme="light"] :is(dialog,.dashboard-dialog) :is(h2,h3,strong,label){color:#3d2c45}
+.home-page[data-theme="light"] :is(dialog,.dashboard-dialog) :is(input,textarea,select){
+ background:#fffdf9;color:#3c2d45;border-color:rgba(102,70,106,.32);
+}
+.home-page[data-theme="light"] :is(.tasks-priority--urgent,.settings-deletion-error,.dashboard-form-error){color:#97354e}
+
+/* Keep explicit reduced-motion choices and OS accessibility preferences effective.
+   Nothing hides content: only movement is reduced. */
+.home-page[data-motion="reduced"] *,
+.home-page[data-motion="reduced"] *::before,
+.home-page[data-motion="reduced"] *::after{
+ animation-duration:.01ms !important;
+ animation-iteration-count:1 !important;
+ transition-duration:.01ms !important;
+ scroll-behavior:auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+ .home-page *, .home-page *::before, .home-page *::after{
+  animation-duration:.01ms !important;
+  animation-iteration-count:1 !important;
+  transition-duration:.01ms !important;
+  scroll-behavior:auto !important;
+ }
+}
+@media (max-width:900px) {
+ .home-page[data-theme="light"] .dashboard-sidebar{background:#ece1e9}
+ .home-page[data-theme="light"] .dashboard-mobile-scrim{background:rgba(36,24,43,.35)}
+}
