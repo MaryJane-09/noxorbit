@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { formatInstant } from './deadlines'
 import { Activity, ArrowRightLeft, CheckCircle2, ClipboardList, FolderKanban, Layers3, LoaderCircle, RefreshCw, Trash2, Users } from 'lucide-react'
 import { fetchWorkspaceActivity } from '../api'
 import './ActivityPage.css'
@@ -35,7 +36,7 @@ function eventDetails(event) {
     return null
 }
 
-export default function ActivityPage({ activeWorkspace, workspacesLoading, onOpenWorkspaces }) {
+export default function ActivityPage({ preferences, activeWorkspace, workspacesLoading, onOpenWorkspaces }) {
     const [state, setState] = useState({ workspaceID: null, items: [], loading: true, error: '' })
     const [reload, setReload] = useState(0)
     const workspaceID = activeWorkspace?.id
@@ -106,7 +107,7 @@ export default function ActivityPage({ activeWorkspace, workspacesLoading, onOpe
                         <div className="activity-entity-name">{event.entity_name}</div>
                         {extra && <p className="activity-event-detail">{extra}</p>}
                         <time dateTime={event.created_at}>
-                            {new Date(event.created_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+                            {formatInstant(event.created_at, preferences)}
                         </time>
                     </div>
                 </li>
