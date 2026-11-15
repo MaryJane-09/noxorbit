@@ -27,6 +27,15 @@ func scanTask(row pgx.Row) (Task, error) {
 	return t, err
 }
 
+// Calendar validation uses the editing member's saved time zone.
+func (r *Repository) actorTimeZone(ctx context.Context,user uuid.UUID)(string,error){
+ var zone string
+ err:=r.pool.QueryRow(ctx,`
+ SELECT COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos')
+ `,user).Scan(&zone)
+ return zone,err
+}
+
 func (r *Repository) accessibleProject(ctx context.Context, userID, workspaceID, projectID uuid.UUID) (string, error) {
 	var status string
 	err := r.pool.QueryRow(ctx, `
@@ -70,7 +79,7 @@ func (r *Repository) Create(ctx context.Context, userID, workspaceID, projectID 
 			SELECT 1 FROM public.workspace_memberships m
 			WHERE m.workspace_id = p.workspace_id AND m.user_id = $1
 		  )
-		  AND ($7::date IS NULL OR $7::date >= (NOW() AT TIME ZONE 'Africa/Lagos')::date)
+		  AND ($7::date IS NULL OR $7::date >= (NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date)
 		  AND ($8::uuid IS NULL OR EXISTS (
 			SELECT 1 FROM public.project_memberships a
 			WHERE a.project_id = p.id AND a.user_id = $8
@@ -82,7 +91,9 @@ func (r *Repository) Create(ctx context.Context, userID, workspaceID, projectID 
 	status, lookupErr := r.accessibleProject(ctx, userID, workspaceID, projectID)
 	if lookupErr != nil { return Task{}, lookupErr }
 	if status != "active" { return Task{}, ErrArchived }
-	if err := ValidateNewDueDate(in.DueDate, nil, time.Now()); err != nil { return Task{}, err }
+	zone, zoneErr:=r.actorTimeZone(ctx,userID)
+ if zoneErr!=nil{return Task{},zoneErr}
+ if err := ValidateNewDueDate(in.DueDate, nil, time.Now(),zone); err != nil { return Task{}, err }
 	return Task{}, ErrInvalidAssignee
 }
 
@@ -139,7 +150,7 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 			WHERE m.workspace_id = t.workspace_id AND m.user_id = $1
 			  AND (m.role = 'owner' OR t.created_by = $1)
 		  )
-		  AND ($8::date IS NULL OR $8::date = t.due_date OR $8::date >= (NOW() AT TIME ZONE 'Africa/Lagos')::date)
+		  AND ($8::date IS NULL OR $8::date = t.due_date OR $8::date >= (NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date)
 		  AND ($9::uuid IS NULL OR EXISTS (
 			SELECT 1 FROM public.project_memberships a
 			WHERE a.project_id = t.project_id AND a.user_id = $9
@@ -166,7 +177,9 @@ func (r *Repository) UpdateDetails(ctx context.Context, userID, workspaceID, pro
 	if canEdit {
         current, getErr := r.Get(ctx, userID, workspaceID, projectID, taskID)
         if getErr != nil { return Task{}, getErr }
-        if err := ValidateNewDueDate(in.DueDate, current.DueDate, time.Now()); err != nil { return Task{}, err }
+        zone, zoneErr:=r.actorTimeZone(ctx,userID)
+        if zoneErr!=nil{return Task{},zoneErr}
+        if err := ValidateNewDueDate(in.DueDate, current.DueDate, time.Now(),zone); err != nil { return Task{}, err }
         return Task{}, ErrInvalidAssignee
     }
 	return Task{}, ErrForbidden
