@@ -80,11 +80,11 @@ func (r *Repository) SavePreferences(ctx context.Context,user uuid.UUID,p Prefer
    WHERE n.user_id=$1 AND n.task_id=t.id
      AND t.assignee_id=$1 AND t.status<>'done' AND t.deleted_at IS NULL
      AND t.due_date IS NOT NULL
-     AND (n.created_at AT TIME ZONE 'Africa/Lagos')::date=(NOW() AT TIME ZONE 'Africa/Lagos')::date
+     AND (n.created_at AT TIME ZONE 'Africa/Lagos')::date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date
      AND (
-      (n.kind='due_tomorrow' AND $2 AND t.due_date=(NOW() AT TIME ZONE 'Africa/Lagos')::date+1)
-      OR (n.kind='due_today' AND $3 AND t.due_date=(NOW() AT TIME ZONE 'Africa/Lagos')::date)
-      OR (n.kind='overdue' AND $4 AND t.due_date<(NOW() AT TIME ZONE 'Africa/Lagos')::date)
+      (n.kind='due_tomorrow' AND $2 AND t.due_date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date+1)
+      OR (n.kind='due_today' AND $3 AND t.due_date=(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date)
+      OR (n.kind='overdue' AND $4 AND t.due_date<(NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date)
      )
   `,user,!previous.DueTomorrow && updated.DueTomorrow,
     !previous.DueToday && updated.DueToday,!previous.Overdue && updated.Overdue)
@@ -95,7 +95,7 @@ func (r *Repository) SavePreferences(ctx context.Context,user uuid.UUID,p Prefer
 }
 // Reminders are generated on authenticated notification reads, not via a
 // fictitious background scheduler. A daily per-task key prevents duplicates.
-// Africa/Lagos is temporary until user-specific time zones are implemented.
+// Calendar day follows the signed-in user’s saved IANA time zone.
 func (r *Repository) generateDueReminders(ctx context.Context,user uuid.UUID)error{
  _,err:=r.pool.Exec(ctx,`
  WITH preference AS (
@@ -103,7 +103,7 @@ func (r *Repository) generateDueReminders(ctx context.Context,user uuid.UUID)err
   COALESCE((SELECT due_today FROM public.notification_preferences WHERE user_id=$1),true) AS today,
   COALESCE((SELECT overdue FROM public.notification_preferences WHERE user_id=$1),true) AS overdue
  ), today AS (
-  SELECT (NOW() AT TIME ZONE 'Africa/Lagos')::date AS current_day
+  SELECT (NOW() AT TIME ZONE COALESCE((SELECT time_zone FROM public.user_preferences WHERE user_id=$1),'Africa/Lagos'))::date AS current_day
  )
  INSERT INTO public.notifications(user_id,workspace_id,project_id,task_id,kind,title,body,dedupe_key)
  SELECT $1,t.workspace_id,t.project_id,t.id,
