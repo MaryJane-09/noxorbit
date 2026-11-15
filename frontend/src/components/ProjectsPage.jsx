@@ -61,7 +61,7 @@ export function ProjectOverviewCard({ workspaceID, onOpen }) {
     )
 }
 
-export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpenWorkspaces, user }) {
+export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpenWorkspaces, user, preferences }) {
     const [selectedProject, setSelectedProject] = useState(null)
     const [data, setData] = useState({ workspaceID: null, items: [], error: '' })
     const [reload, setReload] = useState(0)
@@ -171,7 +171,7 @@ export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpe
         const currentProject = items.find((item) => item.id === selectedProject.id)
         if (currentProject) {
             return <TasksBoard key={`${activeWorkspace.id}:${currentProject.id}`} workspace={activeWorkspace}
-                project={currentProject} user={user} onBack={() => setSelectedProject(null)} />
+                project={currentProject} user={user} preferences={preferences} onBack={() => setSelectedProject(null)} />
         }
     }
 
