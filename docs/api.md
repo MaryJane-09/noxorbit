@@ -849,3 +849,28 @@ category off doesn't remove previously generated notifications.
 is closed, emails, push, individual time zone/date format, language,
 invitation alerts, project update alerts, and appearance. No settings
 controls falsely claim these deliveries exist.
+
+
+## Personal Calendar Preferences — migration 014
+
+`GET /api/v1/preferences` loads account-specific calendar preferences.
+`PUT /api/v1/preferences` saves both fields with a JSON body, for example:
+```json
+{"time_zone":"Asia/Tokyo","date_format":"DD/MM/YYYY"}
+```
+Authentication is required for both methods; the user ID comes only from
+the session. Unexpected fields, incomplete values and unsupported zones
+or formats are rejected (400); unsupported media type returns 415.
+
+Allowed zones: `Africa/Lagos`, `UTC`, `Europe/London`,
+`Europe/Paris`, `America/New_York`, `America/Los_Angeles`,
+`Asia/Dubai`, `Asia/Kolkata`, `Asia/Tokyo`.
+Allowed date formats: `YYYY-MM-DD`, `DD/MM/YYYY`, `MM/DD/YYYY`.
+Accounts without a preference row default to Africa/Lagos / YYYY-MM-DD.
+
+The chosen time zone governs the authenticated user's date comparisons
+for creating/updating tasks and generating/reattivating deadline reminders.
+Displayed dates use the chosen format, but task DATE values remain canonical
+YYYY-MM-DD in requests/database. Existing tasks are not altered.
+No background email notifications or language translation are provided.
+Run migration 014 *after* 013 before updating the running Go server.
