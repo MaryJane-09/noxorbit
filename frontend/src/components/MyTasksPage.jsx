@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { CalendarDays, CheckCircle2, FolderKanban, LoaderCircle, RefreshCw } from 'lucide-react'
 import { changeTaskStatus, fetchMyTasks } from '../api'
-import { calendarToday, deadlineLabel } from './deadlines'
+import { calendarToday, deadlineLabel, formatCalendarDate } from './deadlines'
 import './MyTasksPage.css'
 
 const STATUSES = [
@@ -15,7 +15,7 @@ const FILTERS = [
     { value: 'done', label: 'Completed' },
 ]
 
-export default function MyTasksPage() {
+export default function MyTasksPage({ preferences }) {
     const [state, setState] = useState({ items: [], loading: true, error: '', today: '' })
     const [reload, setReload] = useState(0)
     const [filter, setFilter] = useState('open')
@@ -26,13 +26,13 @@ export default function MyTasksPage() {
         const controller = new AbortController()
         fetchMyTasks({ signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) setState({ items, loading: false, error: '', today: calendarToday() })
+                if (!controller.signal.aborted) setState({ items, loading: false, error: '', today: calendarToday(new Date(), preferences?.time_zone) })
             })
             .catch((error) => {
-                if (!controller.signal.aborted) setState({ items: [], loading: false, error: error.message, today: calendarToday() })
+                if (!controller.signal.aborted) setState({ items: [], loading: false, error: error.message, today: calendarToday(new Date(), preferences?.time_zone) })
             })
         return () => controller.abort()
-    }, [reload])
+    }, [reload, preferences?.time_zone])
 
     async function updateStatus(task, status) {
         if (busyID || task.status === status || task.project_status !== 'active') return
@@ -111,7 +111,7 @@ export default function MyTasksPage() {
                             {task.description && <p className="my-tasks-description">{task.description}</p>}
                             <div className="my-tasks-meta">
                                 <span className={`tasks-priority tasks-priority--${task.priority}`}>{task.priority}</span>
-                                {task.due_date && <span><CalendarDays size={15} aria-hidden="true" /> Due {task.due_date}</span>}
+                                {task.due_date && <span><CalendarDays size={15} aria-hidden="true" /> Due {formatCalendarDate(task.due_date, preferences?.date_format)}</span>}
                                 {task.status !== 'done' && task.due_date && state.today && deadlineLabel(task.due_date, state.today)?.kind !== 'upcoming' &&
                                     <span className={`my-tasks-due-indicator my-tasks-due-indicator--${deadlineLabel(task.due_date, state.today).kind}`}>
                                         {deadlineLabel(task.due_date, state.today).label}
