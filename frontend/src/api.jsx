@@ -507,3 +507,12 @@ export function fetchUserPreferences({ signal } = {}) {
 export function saveUserPreferences(settings) {
   return projectRequest(`${API}/api/v1/preferences`, { method: "PUT", body: settings });
 }
+
+
+// Theme and motion settings are stored per account, independently of dates.
+export function fetchAppearancePreferences({ signal } = {}) {
+  return projectRequest(`${API}/api/v1/appearance`, { signal });
+}
+export function saveAppearancePreferences(settings) {
+  return projectRequest(`${API}/api/v1/appearance`, { method: "PUT", body: settings });
+}
