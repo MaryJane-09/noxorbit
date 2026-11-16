@@ -40,3 +40,30 @@
 .personal-home-scope{font-size:12px;color:#cbb6d1;line-height:1.7}
 @media(max-width:950px){.personal-home-content{grid-template-columns:1fr}}
 @media(max-width:680px){.personal-home-metrics{grid-template-columns:1fr}.personal-home-metric{padding:18px}.personal-home-panel{padding:17px}}
+
+/* Today's Focus: restrained urgency cues on the existing Dark theme. */
+.personal-home-deadline {
+  flex:0 0 auto;
+  align-self:start;
+  padding:5px 8px;
+  border:1px solid rgba(234,182,125,.26);
+  border-radius:7px;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.personal-home-deadline--overdue {
+  color:#ffd0dc;
+  background:rgba(162,62,89,.27);
+  border-color:rgba(238,143,162,.31);
+}
+.personal-home-deadline--today {
+  color:#ffe1a8;
+  background:rgba(171,113,36,.21);
+  border-color:rgba(232,179,97,.35);
+}
+.personal-home-deadline--tomorrow {
+  color:#ddd0ff;
+  background:rgba(114,83,158,.23);
+  border-color:rgba(160,124,209,.32);
+}
