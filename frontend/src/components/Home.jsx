@@ -72,7 +72,13 @@ function purposeLabel(purpose) {
     return WORKSPACE_PURPOSES.find((choice) => choice.value === purpose)?.label || 'General'
 }
 
+function workspaceIDFromHash() {
+    const match = /^#overview\/([0-9a-fA-F-]{36})$/.exec(window.location.hash)
+    return match ? match[1] : null
+}
+
 function pageFromHash() {
+    if (window.location.hash.startsWith('#overview/')) return 'overview'
     if (window.location.hash.startsWith('#invite/')) return 'invite'
     if (window.location.hash === '#home') return 'home'
     if (window.location.hash === '#workspaces') return 'workspaces'
@@ -124,7 +130,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
     const [workspacesLoading, setWorkspacesLoading] = useState(true)
     const [workspaceLoadError, setWorkspaceLoadError] = useState('')
     const [reloadVersion, setReloadVersion] = useState(0)
-    const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(null)
+    const [selectedWorkspaceId, setSelectedWorkspaceId] = useState(workspaceIDFromHash)
     const [createDialogOpen, setCreateDialogOpen] = useState(false)
     const [creatingWorkspace, setCreatingWorkspace] = useState(false)
     const [createError, setCreateError] = useState('')
@@ -153,7 +159,11 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
     }, [avatarRevision])
 
     useEffect(() => {
-        const handleHashChange = () => setPage(pageFromHash())
+        const handleHashChange = () => {
+            setPage(pageFromHash())
+            const workspaceID = workspaceIDFromHash()
+            if (workspaceID) setSelectedWorkspaceId(workspaceID)
+        }
         window.addEventListener('hashchange', handleHashChange)
         return () => window.removeEventListener('hashchange', handleHashChange)
     }, [])
@@ -161,6 +171,17 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
     function goToPage(destination) {
         window.location.hash = destination
         setPage(destination)
+        setMenuOpen(false)
+        window.scrollTo(0, 0)
+    }
+
+    function openWorkspaceOverview(workspaceID) {
+        if (!workspaces.some((space) => space.id === workspaceID)) return
+        setSelectedWorkspaceId(workspaceID)
+        // Keep the selected workspace in the address: back/forward and refresh
+        // should open the same Overview, not silently fall back to another one.
+        window.location.hash = `overview/${workspaceID}`
+        setPage('overview')
         setMenuOpen(false)
         window.scrollTo(0, 0)
     }
@@ -415,7 +436,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                     {page === 'home' ? (
                         <PersonalHome user={user} workspaces={workspaces} workspacesLoading={workspacesLoading}
                             workspacesError={workspaceLoadError} preferences={preferences}
-                            onNavigate={goToPage} onSelectWorkspace={setSelectedWorkspaceId} />
+                            onNavigate={goToPage} onOpenWorkspace={openWorkspaceOverview} />
                     ) : page === 'invite' ? (
                         <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
                             onAccepted={onInvitationAccepted} />
