@@ -539,3 +539,65 @@
 .home-page[data-theme="light"] .dashboard-main .dashboard-data-value {
   color:#bd833c;
 }
+
+
+/* Final targeted light-mode fixes: Home metric icon tiles and Profile photo editor.
+   Do not apply dark-mode translucent backgrounds to porcelain surfaces. */
+.home-page[data-theme="light"] .dashboard-main .personal-home-metric .personal-home-icon {
+  background:linear-gradient(145deg,#fff7e9 0%,#f3e0be 100%);
+  color:#87561d;
+  border:1px solid #d9b77d;
+  box-shadow:0 1px 0 rgba(255,255,255,.9) inset;
+}
+.home-page[data-theme="light"] .dashboard-main .personal-home-metric .personal-home-icon svg {
+  color:#87561d;
+  stroke:currentColor;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-editor {
+  background:linear-gradient(115deg,#f7f0f7 0%,#fbf7f7 100%);
+  border:1px solid #d6c4d6;
+  color:#34233f;
+  box-shadow:inset 0 1px 0 #fff;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-editor strong {
+  color:#30213c;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-editor .settings-help {
+  color:#62516b;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-actions :is(.settings-avatar-upload,button) {
+  background:#fffdfb;
+  color:#4b3258;
+  border:1px solid #bda9c3;
+  box-shadow:0 1px 0 rgba(255,255,255,.9) inset;
+  opacity:1;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-actions :is(.settings-avatar-upload,button):hover:not(:disabled) {
+  background:#ece1ef;
+  border-color:#9f83a8;
+  color:#35233f;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-actions button:disabled {
+  opacity:.6;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-avatar-upload:focus-within {
+  outline:2px solid var(--light-focus,#744b89);
+  outline-offset:3px;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-edit-form label {
+  color:#483550;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-edit-form input[readonly] {
+  background:#f4eef5;
+  color:#63536b;
+  border-color:#cbb9cf;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-email-heading strong,
+.home-page[data-theme="light"] .dashboard-main .settings-email-change .settings-help strong {
+  color:#34233e;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-email-heading button {
+  background:#faf5f9;
+  color:#50365b;
+  border-color:#c4b0c8;
+}
