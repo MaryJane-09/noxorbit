@@ -7,9 +7,9 @@
   --dash-panel:#ffffff;
   --dash-muted:#5a4b64;
   --dash-line:#d9cedb;
-  --dash-gold:#835326;
-  --dash-gold-soft:#8a5a2c;
-  --dash-gold-rich:#995c25;
+  --dash-gold:#c99443;
+  --dash-gold-soft:#e0ae5d;
+  --dash-gold-rich:#b8792c;
   --ivory:#2d203a;
   --muted:#63556d;
   --muted-strong:#45354f;
@@ -28,8 +28,8 @@
 .home-page[data-theme="light"] .dashboard-main {color:#30233d;}
 .home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3,h4){color:#30213b;}
 .home-page[data-theme="light"] .dashboard-main :is(p,small){color:#574a61;}
-.home-page[data-theme="light"] .dashboard-main .dashboard-eyebrow{color:#754925;}
-.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3) span:not(.tasks-priority){color:#805023;}
+.home-page[data-theme="light"] .dashboard-main .dashboard-eyebrow{color:#a36721;}
+.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3) span:not(.tasks-priority){color:#bd8335;}
 .home-page[data-theme="light"] .dashboard-main :is(input,textarea,select):not([type="checkbox"]):not([type="radio"]){
   background:#fff;color:#34233d;border-color:#bfadbf;
 }
@@ -76,16 +76,18 @@
   color:#32223b;background:#dcd0e0;border-color:#beafc2;
 }
 .home-page[data-theme="light"] .dashboard-brand img{
-  filter:brightness(.78) saturate(.85) contrast(1.16);
+  filter:drop-shadow(0 1px 2px rgba(119,79,42,.12));
 }
 .home-page[data-theme="light"] .dashboard-brand-copy strong {
-  background:none;
-  -webkit-text-fill-color:#805021;
-  color:#805021;
+  background:linear-gradient(115deg,#986020 0%,#cb903d 26%,#efbf69 48%,#b87b2b 72%,#8c571c 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:#a16c29;
   filter:none;text-shadow:none;
 }
 .home-page[data-theme="light"] .dashboard-brand-copy small{
-  color:#5f4a3b;font-weight:800;
+  color:#8d612d;font-weight:800;
 }
 .home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle:hover{
   background:#dcd0df;color:#372842;
@@ -143,8 +145,9 @@
 }
 .home-page[data-theme="light"] .dashboard-active-summary-action:hover{background:#e9ddeb;}
 .home-page[data-theme="light"] .dashboard-welcome h1 span{
-  color:#805025;
-  background:none;-webkit-text-fill-color:#805025;
+  color:#ba8030;
+  background:linear-gradient(110deg,#ae7328,#ddac55 52%,#a66c22);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
 }
 .home-page[data-theme="light"] .dashboard-main .dashboard-data-value{
   color:#774820;
@@ -346,8 +349,8 @@
   --light-secondary: #594b65;
   --light-plum: #4c315c;
   --light-plum-hover: #61416f;
-  --light-gold: #93602c;
-  --light-gold-soft: #f3e6d4;
+  --light-gold: #c38a3c;
+  --light-gold-soft: #fff0d5;
   --light-porcelain: #fffdfa;
   --light-edge: #d8cada;
   --light-focus: #744b89;
@@ -363,15 +366,16 @@
   background:linear-gradient(180deg,#e7deea,#e4dbe8);
 }
 .home-page[data-theme="light"] .dashboard-brand img{
-  filter: brightness(.89) saturate(.97) contrast(1.14)
-    drop-shadow(0 1px 1px rgba(94,58,30,.12));
+  filter:drop-shadow(0 1px 2px rgba(128,83,31,.17));
 }
 .home-page[data-theme="light"] .dashboard-brand-copy strong{
-  color:#825122;-webkit-text-fill-color:#825122;
+  background:linear-gradient(105deg,#986020,#d7a14a 34%,#f0c577 50%,#bd812e 75%,#8b571f);
+  -webkit-background-clip:text;background-clip:text;
+  color:#ac7530;-webkit-text-fill-color:transparent;
   letter-spacing:.085em;
 }
 .home-page[data-theme="light"] .dashboard-brand-copy small{
-  color:#65472e;letter-spacing:.065em;
+  color:#976827;letter-spacing:.065em;
 }
 .home-page[data-theme="light"] .dashboard-workspace-indicator-body{
   background:#f5eef4;border-color:#c9b7cf;
@@ -382,7 +386,7 @@
   box-shadow:inset 3px 0 0 #84558b;
 }
 .home-page[data-theme="light"] .dashboard-nav-active-mark{
-  background:#8e6030;box-shadow:0 0 0 2px rgba(146,96,48,.10);
+  background:#d3a054;box-shadow:0 0 0 2px rgba(211,160,84,.12);
 }
 .home-page[data-theme="light"] :is(
  .personal-home-metric,.personal-home-panel,.dashboard-empty-card,
@@ -515,4 +519,23 @@
  .personal-home-metric,.personal-home-panel,.workspace-manager-card,.projects-card,
  .my-tasks-item,.activity-event
  ){transition:box-shadow 160ms ease,border-color 160ms ease;}
+}
+
+/* Champagne gold is luminous against plum, while small text remains legible. */
+.home-page[data-theme="light"] .personal-home-heading h1 span {
+  background:linear-gradient(105deg,#a96b23 5%,#dfab50 50%,#a46a20 95%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:#b67c2b;
+}
+.home-page[data-theme="light"] .dashboard-main .personal-home-heading .dashboard-eyebrow,
+.home-page[data-theme="light"] .dashboard-main .personal-home-section-title .dashboard-eyebrow,
+.home-page[data-theme="light"] .dashboard-main .personal-home-panel-heading .dashboard-eyebrow {
+  color:#a46a22;
+}
+.home-page[data-theme="light"] .dashboard-main :is(.personal-home-focus-symbol,.activity-event-icon) {
+  background:linear-gradient(140deg,#fdf0d7,#f0dbb6);
+  color:#af7629;border-color:#e0c28f;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-data-value {
+  color:#bd833c;
 }
