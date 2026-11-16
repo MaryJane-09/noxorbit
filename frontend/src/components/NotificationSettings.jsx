@@ -15,6 +15,11 @@ export default function NotificationSettings() {
     const [draft, setDraft] = useState(null)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
+    useEffect(() => {
+        if (!message) return undefined
+        const timeout = window.setTimeout(() => setMessage(''), 3500)
+        return () => window.clearTimeout(timeout)
+    }, [message])
     const [saving, setSaving] = useState(false)
     const [loading, setLoading] = useState(true)
     useEffect(() => {
