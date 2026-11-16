@@ -4,7 +4,7 @@ import { fetchMyTasks } from '../api'
 import { calendarToday, formatCalendarDate, groupAssignedDeadlines } from './deadlines'
 
 // The two summary cards and expandable panel share a single authenticated request.
-export default function OverviewTaskCards({ onOpenTasks, preferences }) {
+export default function OverviewTaskCards({ onOpenTasks, preferences, workspaceID }) {
     const [state, setState] = useState({ items: [], loading: true, error: '', today: '' })
     const [detailsOpen, setDetailsOpen] = useState(false)
     const [expandedDates, setExpandedDates] = useState([])
@@ -13,7 +13,7 @@ export default function OverviewTaskCards({ onOpenTasks, preferences }) {
         const controller = new AbortController()
         fetchMyTasks({ signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) setState({ items, loading: false, error: '', today: calendarToday(new Date(), preferences?.time_zone) })
+                if (!controller.signal.aborted) setState({ items: workspaceID ? items.filter((task) => task.workspace_id === workspaceID) : items, loading: false, error: '', today: calendarToday(new Date(), preferences?.time_zone) })
             })
             .catch((error) => {
                 if (!controller.signal.aborted) setState({
@@ -25,7 +25,7 @@ export default function OverviewTaskCards({ onOpenTasks, preferences }) {
             if (!controller.signal.aborted) setState((current) => ({ ...current, today: calendarToday(new Date(), preferences?.time_zone) }))
         }, 60_000)
         return () => { controller.abort(); window.clearInterval(interval) }
-    }, [preferences?.time_zone])
+    }, [preferences?.time_zone, workspaceID])
 
     const unfinished = state.items.filter((task) => task.status !== 'done')
     const completed = state.items.length - unfinished.length
@@ -56,7 +56,7 @@ export default function OverviewTaskCards({ onOpenTasks, preferences }) {
             <section className="dashboard-empty-card dashboard-overview-data-card" aria-labelledby="dashboard-tasks-heading">
                 <div className="dashboard-empty-top">
                     <span className="dashboard-tile-icon"><ListTodo size={23} aria-hidden="true" /></span>
-                    <span className="dashboard-data-tag">ACROSS YOUR TEAMS</span>
+                    <span className="dashboard-data-tag">CURRENT WORKSPACE</span>
                 </div>
                 <h3 id="dashboard-tasks-heading">My tasks</h3>
                 {state.loading ? <p role="status">Loading assigned work…</p>
