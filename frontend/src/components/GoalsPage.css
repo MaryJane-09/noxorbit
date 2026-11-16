@@ -219,3 +219,11 @@
 .goals-history-list time{white-space:nowrap;font-size:11px;color:#b7a4bd}
 .goals-history-error{color:#ffc8d4;font-size:13px}
 @media(max-width:630px){.goals-history-list li{flex-wrap:wrap}.goals-history-list time{margin-left:25px}}
+
+@media (max-width: 480px) {
+  .goals-page, .goals-list, .goals-card { min-width: 0; }
+  .goals-heading h1, .goals-card h3 { overflow-wrap: anywhere; }
+  .goals-icon-button, .goals-milestone-check { min-width: 44px; min-height: 44px; }
+  .goals-form-actions { flex-wrap: wrap; }
+  .goals-form-actions button { min-height: 44px; }
+}
