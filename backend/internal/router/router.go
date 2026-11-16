@@ -81,7 +81,6 @@ func New(pool *pgxpool.Pool) http.Handler {
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
 	notificationHandler := notification.NewHandler(notification.NewRepository(pool))
 	preferenceHandler := preference.NewHandler(preference.NewRepository(pool))
-	appearanceHandler := preference.NewAppearanceHandler(preference.NewAppearanceRepository(pool))
 	accountHandler := account.NewHandler(account.NewRepository(pool))
 	profileRepo := profile.NewRepository(pool)
 	profileHandler := profile.NewHandler(profileRepo)
@@ -126,7 +125,6 @@ func New(pool *pgxpool.Pool) http.Handler {
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
 	mux.HandleFunc("/api/v1/preferences", auth.RequireAuth(sessionRepo, preferenceHandler.Handle))
-	mux.HandleFunc("/api/v1/appearance", auth.RequireAuth(sessionRepo, appearanceHandler.Handle))
 	mux.HandleFunc("/api/v1/notifications", auth.RequireAuth(sessionRepo, notificationHandler.List))
 	mux.HandleFunc("/api/v1/notifications/preferences", auth.RequireAuth(sessionRepo, notificationHandler.Preferences))
 	mux.HandleFunc("/api/v1/notifications/read-all", auth.RequireAuth(sessionRepo, notificationHandler.MarkAllRead))
