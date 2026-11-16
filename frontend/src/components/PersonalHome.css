@@ -101,3 +101,11 @@
   .personal-home-quick-links button{padding:10px}
   .personal-home-quick-links button.personal-home-quick-primary{grid-column:1/-1}
 }
+
+/* Phone-width controls and long titles should never force horizontal scrolling. */
+@media (max-width: 480px) {
+  .personal-home, .personal-home-heading, .personal-home-panel { min-width: 0; }
+  .personal-home-heading h1 { overflow-wrap: anywhere; }
+  .personal-home-quick-links button { min-height: 44px; }
+  .personal-home-metrics { gap: 12px; }
+}
