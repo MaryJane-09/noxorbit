@@ -11,6 +11,7 @@ import (
 	"github.com/MaryJane-09/noxorbit/backend/internal/profile"
 	"github.com/MaryJane-09/noxorbit/backend/internal/preference"
 	"github.com/MaryJane-09/noxorbit/backend/internal/email"
+	"github.com/MaryJane-09/noxorbit/backend/internal/goal"
 	"github.com/MaryJane-09/noxorbit/backend/internal/health"
 	"github.com/MaryJane-09/noxorbit/backend/internal/membership"
 	"github.com/MaryJane-09/noxorbit/backend/internal/notification"
@@ -81,6 +82,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	activityHandler := activity.NewHandler(activity.NewRepository(pool))
 	notificationHandler := notification.NewHandler(notification.NewRepository(pool))
 	preferenceHandler := preference.NewHandler(preference.NewRepository(pool))
+	goalHandler := goal.NewHandler(goal.NewRepository(pool))
 	accountHandler := account.NewHandler(account.NewRepository(pool))
 	profileRepo := profile.NewRepository(pool)
 	profileHandler := profile.NewHandler(profileRepo)
@@ -125,6 +127,10 @@ func New(pool *pgxpool.Pool) http.Handler {
 	// All task endpoints require a session; repository writes enforce the task role rules.
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
 	mux.HandleFunc("/api/v1/preferences", auth.RequireAuth(sessionRepo, preferenceHandler.Handle))
+	mux.HandleFunc("/api/v1/goals", auth.RequireAuth(sessionRepo, goalHandler.Collection))
+	mux.HandleFunc("/api/v1/goals/{goal_id}", auth.RequireAuth(sessionRepo, goalHandler.Detail))
+	mux.HandleFunc("/api/v1/goals/{goal_id}/milestones", auth.RequireAuth(sessionRepo, goalHandler.Milestones))
+	mux.HandleFunc("/api/v1/goals/{goal_id}/milestones/{milestone_id}", auth.RequireAuth(sessionRepo, goalHandler.Milestone))
 	mux.HandleFunc("/api/v1/notifications", auth.RequireAuth(sessionRepo, notificationHandler.List))
 	mux.HandleFunc("/api/v1/notifications/preferences", auth.RequireAuth(sessionRepo, notificationHandler.Preferences))
 	mux.HandleFunc("/api/v1/notifications/read-all", auth.RequireAuth(sessionRepo, notificationHandler.MarkAllRead))
