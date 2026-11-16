@@ -11,6 +11,7 @@ import {
     LoaderCircle,
     Layers3,
     Lightbulb,
+    Target,
     ListTodo,
     LogOut,
     Trash2,
@@ -28,6 +29,7 @@ import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
 import PersonalHome from './PersonalHome'
+import GoalsPage from './GoalsPage'
 import RecycleBinPage from './RecycleBinPage'
 import ActivityPage from './ActivityPage'
 import SettingsPage from './SettingsPage'
@@ -83,6 +85,7 @@ function pageFromHash() {
     if (window.location.hash === '#workspaces') return 'workspaces'
     if (window.location.hash === '#projects') return 'projects'
     if (window.location.hash === '#my-tasks') return 'my-tasks'
+    if (window.location.hash === '#goals') return 'goals'
     if (window.location.hash === '#recycle-bin') return 'recycle-bin'
     if (window.location.hash === '#activity') return 'activity'
     if (window.location.hash === '#settings') return 'settings'
@@ -345,6 +348,13 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <span>My tasks</span>
                         {page === 'my-tasks' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
+                    <a href="#goals" aria-label="My goals" title={sidebarCollapsed ? "My goals" : undefined}
+                        className={`dashboard-nav-item${page === 'goals' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'goals' ? 'page' : undefined} onClick={() => goToPage('goals')}>
+                        <Target size={19} aria-hidden="true" />
+                        <span>My goals</span>
+                        {page === 'goals' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
                     <div className="dashboard-nav-section-separator" aria-hidden="true" />
                     <p className="dashboard-sidebar-label">WORKSPACE</p>
                     <a href={activeWorkspace ? `#overview/${activeWorkspace.id}` : "#overview"} aria-label="Overview" title={sidebarCollapsed ? "Overview" : undefined} className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
@@ -415,9 +425,9 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <button className="dashboard-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation" aria-expanded={menuOpen}>
                             <Menu size={22} />
                         </button>
-                        <span>{page === 'home' || page === 'my-tasks' ? 'PERSONAL' : activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
+                        <span>{page === 'home' || page === 'my-tasks' || page === 'goals' ? 'PERSONAL' : activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>{page === 'home' ? 'Home' : page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
+                        <strong>{page === 'home' ? 'Home' : page === 'goals' ? 'My goals' : page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <NotificationCenter preferences={preferences} />
@@ -426,12 +436,14 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     </div>
                 </header>
 
-                <main className="dashboard-main" id={page === 'home' ? 'dashboard-home' : page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : page === 'settings' ? 'dashboard-settings' : 'dashboard-projects'}>
+                <main className="dashboard-main" id={page === 'home' ? 'dashboard-home' : page === 'goals' ? 'dashboard-goals' : page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : page === 'settings' ? 'dashboard-settings' : 'dashboard-projects'}>
                     {page === 'home' ? (
                         <PersonalHome user={user} workspaces={workspaces} workspacesLoading={workspacesLoading}
                             workspacesError={workspaceLoadError} preferences={preferences}
                             onNavigate={goToPage} onOpenWorkspace={openWorkspaceOverview}
                             onCreateWorkspace={openCreateDialog} />
+                    ) : page === 'goals' ? (
+                        <GoalsPage preferences={preferences} />
                     ) : page === 'invite' ? (
                         <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
                             onAccepted={onInvitationAccepted} />
