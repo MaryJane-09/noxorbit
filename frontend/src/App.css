@@ -22,3 +22,13 @@
 .app-shell--dashboard .app-background {
   display: none;
 }
+
+/* While the session is being restored, no authentication intro or dashboard
+   is mounted. Use the last theme only as a blank-surface visual hint. */
+.app-shell--checking {
+  background: #16101e;
+  min-height: 100dvh;
+}
+.app-shell--checking[data-loading-theme="light"] {
+  background: #f7f5f3;
+}
