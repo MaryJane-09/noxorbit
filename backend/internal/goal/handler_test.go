@@ -13,6 +13,7 @@ import (
 
 type fakeStore struct {
     list func(context.Context,uuid.UUID)([]Goal,error)
+    history func(context.Context,uuid.UUID)([]ActivityEvent,error)
     create func(context.Context,uuid.UUID,string,string,*string)(Goal,error)
     update func(context.Context,uuid.UUID,uuid.UUID,string,string,*string)(bool,error)
     delete func(context.Context,uuid.UUID,uuid.UUID)(bool,error)
@@ -21,6 +22,7 @@ type fakeStore struct {
     remove func(context.Context,uuid.UUID,uuid.UUID,uuid.UUID)(bool,error)
 }
 func(f fakeStore)List(c context.Context,u uuid.UUID)([]Goal,error){return f.list(c,u)}
+func(f fakeStore)ListActivity(c context.Context,u uuid.UUID)([]ActivityEvent,error){return f.history(c,u)}
 func(f fakeStore)Create(c context.Context,u uuid.UUID,t,d string,date *string)(Goal,error){return f.create(c,u,t,d,date)}
 func(f fakeStore)Update(c context.Context,u,id uuid.UUID,t,d string,date *string)(bool,error){return f.update(c,u,id,t,d,date)}
 func(f fakeStore)Delete(c context.Context,u,id uuid.UUID)(bool,error){return f.delete(c,u,id)}
@@ -110,4 +112,19 @@ func TestListIsAccountScoped(t *testing.T){
     w:=httptest.NewRecorder()
     h.Collection(w,request("GET","/api/v1/goals",""))
     if w.Code!=200||strings.TrimSpace(w.Body.String())!="[]"{t.Fatalf("%d: %s",w.Code,w.Body.String())}
+}
+
+func TestGoalActivityUsesAuthenticatedUser(t *testing.T){
+    h:=NewHandler(fakeStore{history:func(_ context.Context,user uuid.UUID)([]ActivityEvent,error){
+        if user!=testUser{t.Fatal("history is not user-scoped")}
+        return []ActivityEvent{},nil
+    }})
+    w:=httptest.NewRecorder()
+    h.Activity(w,request("GET","/api/v1/goals/activity",""))
+    if w.Code!=200||strings.TrimSpace(w.Body.String())!="[]"{
+        t.Fatalf("status %d: %s",w.Code,w.Body.String())
+    }
+    w=httptest.NewRecorder()
+    h.Activity(w,httptest.NewRequest("GET","/api/v1/goals/activity",nil))
+    if w.Code!=401{t.Fatalf("expected 401, got %d",w.Code)}
 }
