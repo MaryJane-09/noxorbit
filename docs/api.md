@@ -922,3 +922,20 @@ Progress is always computed by the frontend as
 Goals do not yet create tasks or automatically complete milestones based on
 task status. This first phase supports **personal** goals only, not workspace
 goals.
+
+
+## Private goal activity — migration 017
+
+`GET /api/v1/goals/activity` lists up to 30 of the authenticated user's
+recent goal and milestone events, most recent first. Each event includes
+`id`, `goal_id`, `goal_title`, nullable `milestone_title`,
+`action`, and `created_at`. Supported actions are
+`goal.created`, `goal.updated`, `goal.deleted`,
+`milestone.added`, `milestone.completed`, `milestone.reopened`,
+and `milestone.deleted`.
+
+History is private to the account; `Activity` remains exclusively
+workspace-scoped. Deletion confirmations are rendered inside Noxorbit
+instead of through native browser `window.confirm`. Creating your own
+goal produces inline success feedback and a private audit record, not a
+redundant bell notification.
