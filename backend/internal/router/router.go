@@ -128,6 +128,7 @@ func New(pool *pgxpool.Pool) http.Handler {
 	mux.HandleFunc("/api/v1/my-tasks", auth.RequireAuth(sessionRepo, assignedHandler.List))
 	mux.HandleFunc("/api/v1/preferences", auth.RequireAuth(sessionRepo, preferenceHandler.Handle))
 	mux.HandleFunc("/api/v1/goals", auth.RequireAuth(sessionRepo, goalHandler.Collection))
+	mux.HandleFunc("/api/v1/goals/activity", auth.RequireAuth(sessionRepo, goalHandler.Activity))
 	mux.HandleFunc("/api/v1/goals/{goal_id}", auth.RequireAuth(sessionRepo, goalHandler.Detail))
 	mux.HandleFunc("/api/v1/goals/{goal_id}/milestones", auth.RequireAuth(sessionRepo, goalHandler.Milestones))
 	mux.HandleFunc("/api/v1/goals/{goal_id}/milestones/{milestone_id}", auth.RequireAuth(sessionRepo, goalHandler.Milestone))
