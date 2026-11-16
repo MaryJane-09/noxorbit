@@ -36,7 +36,6 @@ import OverviewTaskCards from './OverviewTaskCards'
 import { DEFAULT_PREFERENCES } from './deadlines'
 import ProjectsPage, { ProjectOverviewCard } from './ProjectsPage'
 import './Home.css'
-import './AppearanceTheme.css'
 
 const SETUP_STEPS = [
     {
@@ -90,16 +89,7 @@ function pageFromHash() {
     return 'home'
 }
 
-export default function Home({ user, onLogout, onUserUpdated, initialAppearance }) {
-    const [appearance, setAppearance] = useState(() => initialAppearance || { theme: 'dark', reduced_motion: false })
-    const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
-    useEffect(() => {
-        const media = window.matchMedia('(prefers-color-scheme: dark)')
-        const update = () => setSystemDark(media.matches)
-        media.addEventListener('change', update)
-        return () => media.removeEventListener('change', update)
-    }, [])
-    const resolvedTheme = appearance.theme === 'system' ? (systemDark ? 'dark' : 'light') : appearance.theme
+export default function Home({ user, onLogout, onUserUpdated }) {
     const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES)
     useEffect(() => {
         const controller = new AbortController()
@@ -292,8 +282,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
 
     return (
         <div className={sidebarCollapsed ? "home-page home-page--sidebar-collapsed" : "home-page"}
-            data-theme={resolvedTheme} data-motion={appearance.reduced_motion ? 'reduced' : 'normal'}
-            style={{ colorScheme: resolvedTheme }}>
+            style={{ colorScheme: 'dark' }}>
             {menuOpen && (
                 <button
                     className="dashboard-mobile-scrim"
@@ -466,10 +455,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
-                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences} appearance={appearance} onAppearanceSaved={(updated) => {
-                                setAppearance(updated)
-                                try { window.localStorage.setItem('noxorbit.appearance.hint', updated.theme) } catch { /* storage unavailable */ }
-                            }}
+                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences}
                             onAvatarUpdated={() => { setAvatarURL(null); setAvatarRevision((value) => value + 1) }}
                             onEmailChanged={() => { window.location.hash = ''; onLogout() }}
                             onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
