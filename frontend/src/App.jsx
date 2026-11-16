@@ -4,31 +4,58 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import ForgotPassword from "./components/ForgotPassword";
-import { fetchMe } from "./api";
+import { fetchMe, fetchAppearancePreferences } from "./api";
 import "./App.css";
+
+const DEFAULT_APPEARANCE = { theme: "dark", reduced_motion: false };
+
+async function loadSignedInAppearance() {
+  try {
+    return await fetchAppearancePreferences();
+  } catch (error) {
+    // Never display a placeholder dark dashboard while a theme is loading.
+    // If loading genuinely fails, keep the safe dark default.
+    console.error("Could not load appearance preferences:", error);
+    return DEFAULT_APPEARANCE;
+  }
+}
 
 function App() {
   const [introDone, setIntroDone] = useState(false);
   const [view, setView] = useState(() => window.location.hash.startsWith("#invite/") ? "login" : "register");
-  const [user, setUser] = useState(null);
+  const [session, setSession] = useState(null);
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    fetchMe().then((me) => {
-      setUser(me);
+    let active = true;
+    async function restoreSession() {
+      const me = await fetchMe();
+      const appearance = me ? await loadSignedInAppearance() : null;
+      if (!active) return;
+      setSession(me ? { user: me, appearance } : null);
       setChecking(false);
-    });
+    }
+    void restoreSession();
+    return () => { active = false; };
   }, []);
 
   async function handleLoginSuccess() {
-    setUser(await fetchMe());
+    const me = await fetchMe();
+    if (!me) return;
+    const appearance = await loadSignedInAppearance();
+    setSession({ user: me, appearance });
   }
 
+  const user = session?.user ?? null;
   let screen = null;
-  if (introDone && !checking) {
-    if (user) {
-      screen = <Home user={user} onUserUpdated={setUser} onLogout={() => { setUser(null); setView("login"); }} />;
-    } else if (view === "forgot") {
+  if (!checking && user) {
+    // Authenticated refreshes skip Intro entirely. Appearance is resolved
+    // before mounting Home, so no dark-to-light repaint occurs.
+    screen = <Home user={user} initialAppearance={session.appearance}
+      onUserUpdated={(updated) => setSession((current) => current ? { ...current, user: updated } : current)}
+      onLogout={() => { setSession(null); setIntroDone(true); setView("login"); }} />;
+  } else if (!checking && introDone) {
+    if (view === "forgot") {
       screen = <ForgotPassword onLogin={() => setView("login")} />;
     } else if (view === "login") {
       screen = <Login onSuccess={handleLoginSuccess} onRegister={() => setView("register")} onForgot={() => setView("forgot")} />;
@@ -38,9 +65,11 @@ function App() {
   }
 
   return (
-    <div className={`app-shell${user && introDone ? " app-shell--dashboard" : ""}`}>
-      <div className="app-background" />
-      <Intro onComplete={() => setIntroDone(true)} />
+    <div className={`app-shell${user ? " app-shell--dashboard" : ""}`}>
+      {!checking && !user && <>
+        <div className="app-background" />
+        {!introDone && <Intro onComplete={() => setIntroDone(true)} />}
+      </>}
       <div className="app-content">{screen}</div>
     </div>
   );
