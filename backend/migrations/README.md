@@ -312,29 +312,19 @@ npm run test:deadlines
 Test saving and reloading the preferences, plus local-midnight behavior.
 
 
-## Migration 015 — Appearance preferences
+## Migration 015 — Retired appearance preferences (historical)
 
-Apply `backend/migrations/015_appearance_preferences.sql` **once** in
-Supabase SQL Editor after migration 014 and before starting the updated
-backend. This creates `public.appearance_preferences` with an account-scoped
-`theme` (`dark`, `light`, or `system`) and `reduced_motion` boolean.
-It does not alter the user's calendar preferences, tasks, or workspaces.
+Migration `015_appearance_preferences.sql` was part of an experiment
+with multiple interface themes. **Noxorbit now uses only its approved
+Dark theme.** The Appearance Settings UI and appearance API have been
+removed. New installations do **not** need this migration for the
+current application.
 
-Verify:
-```sql
-SELECT to_regclass('public.appearance_preferences');
-```
-Expected value: `public.appearance_preferences`.
+Do not drop `public.appearance_preferences` automatically on existing
+Supabase installations. Historical migrations and already-applied schema
+must remain reproducible until a separate, explicitly planned
+database-cleanup migration is reviewed. The unused table has no effect
+on Noxorbit's active theme, tasks, workspaces, or user preferences.
 
-Open **Settings → Appearance** to select Dark (the existing premium
-purple-and-gold design), Light (ivory/plum/gold), or System (live follow
-OS color scheme), plus Reduce motion. Changes take effect after saving,
-persist per account, and are limited to the signed-in workspace; the
-existing cinematic authentication flow is unchanged. OS
-`prefers-reduced-motion` is honored regardless of account setting.
-
-Test the migration, theme persistence after reload, switching system
-appearance, reduced-motion behavior, and contrast on desktop and mobile.
-The Light variation is new and requires a visual review on all pages.
-Run `go test ./backend/...`, `go vet ./backend/...`,
-`npm run lint` and `npm run build` (inside `frontend`).
+Operating-system `prefers-reduced-motion` is still respected by the
+signed-in dashboard.
