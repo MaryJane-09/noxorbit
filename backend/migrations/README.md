@@ -366,3 +366,30 @@ checking that the calculated progress changes, refreshing the browser,
 editing a goal, and deleting one. Also test two signed-in accounts: a user
 must not be able to view or edit another user's goal by guessing its UUID.
 Goals are personal across workspaces in this release.
+
+
+## Migration 017 — Personal goal activity
+
+Run `backend/migrations/017_personal_goal_activity.sql` in the Supabase
+SQL Editor **after 016_personal_goals.sql**. The Goals page uses this
+migration to display private, persisted goal history.
+
+This creates `public.personal_goal_activity` and audit triggers on
+`personal_goals` and `goal_milestones`. Events are recorded in the
+same database transaction as each change, with the goal creator's user ID.
+The API reads only the signed-in user's events. This does **not** add
+personal goals to workspace Activity, and does not send bell/email
+notifications for the user's own actions.
+
+Existing goals are backfilled with their original `created_at`
+timestamps as creation events. Earlier milestone edits are not reconstructed.
+Verify with:
+
+```sql
+SELECT to_regclass('public.personal_goal_activity');
+SELECT action, goal_title, created_at
+FROM public.personal_goal_activity ORDER BY created_at DESC LIMIT 10;
+```
+
+Test creation, editing, completion, reopening and deletion to confirm
+the history appears in **My Goals → Recent goal activity**.
