@@ -152,3 +152,43 @@
   .goals-add-milestone button[type="submit"]{width:100%}
   .goals-form{padding:17px}
 }
+
+/* Goal card details: progress is the focus; statuses are informative, not
+   decorative tags. Cards align to their own content height. */
+.goals-list{align-items:start}
+.goals-card{height:auto;align-self:start}
+.goals-card-identity{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.goals-status{display:inline-flex;align-items:center;min-height:28px;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.025em;border:1px solid transparent}
+.goals-status--planning{background:rgba(200,167,212,.1);color:#d9c5dc;border-color:rgba(200,167,212,.26)}
+.goals-status--active{background:rgba(235,192,125,.12);color:#ffda9e;border-color:rgba(235,192,125,.32)}
+.goals-status--achieved{background:rgba(113,188,145,.13);color:#b5edc9;border-color:rgba(113,188,145,.34)}
+.goals-page--compact .goals-card{min-height:0;align-self:start}
+.goals-confirm-backdrop{
+ position:fixed;inset:0;z-index:9000;display:grid;place-items:center;
+ background:rgba(8,5,14,.78);padding:20px;backdrop-filter:blur(5px);
+}
+.goals-confirm-dialog{
+ width:min(100%,440px);display:grid;gap:13px;padding:27px;
+ color:#f9edf8;border-radius:18px;
+ background:linear-gradient(145deg,#30213b,#211727);
+ border:1px solid rgba(242,189,153,.34);
+ box-shadow:0 24px 75px rgba(0,0,0,.5);
+}
+.goals-confirm-icon{
+ display:grid;place-items:center;width:44px;height:44px;
+ border-radius:12px;background:rgba(210,107,128,.13);
+ border:1px solid rgba(235,144,158,.34);color:#ffbbc7;
+}
+.goals-confirm-dialog h2{margin:0;font-size:23px}
+.goals-confirm-dialog p{margin:0;line-height:1.7;color:#d8c4dc;font-size:14px;overflow-wrap:anywhere}
+.goals-confirm-dialog p strong{color:#fff4fa}
+.goals-confirm-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:12px}
+.goals-confirm-delete{
+ display:inline-flex;align-items:center;justify-content:center;gap:8px;
+ padding:10px 17px;min-height:40px;
+ border:1px solid #da8fa1;border-radius:10px;
+ background:#92374e;color:#fff3f6;font:inherit;font-weight:800;cursor:pointer;
+}
+.goals-confirm-delete:hover:not(:disabled){background:#aa445c}
+.goals-confirm-dialog button:focus-visible{outline:2px solid #f8d797;outline-offset:3px}
+@media(max-width:500px){.goals-confirm-dialog{padding:20px}}
