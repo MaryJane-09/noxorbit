@@ -7,7 +7,7 @@ import {
 import { formatCalendarDate } from './deadlines'
 import './GoalsPage.css'
 
-export function goalProgress(goal) {
+function goalProgress(goal) {
   const total = goal.milestones?.length || 0
   const completed = goal.milestones?.filter((item) => item.completed).length || 0
   return { total, completed, percent: total ? Math.round(completed / total * 100) : 0 }
