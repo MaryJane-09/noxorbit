@@ -16,7 +16,7 @@ function summary(tasks, today) {
 
 // Personal Home includes assignments from every workspace. It is deliberately
 // independent of the workspace currently highlighted in the sidebar.
-export default function PersonalHome({ user, workspaces, workspacesLoading, workspacesError, preferences, onNavigate, onSelectWorkspace }) {
+export default function PersonalHome({ user, workspaces, workspacesLoading, workspacesError, preferences, onNavigate, onOpenWorkspace }) {
     const [state, setState] = useState({ tasks: [], loading: true, error: '' })
     const [revision, setRevision] = useState(0)
     useEffect(() => {
@@ -121,7 +121,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                         </div>
                             : <div className="personal-home-space-list">{workspaces.slice(0, 5).map((workspace) =>
                                 <button className="personal-home-space" key={workspace.id} type="button"
-                                    onClick={() => { onSelectWorkspace(workspace.id); onNavigate('overview') }}>
+                                    onClick={() => onOpenWorkspace(workspace.id)}>
                                     <span className="personal-home-icon"><Layers3 size={19} aria-hidden="true" /></span>
                                     <span><strong>{workspace.name}</strong><small>{workspace.purpose} · {workspace.role}</small></span>
                                     <ArrowRight size={17} aria-hidden="true" />
