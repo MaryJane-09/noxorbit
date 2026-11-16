@@ -507,3 +507,30 @@ export function fetchUserPreferences({ signal } = {}) {
 export function saveUserPreferences(settings) {
   return projectRequest(`${API}/api/v1/preferences`, { method: "PUT", body: settings });
 }
+
+// Personal goals are account-scoped; the backend never accepts a user ID.
+const goalURL = (goalID = '') => `${API}/api/v1/goals${goalID ? '/'+encodeURIComponent(goalID) : ''}`;
+export async function fetchGoals({ signal } = {}) {
+  const goals = await projectRequest(goalURL(), { signal });
+  if (!Array.isArray(goals)) throw new Error('Invalid goals response.');
+  return goals;
+}
+export function createGoal(details) {
+  return projectRequest(goalURL(), { method: 'POST', body: details });
+}
+export function updateGoal(id, details) {
+  return projectRequest(goalURL(id), { method: 'PATCH', body: details });
+}
+export function deleteGoal(id) {
+  return projectRequest(goalURL(id), { method: 'DELETE' });
+}
+export function createGoalMilestone(goalID, title) {
+  return projectRequest(`${goalURL(goalID)}/milestones`, { method: 'POST', body: { title } });
+}
+export function setGoalMilestone(goalID, milestoneID, completed) {
+  return projectRequest(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`,
+    { method: 'PATCH', body: { completed } });
+}
+export function deleteGoalMilestone(goalID, milestoneID) {
+  return projectRequest(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`, { method: 'DELETE' });
+}
