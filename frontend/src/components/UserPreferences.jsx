@@ -28,6 +28,11 @@ export default function UserPreferences({ preferences, onSaved }) {
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState('')
     const [notice, setNotice] = useState('')
+    useEffect(() => {
+        if (!notice) return undefined
+        const timeout = window.setTimeout(() => setNotice(''), 3500)
+        return () => window.clearTimeout(timeout)
+    }, [notice])
 
     useEffect(() => {
         const controller = new AbortController()
@@ -58,7 +63,7 @@ export default function UserPreferences({ preferences, onSaved }) {
             setDraft(saved)
             setSaved(saved)
             onSaved(saved)
-            setNotice('Preferences saved. Deadline labels and dates now use your choices.')
+            setNotice('Preferences saved.')
         } catch (err) {
             setError(err.message || 'Could not save preferences.')
         } finally { setSaving(false) }
