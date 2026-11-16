@@ -597,7 +597,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                         <ProjectOverviewCard workspaceID={activeWorkspace?.id}
                             onOpen={() => goToPage('projects')} />
 
-                        <OverviewTaskCards preferences={preferences} workspaceID={activeWorkspace?.id} onOpenTasks={() => goToPage('my-tasks')} />
+                        <OverviewTaskCards key={activeWorkspace?.id || 'no-workspace'} preferences={preferences} workspaceID={activeWorkspace?.id} onOpenTasks={() => goToPage('my-tasks')} />
                     </div>
 
                         </>
