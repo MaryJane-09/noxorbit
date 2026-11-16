@@ -328,3 +328,41 @@ on Noxorbit's active theme, tasks, workspaces, or user preferences.
 
 Operating-system `prefers-reduced-motion` is still respected by the
 signed-in dashboard.
+
+
+## Migration 016 — Personal goals and milestones
+
+Apply `backend/migrations/016_personal_goals.sql` in the Supabase SQL Editor
+**after migration 014** and before testing the new Goals page. Migration 015
+was retired; it is not required by Goals.
+
+This adds two account-scoped tables: `public.personal_goals` and
+`public.goal_milestones`. Each goal belongs to its creator's user ID and
+milestones belong to goals; deleting a goal cascades to its milestones.
+The backend checks ownership in every read and mutation. The tables have RLS
+enabled and direct access is revoked from public API roles.
+
+Verify in Supabase:
+
+```sql
+SELECT to_regclass('public.personal_goals');
+SELECT to_regclass('public.goal_milestones');
+```
+
+Both should return a table name. No existing tasks or workspaces are migrated.
+
+Local verification:
+
+```bash
+go test ./backend/...
+go vet ./backend/...
+cd frontend
+npm run lint
+npm run build
+```
+
+Test creating a personal goal, adding milestones, toggling them complete,
+checking that the calculated progress changes, refreshing the browser,
+editing a goal, and deleting one. Also test two signed-in accounts: a user
+must not be able to view or edit another user's goal by guessing its UUID.
+Goals are personal across workspaces in this release.
