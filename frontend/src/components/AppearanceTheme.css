@@ -714,3 +714,71 @@
 .home-page[data-theme="light"] .dashboard-main .dashboard-form-error{
  color:#922e48;
 }
+
+
+/* Shared light-mode icon contrast: clear ink, not faint champagne strokes.
+   Brand asset/wordmark are intentionally excluded and remain theme-invariant. */
+.home-page[data-theme="light"] {
+  --light-icon-ink:#865419;
+  --light-icon-strong:#643e18;
+  --light-icon-bg:#f0e7f2;
+  --light-icon-edge:#cbb4cf;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .settings-section-title,.dashboard-empty-top,
+  .workspace-manager-empty-icon,.projects-empty-icon,
+  .dashboard-dialog-icon,.dashboard-dialog-close,
+  .workspace-manager-card-icon,.projects-card-icon,
+  .dashboard-tile-icon
+) {
+  color:var(--light-icon-ink);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-empty-icon,.projects-empty-icon,
+  .dashboard-dialog-icon,.dashboard-tile-icon,
+  .workspace-manager-card-icon,.projects-card-icon
+) {
+  background:var(--light-icon-bg);
+  border:1px solid var(--light-icon-edge);
+  color:var(--light-icon-ink);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .settings-section-title,.workspace-manager-empty-icon,
+  .projects-empty-icon,.dashboard-dialog-icon,.dashboard-dialog-close,
+  .dashboard-tile-icon,.workspace-manager-card-icon,.projects-card-icon
+) > svg {
+  color:inherit;
+  stroke:currentColor;
+  opacity:1;
+}
+.home-page[data-theme="light"] .dashboard-main .settings-section-title > svg {
+  color:#87541b;
+  stroke-width:2.15;
+  flex:0 0 auto;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-dialog-close {
+  background:#f3ebf4;
+  border-color:#c8b3cb;
+  color:#5f3d68;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-dialog-close:hover:not(:disabled) {
+  background:#e7daea;
+  color:#382443;
+  border-color:#9e82aa;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-eyebrow {
+  color:#86521e;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-eyebrow svg {
+  color:inherit;
+  stroke:currentColor;
+  opacity:1;
+}
+/* Outlined gold-only controls also require readable strokes on ivory. */
+.home-page[data-theme="light"] .dashboard-main :is(
+ .dashboard-empty-status,.workspace-manager-section-top .dashboard-eyebrow,
+ .workspace-manager-heading .dashboard-eyebrow,.projects-page-heading .dashboard-eyebrow
+) {
+  color:#84501b;
+}
