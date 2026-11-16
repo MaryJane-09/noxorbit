@@ -28,6 +28,8 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
   const [milestoneDrafts, setMilestoneDrafts] = useState({})
   const titleRef = useRef(null)
   const confirmRef = useRef(null)
+  const destructiveRef = useRef(null)
+  const lastTriggerRef = useRef(null)
   const [pendingDelete, setPendingDelete] = useState(null)
   const [history, setHistory] = useState({ items: [], loading: true, error: '' })
 
@@ -128,12 +130,28 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
     if (!pendingDelete) return
     confirmRef.current?.focus()
     function onKeyDown(event) {
-      if (event.key === 'Escape') setPendingDelete(null)
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        setPendingDelete(null)
+      } else if (event.key === 'Tab') {
+        // Keep keyboard navigation inside the small confirmation dialog.
+        if (event.shiftKey && document.activeElement === confirmRef.current) {
+          event.preventDefault()
+          destructiveRef.current?.focus()
+        } else if (!event.shiftKey && document.activeElement === destructiveRef.current) {
+          event.preventDefault()
+          confirmRef.current?.focus()
+        }
+      }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [pendingDelete])
 
+  function closeConfirmation() {
+    setPendingDelete(null)
+    window.setTimeout(() => lastTriggerRef.current?.focus(), 0)
+  }
   function confirmDeletion() {
     if (!pendingDelete || busy) return
     const target = pendingDelete
@@ -216,7 +234,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
               {!compact && <div className="goals-card-actions">
                 <button type="button" className="goals-icon-button" onClick={() => edit(goal)} disabled={busy} aria-label={`Edit ${goal.title}`}><Pencil size={16} /></button>
                 <button type="button" className="goals-icon-button goals-danger" disabled={busy}
-                  onClick={() => setPendingDelete({ type: 'goal', goalID: goal.id, label: goal.title })}
+                  onClick={(event) => { lastTriggerRef.current = event.currentTarget; setPendingDelete({ type: 'goal', goalID: goal.id, label: goal.title }) }}
                   aria-label={`Delete ${goal.title}`}><Trash2 size={16} /></button>
               </div>}
             </div>
@@ -240,7 +258,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
                     </button>
                     <span className={item.completed ? 'goals-complete' : ''}>{item.title}</span>
                     <button type="button" className="goals-icon-button goals-danger" disabled={busy}
-                      onClick={() => setPendingDelete({ type: 'milestone', goalID: goal.id, milestoneID: item.id, label: item.title })}
+                      onClick={(event) => { lastTriggerRef.current = event.currentTarget; setPendingDelete({ type: 'milestone', goalID: goal.id, milestoneID: item.id, label: item.title }) }}
                       aria-label={`Delete milestone ${item.title}`}><X size={15} /></button>
                   </div>)}
                 </div>
@@ -283,7 +301,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
         })}</ol>}
     </section>}
 
-    {pendingDelete && <div className="goals-confirm-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) setPendingDelete(null) }}>
+    {pendingDelete && <div className="goals-confirm-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) closeConfirmation() }}>
       <div className="goals-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="goals-confirm-title" aria-describedby="goals-confirm-description">
         <span className="goals-confirm-icon"><Trash2 size={21} aria-hidden="true" /></span>
         <h2 id="goals-confirm-title">{pendingDelete.type === 'goal' ? 'Delete this goal?' : 'Delete this milestone?'}</h2>
@@ -293,8 +311,8 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
             : <>Remove <strong>{pendingDelete.label}</strong> from this goal? Its progress will be recalculated.</>}
         </p>
         <div className="goals-confirm-actions">
-          <button type="button" ref={confirmRef} className="goals-secondary" disabled={busy} onClick={() => setPendingDelete(null)}>Cancel</button>
-          <button type="button" className="goals-confirm-delete" disabled={busy} onClick={confirmDeletion}>
+          <button type="button" ref={confirmRef} className="goals-secondary" disabled={busy} onClick={closeConfirmation}>Cancel</button>
+          <button type="button" className="goals-confirm-delete" ref={destructiveRef} disabled={busy} onClick={confirmDeletion}>
             <Trash2 size={16} aria-hidden="true" /> {pendingDelete.type === 'goal' ? 'Delete goal' : 'Delete milestone'}
           </button>
         </div>
