@@ -74,3 +74,12 @@
 .tasks-meta .tasks-due-indicator { border-radius: 6px; padding: 3px 7px; font-size: 12px; font-weight: 800; }
 .tasks-due-indicator--overdue, .tasks-due-indicator--today { background: rgba(192,69,86,.24); color: #ffd1d9; }
 .tasks-due-indicator--tomorrow, .tasks-due-indicator--soon { background: rgba(196,132,51,.24); color: #ffe0aa; }
+
+@media (max-width: 480px) {
+    .tasks-page, .tasks-heading, .tasks-columns, .tasks-column { min-width: 0; }
+    .tasks-heading h1 { overflow-wrap: anywhere; }
+    .tasks-card { padding: 13px; }
+    .tasks-card-menu > summary { min-width: 44px; min-height: 44px; }
+    .tasks-status-label select { min-height: 44px; }
+    .tasks-meta { overflow-wrap: anywhere; }
+}
