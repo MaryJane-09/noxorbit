@@ -257,3 +257,11 @@
 .projects-card-actions button:first-child { background: rgba(243, 193, 133, .13); border-color: rgba(243, 204, 154, .5); color: #ffe0ad; }
 .projects-card-actions button:first-child:hover:not(:disabled) { background: rgba(243, 193, 133, .21); }
 @media (max-width: 680px) { .projects-card { min-height: 0; } }
+
+@media (max-width: 480px) {
+    .projects-page, .projects-page-heading, .projects-grid, .projects-card { min-width: 0; }
+    .projects-page-heading h1 { overflow-wrap: anywhere; }
+    .projects-page-tabs { max-width: 100%; overflow-x: auto; }
+    .projects-page-tabs button { min-height: 44px; flex-shrink: 0; }
+    .projects-card-actions button { min-height: 44px; }
+}
