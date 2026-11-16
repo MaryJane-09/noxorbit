@@ -60,3 +60,95 @@
 @media(max-width:870px){.goals-list,.goals-page--compact .goals-list{grid-template-columns:1fr}}
 @media(max-width:560px){.goals-card,.goals-form,.goals-empty{padding:17px}.goals-add-milestone{flex-wrap:wrap}.goals-add-milestone button{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.goals-progress-track span{transition:none}}
+
+
+/* Goals Phase 1 corrections: the composer must never collapse or let form
+   labels steal horizontal space from the text input. */
+.goals-add-milestone{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:stretch;
+  gap:9px;
+  width:100%;
+  min-width:0;
+}
+.goals-add-milestone .goals-milestone-input{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  font-size:14px;
+}
+.goals-add-milestone button[type="submit"]{
+  display:inline-flex;
+  min-width:83px;
+  justify-content:center;
+  white-space:nowrap;
+  min-height:42px;
+  padding:9px 14px;
+}
+.goals-add-milestone button[type="submit"]:hover:not(:disabled){
+  background:rgba(232,190,138,.22);
+  border-color:rgba(232,190,138,.58);
+}
+.goals-add-milestone button[type="submit"]:disabled{
+  opacity:.5;
+  color:#bcaac0;
+  cursor:not-allowed;
+}
+.goals-form{
+  width:min(100%,720px);
+  justify-self:start;
+  gap:10px;
+  padding:22px;
+  background:linear-gradient(135deg,#32213b,#291d34);
+}
+.goals-form label{margin-top:3px}
+.goals-form textarea{resize:vertical;min-height:78px}
+.goals-form-actions{margin-top:12px}
+.goals-card{overflow:hidden}
+.goals-card h3{overflow-wrap:anywhere}
+.goals-page--compact{gap:13px}
+.goals-page--compact .goals-list{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));
+  gap:14px;
+}
+.goals-page--compact .goals-card{
+  min-width:0;
+  padding:20px;
+}
+.goals-page--compact .goals-empty{
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  justify-items:stretch;
+  column-gap:15px;
+  row-gap:5px;
+  background:linear-gradient(140deg,#2e2038,#23182d);
+  padding:19px 21px;
+}
+.goals-page--compact .goals-empty .goals-symbol{grid-row:1 / span 2}
+.goals-page--compact .goals-empty h3{font-size:17px;align-self:end}
+.goals-page--compact .goals-empty p{font-size:13px;grid-column:2;align-self:start}
+.goals-page--compact .goals-empty .goals-primary{
+  grid-column:3;grid-row:1 / span 2;
+  white-space:nowrap;
+}
+.goals-loading{
+  padding:17px 0;
+  color:#d8c5df;
+}
+@media(max-width:650px){
+  .goals-page--compact .goals-empty{
+    grid-template-columns:44px minmax(0,1fr);
+  }
+  .goals-page--compact .goals-empty .goals-primary{
+    grid-column:1/-1;grid-row:3;
+    justify-self:start;
+  }
+}
+@media(max-width:430px){
+  .goals-add-milestone{grid-template-columns:minmax(0,1fr)}
+  .goals-add-milestone button[type="submit"]{width:100%}
+  .goals-form{padding:17px}
+}
