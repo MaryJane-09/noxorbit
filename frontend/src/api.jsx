@@ -518,19 +518,34 @@ export async function fetchGoals({ signal } = {}) {
 export function createGoal(details) {
   return projectRequest(goalURL(), { method: 'POST', body: details });
 }
+async function goalsNoContent(url, method, body) {
+  let response;
+  try {
+    response = await fetch(url, {
+      method, credentials: 'include',
+      ...(body === undefined ? {} : {
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      }),
+    });
+  } catch {
+    throw new Error('Cannot reach the Noxorbit server.');
+  }
+  if (response.status === 204) return;
+  return workspaceResponse(response);
+}
 export function updateGoal(id, details) {
-  return projectRequest(goalURL(id), { method: 'PATCH', body: details });
+  return goalsNoContent(goalURL(id), 'PATCH', details);
 }
 export function deleteGoal(id) {
-  return projectRequest(goalURL(id), { method: 'DELETE' });
+  return goalsNoContent(goalURL(id), 'DELETE');
 }
 export function createGoalMilestone(goalID, title) {
   return projectRequest(`${goalURL(goalID)}/milestones`, { method: 'POST', body: { title } });
 }
 export function setGoalMilestone(goalID, milestoneID, completed) {
-  return projectRequest(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`,
-    { method: 'PATCH', body: { completed } });
+  return goalsNoContent(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`, 'PATCH', { completed });
 }
 export function deleteGoalMilestone(goalID, milestoneID) {
-  return projectRequest(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`, { method: 'DELETE' });
+  return goalsNoContent(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`, 'DELETE');
 }
