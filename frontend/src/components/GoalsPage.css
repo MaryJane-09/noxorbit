@@ -192,3 +192,30 @@
 .goals-confirm-delete:hover:not(:disabled){background:#aa445c}
 .goals-confirm-dialog button:focus-visible{outline:2px solid #f8d797;outline-offset:3px}
 @media(max-width:500px){.goals-confirm-dialog{padding:20px}}
+
+
+/* Personal goal events are not workspace activity and are intentionally
+   presented as a calm audit trail rather than attention-demanding alerts. */
+.goals-history{
+  display:grid;gap:16px;padding:22px;
+  background:linear-gradient(140deg,#2b1e34,#211828);
+  border:1px solid rgba(235,192,144,.26);border-radius:17px;
+}
+.goals-history-heading{display:flex;gap:13px;align-items:center}
+.goals-history-heading h2{font-size:20px;margin:0 0 5px}
+.goals-history-heading p{margin:0;color:#cbb7d0;font-size:13px;line-height:1.6}
+.goals-history-list{list-style:none;display:grid;gap:0;margin:0;padding:0}
+.goals-history-list li{
+  display:flex;align-items:flex-start;gap:12px;min-width:0;
+  padding:13px 0;border-top:1px solid rgba(234,187,142,.15);
+}
+.goals-history-dot{
+  flex:0 0 9px;width:9px;height:9px;border-radius:50%;
+  background:#eac082;box-shadow:0 0 0 4px rgba(234,192,130,.09);margin:7px 4px 0;
+}
+.goals-history-detail{display:grid;gap:4px;flex:1;min-width:0}
+.goals-history-detail strong{font-size:13px;color:#f8e8f7}
+.goals-history-detail span{font-size:12px;color:#ccb9d1;overflow-wrap:anywhere}
+.goals-history-list time{white-space:nowrap;font-size:11px;color:#b7a4bd}
+.goals-history-error{color:#ffc8d4;font-size:13px}
+@media(max-width:630px){.goals-history-list li{flex-wrap:wrap}.goals-history-list time{margin-left:25px}}
