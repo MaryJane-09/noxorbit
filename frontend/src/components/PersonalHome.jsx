@@ -3,6 +3,7 @@ import { ArrowRight, CalendarClock, CheckCircle2, FolderKanban, Home, Layers3, L
 import { fetchMyTasks } from '../api'
 import { calendarToday, deadlineLabel, formatCalendarDate } from './deadlines'
 import './PersonalHome.css'
+import GoalsPage from './GoalsPage'
 
 function summary(tasks, today) {
     const open = tasks.filter((task) => task.status !== 'done' && task.project_status === 'active')
@@ -157,6 +158,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                                 </button>)}</div>}
             </section>
         </div>
+        <GoalsPage compact preferences={preferences} onOpenGoals={() => onNavigate('goals')} />
         <p className="personal-home-scope">Home is yours across all workspaces. Choose a workspace to see its separate Overview.</p>
     </div>
 }
