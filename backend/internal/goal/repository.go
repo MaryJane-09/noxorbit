@@ -25,8 +25,18 @@ type Milestone struct {
     Title string `json:"title"`
     Completed bool `json:"completed"`
 }
+type ActivityEvent struct {
+    ID uuid.UUID `json:"id"`
+    GoalID uuid.UUID `json:"goal_id"`
+    GoalTitle string `json:"goal_title"`
+    MilestoneTitle *string `json:"milestone_title"`
+    Action string `json:"action"`
+    CreatedAt time.Time `json:"created_at"`
+}
+
 type Store interface {
     List(context.Context,uuid.UUID)([]Goal,error)
+    ListActivity(context.Context,uuid.UUID)([]ActivityEvent,error)
     Create(context.Context,uuid.UUID,string,string,*string)(Goal,error)
     Update(context.Context,uuid.UUID,uuid.UUID,string,string,*string)(bool,error)
     Delete(context.Context,uuid.UUID,uuid.UUID)(bool,error)
@@ -120,4 +130,24 @@ func(r *Repository) DeleteMilestone(ctx context.Context,user,goalID,milestoneID 
       WHERE m.id=$3 AND m.goal_id=g.id AND g.id=$2 AND g.user_id=$1
     `,user,goalID,milestoneID)
     return err==nil&&tag.RowsAffected()>0,err
+}
+
+func(r *Repository) ListActivity(ctx context.Context,user uuid.UUID)([]ActivityEvent,error){
+    rows,err:=r.pool.Query(ctx,`
+        SELECT id,goal_id,goal_title,milestone_title,action,created_at
+        FROM public.personal_goal_activity
+        WHERE user_id=$1
+        ORDER BY created_at DESC,id DESC
+        LIMIT 30
+    `,user)
+    if err!=nil{return nil,err}
+    defer rows.Close()
+    events:=make([]ActivityEvent,0)
+    for rows.Next(){
+        var e ActivityEvent
+        if err:=rows.Scan(&e.ID,&e.GoalID,&e.GoalTitle,&e.MilestoneTitle,&e.Action,&e.CreatedAt);err!=nil{return nil,err}
+        events=append(events,e)
+    }
+    if err:=rows.Err();err!=nil{return nil,err}
+    return events,nil
 }
