@@ -11,6 +11,11 @@ export default function RecycleBinPage({ preferences }) {
     const [busyID, setBusyID] = useState(null)
     const [actionError, setActionError] = useState('')
     const [notice, setNotice] = useState('')
+    useEffect(() => {
+        if (!notice) return undefined
+        const timeout = window.setTimeout(() => setNotice(''), 3500)
+        return () => window.clearTimeout(timeout)
+    }, [notice])
     const [pendingDelete, setPendingDelete] = useState(null)
     const confirmDialogRef = useRef(null)
 
