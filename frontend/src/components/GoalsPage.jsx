@@ -27,6 +27,8 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
   const [targetDate, setTargetDate] = useState('')
   const [milestoneDrafts, setMilestoneDrafts] = useState({})
   const titleRef = useRef(null)
+  const confirmRef = useRef(null)
+  const [pendingDelete, setPendingDelete] = useState(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -106,7 +108,36 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       setMilestoneDrafts((current) => ({ ...current, [goalID]: '' }))
     }, 'Milestone added.')
   }
-  const visibleGoals = compact ? goals.slice(0, 2) : goals
+  useEffect(() => {
+    if (!pendingDelete) return
+    confirmRef.current?.focus()
+    function onKeyDown(event) {
+      if (event.key === 'Escape') setPendingDelete(null)
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [pendingDelete])
+
+  function confirmDeletion() {
+    if (!pendingDelete || busy) return
+    const target = pendingDelete
+    setPendingDelete(null)
+    if (target.type === 'goal') {
+      void action(() => deleteGoal(target.goalID), 'Goal deleted.')
+    } else {
+      void action(() => deleteGoalMilestone(target.goalID, target.milestoneID), 'Milestone deleted.')
+    }
+  }
+  // The Home preview highlights goals with real progress first, rather than
+  // filling its limited space with zero-milestone goals created most recently.
+  const visibleGoals = compact
+    ? [...goals].sort((a, b) => {
+        const aScore = goalProgress(a)
+        const bScore = goalProgress(b)
+        const rank = (p) => p.total === 0 ? 2 : p.completed === p.total ? 1 : 0
+        return rank(aScore) - rank(bScore) || bScore.percent - aScore.percent
+      }).slice(0, 2)
+    : goals
   return <section className={`goals-page${compact ? ' goals-page--compact' : ''}`} aria-label={compact ? 'Your personal goals' : undefined}>
     {!compact && <header className="goals-heading">
       <div>
@@ -161,13 +192,15 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       </div> : <div className="goals-list">
         {visibleGoals.map((goal) => {
           const progress = goalProgress(goal)
+          const status = progress.total === 0 ? 'Planning' : progress.completed === progress.total ? 'Achieved' : 'In progress'
+          const statusClass = status === 'Achieved' ? 'achieved' : status === 'Planning' ? 'planning' : 'active'
           return <article className="goals-card" key={goal.id}>
             <div className="goals-card-top">
-              <span className="goals-symbol"><Target size={21} aria-hidden="true" /></span>
+              <div className="goals-card-identity"><span className="goals-symbol"><Target size={20} aria-hidden="true" /></span><span className={`goals-status goals-status--${statusClass}`}>{status}</span></div>
               {!compact && <div className="goals-card-actions">
                 <button type="button" className="goals-icon-button" onClick={() => edit(goal)} disabled={busy} aria-label={`Edit ${goal.title}`}><Pencil size={16} /></button>
                 <button type="button" className="goals-icon-button goals-danger" disabled={busy}
-                  onClick={() => { if (window.confirm(`Delete "${goal.title}" and all its milestones?`)) action(() => deleteGoal(goal.id), 'Goal deleted.') }}
+                  onClick={() => setPendingDelete({ type: 'goal', goalID: goal.id, label: goal.title })}
                   aria-label={`Delete ${goal.title}`}><Trash2 size={16} /></button>
               </div>}
             </div>
@@ -191,7 +224,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
                     </button>
                     <span className={item.completed ? 'goals-complete' : ''}>{item.title}</span>
                     <button type="button" className="goals-icon-button goals-danger" disabled={busy}
-                      onClick={() => { if (window.confirm('Delete this milestone?')) action(() => deleteGoalMilestone(goal.id,item.id)) }}
+                      onClick={() => setPendingDelete({ type: 'milestone', goalID: goal.id, milestoneID: item.id, label: item.title })}
                       aria-label={`Delete milestone ${item.title}`}><X size={15} /></button>
                   </div>)}
                 </div>
@@ -205,5 +238,23 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
           </article>
         })}
       </div>}
+
+    {pendingDelete && <div className="goals-confirm-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) setPendingDelete(null) }}>
+      <div className="goals-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="goals-confirm-title" aria-describedby="goals-confirm-description">
+        <span className="goals-confirm-icon"><Trash2 size={21} aria-hidden="true" /></span>
+        <h2 id="goals-confirm-title">{pendingDelete.type === 'goal' ? 'Delete this goal?' : 'Delete this milestone?'}</h2>
+        <p id="goals-confirm-description">
+          {pendingDelete.type === 'goal'
+            ? <>This will permanently delete <strong>{pendingDelete.label}</strong> and its milestones.</>
+            : <>Remove <strong>{pendingDelete.label}</strong> from this goal? Its progress will be recalculated.</>}
+        </p>
+        <div className="goals-confirm-actions">
+          <button type="button" ref={confirmRef} className="goals-secondary" disabled={busy} onClick={() => setPendingDelete(null)}>Cancel</button>
+          <button type="button" className="goals-confirm-delete" disabled={busy} onClick={confirmDeletion}>
+            <Trash2 size={16} aria-hidden="true" /> {pendingDelete.type === 'goal' ? 'Delete goal' : 'Delete milestone'}
+          </button>
+        </div>
+      </div>
+    </div>}
   </section>
 }
