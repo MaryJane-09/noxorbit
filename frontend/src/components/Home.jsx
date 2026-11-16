@@ -430,7 +430,8 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                     {page === 'home' ? (
                         <PersonalHome user={user} workspaces={workspaces} workspacesLoading={workspacesLoading}
                             workspacesError={workspaceLoadError} preferences={preferences}
-                            onNavigate={goToPage} onOpenWorkspace={openWorkspaceOverview} />
+                            onNavigate={goToPage} onOpenWorkspace={openWorkspaceOverview}
+                            onCreateWorkspace={openCreateDialog} />
                     ) : page === 'invite' ? (
                         <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
                             onAccepted={onInvitationAccepted} />
