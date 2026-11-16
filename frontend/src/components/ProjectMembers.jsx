@@ -9,6 +9,11 @@ export default function ProjectMembers({ workspace, project, user, onMembersChan
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [notice, setNotice] = useState('')
+    useEffect(() => {
+        if (!notice) return undefined
+        const timeout = window.setTimeout(() => setNotice(''), 3500)
+        return () => window.clearTimeout(timeout)
+    }, [notice])
     const [refresh, setRefresh] = useState(0)
     const [pending, setPending] = useState(false)
     const [target, setTarget] = useState('')
