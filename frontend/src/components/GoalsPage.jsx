@@ -18,6 +18,11 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  useEffect(() => {
+    if (!notice) return undefined
+    const timeout = window.setTimeout(() => setNotice(''), 3500)
+    return () => window.clearTimeout(timeout)
+  }, [notice])
   const [revision, setRevision] = useState(0)
   const [busy, setBusy] = useState(false)
   const [editorID, setEditorID] = useState(null)
@@ -115,7 +120,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       if (editorID) await updateGoal(editorID, data)
       else await createGoal(data)
       clearForm()
-    }, editorID ? 'Goal updated.' : 'Goal created. Add a milestone to track progress.')
+    }, editorID ? 'Goal updated.' : 'Goal created.')
   }
   async function addMilestone(event, goalID) {
     event.preventDefault()
@@ -177,7 +182,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       <div>
         <p className="dashboard-eyebrow"><Target size={16} aria-hidden="true" /> PERSONAL · ALL WORKSPACES</p>
         <h1>My goals<span>.</span></h1>
-        <p>Choose the outcomes that matter to you. Track real progress, one milestone at a time.</p>
+        <p>Track progress through milestones.</p>
       </div>
       <button type="button" className="goals-refresh" onClick={reload} disabled={loading || busy}>
         <RefreshCw size={16} aria-hidden="true" /> Refresh
@@ -220,7 +225,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       : visibleGoals.length === 0 && (compact || !formOpen) ? <div className="goals-empty">
         <span className="goals-symbol"><Flag size={22} aria-hidden="true" /></span>
         <h3>{error ? 'Goals are unavailable' : 'A goal starts with a direction.'}</h3>
-        <p>{error ? 'Check the connection and try again.' : 'Create a personal goal, then add milestones. Your progress will update as you finish them.'}</p>
+        <p>{error ? 'Check the connection and try again.' : 'Add a goal to get started.'}</p>
         {compact ? <button type="button" className="goals-primary" onClick={onOpenGoals}>Explore goals <ArrowRight size={16} /></button>
           : !error && <button type="button" className="goals-primary" onClick={() => setFormOpen(true)}><Plus size={16} /> Create your first goal</button>}
       </div> : <div className="goals-list">
@@ -249,7 +254,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
             {compact ? <button type="button" className="goals-inline-action" onClick={onOpenGoals}>Manage milestones <ArrowRight size={15} /></button>
               : <>
                 <div className="goals-milestones">
-                  {goal.milestones.length === 0 && <p className="goals-muted">Add your first milestone to begin measuring progress.</p>}
+                  {goal.milestones.length === 0 && <p className="goals-muted">No milestones yet.</p>}
                   {goal.milestones.map((item) => <div className="goals-milestone" key={item.id}>
                     <button type="button" className="goals-milestone-check" disabled={busy}
                       onClick={() => action(() => setGoalMilestone(goal.id,item.id,!item.completed))}
@@ -277,7 +282,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       <div className="goals-history-heading">
         <span className="goals-symbol"><Clock3 size={19} aria-hidden="true" /></span>
         <div><h2 id="goals-history-heading">Recent goal activity</h2>
-          <p>Private to your account. Workspace members cannot see this history.</p>
+          <p>Only you can see this history.</p>
         </div>
       </div>
       {history.loading ? <p role="status" className="goals-muted">Loading your goal history…</p>
