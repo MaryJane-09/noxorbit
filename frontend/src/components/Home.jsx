@@ -7,6 +7,7 @@ import {
     Compass,
     FolderKanban,
     LayoutDashboard,
+    House,
     LoaderCircle,
     Layers3,
     Lightbulb,
@@ -26,6 +27,7 @@ import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar, f
 import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
+import PersonalHome from './PersonalHome'
 import RecycleBinPage from './RecycleBinPage'
 import ActivityPage from './ActivityPage'
 import SettingsPage from './SettingsPage'
@@ -72,13 +74,14 @@ function purposeLabel(purpose) {
 
 function pageFromHash() {
     if (window.location.hash.startsWith('#invite/')) return 'invite'
+    if (window.location.hash === '#home') return 'home'
     if (window.location.hash === '#workspaces') return 'workspaces'
     if (window.location.hash === '#projects') return 'projects'
     if (window.location.hash === '#my-tasks') return 'my-tasks'
     if (window.location.hash === '#recycle-bin') return 'recycle-bin'
     if (window.location.hash === '#activity') return 'activity'
     if (window.location.hash === '#settings') return 'settings'
-    return 'overview'
+    return 'home'
 }
 
 export default function Home({ user, onLogout, onUserUpdated, initialAppearance }) {
@@ -276,7 +279,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
 
             <aside className={`dashboard-sidebar ${menuOpen ? 'dashboard-sidebar--open' : ''}`} aria-label="Dashboard sidebar">
                 <div className="dashboard-sidebar-top">
-                    <a className="dashboard-brand" href="#overview" onClick={() => goToPage('overview')}>
+                    <a className="dashboard-brand" href="#home" onClick={() => goToPage('home')}>
                         <img src="/noxorbit-mark.svg" alt="" />
                         <span className="dashboard-brand-copy">
                             <strong>NOXORBIT</strong>
@@ -312,6 +315,22 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                 </div>
 
                 <nav className="dashboard-nav" aria-label="Primary">
+                    <p className="dashboard-sidebar-label">PERSONAL</p>
+                    <a href="#home" aria-label="Home" title={sidebarCollapsed ? "Home" : undefined}
+                        className={`dashboard-nav-item${page === 'home' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'home' ? 'page' : undefined} onClick={() => goToPage('home')}>
+                        <House size={19} aria-hidden="true" />
+                        <span>Home</span>
+                        {page === 'home' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
+                    <a href="#my-tasks" aria-label="My tasks" title={sidebarCollapsed ? "My tasks" : undefined}
+                        className={`dashboard-nav-item${page === 'my-tasks' ? ' dashboard-nav-item--active' : ''}`}
+                        aria-current={page === 'my-tasks' ? 'page' : undefined} onClick={() => goToPage('my-tasks')}>
+                        <ListTodo size={19} aria-hidden="true" />
+                        <span>My tasks</span>
+                        {page === 'my-tasks' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
+                    </a>
+                    <div className="dashboard-nav-section-separator" aria-hidden="true" />
                     <p className="dashboard-sidebar-label">WORKSPACE</p>
                     <a href="#overview" aria-label="Overview" title={sidebarCollapsed ? "Overview" : undefined} className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'overview' ? 'page' : undefined}
@@ -333,13 +352,6 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                         <FolderKanban size={19} aria-hidden="true" />
                         <span>Projects</span>
                         {page === 'projects' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
-                    </a>
-                    <a href="#my-tasks" aria-label="My tasks" title={sidebarCollapsed ? "My tasks" : undefined} className={`dashboard-nav-item${page === 'my-tasks' ? ' dashboard-nav-item--active' : ''}`}
-                        aria-current={page === 'my-tasks' ? 'page' : undefined}
-                        onClick={() => goToPage('my-tasks')}>
-                        <ListTodo size={19} aria-hidden="true" />
-                        <span>My tasks</span>
-                        {page === 'my-tasks' && <span className="dashboard-nav-active-mark" aria-hidden="true" />}
                     </a>
                     <a href="#activity" aria-label="Activity" title={sidebarCollapsed ? "Activity" : undefined} className={`dashboard-nav-item${page === 'activity' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'activity' ? 'page' : undefined}
@@ -388,9 +400,9 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                         <button className="dashboard-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation" aria-expanded={menuOpen}>
                             <Menu size={22} />
                         </button>
-                        <span>{activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
+                        <span>{page === 'home' || page === 'my-tasks' ? 'PERSONAL' : activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
-                        <strong>{page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
+                        <strong>{page === 'home' ? 'Home' : page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
                     </div>
                     <div className="dashboard-topbar-account">
                         <NotificationCenter preferences={preferences} />
@@ -399,8 +411,12 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                     </div>
                 </header>
 
-                <main className="dashboard-main" id={page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : page === 'settings' ? 'dashboard-settings' : 'dashboard-projects'}>
-                    {page === 'invite' ? (
+                <main className="dashboard-main" id={page === 'home' ? 'dashboard-home' : page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : page === 'settings' ? 'dashboard-settings' : 'dashboard-projects'}>
+                    {page === 'home' ? (
+                        <PersonalHome user={user} workspaces={workspaces} workspacesLoading={workspacesLoading}
+                            workspacesError={workspaceLoadError} preferences={preferences}
+                            onNavigate={goToPage} onSelectWorkspace={setSelectedWorkspaceId} />
+                    ) : page === 'invite' ? (
                         <InvitationPage token={decodeURIComponent(window.location.hash.slice('#invite/'.length))}
                             onAccepted={onInvitationAccepted} />
                     ) : page === 'workspaces' ? (
@@ -450,7 +466,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                     <div className="dashboard-welcome">
                         <div>
                             <p className="dashboard-eyebrow"><span className="dashboard-live-dot" /> {hasWorkspace ? 'YOUR TEAM SPACE' : 'THE BEGINNING OF SOMETHING GREAT'}</p>
-                            <h1>{hasWorkspace ? 'Welcome back' : 'Welcome to your space'}, <span>{displayName}.</span></h1>
+                            <h1>{hasWorkspace ? 'Workspace overview' : 'Welcome to your workspace'}, <span>{hasWorkspace ? activeWorkspace.name : displayName}.</span></h1>
                             <p>{hasWorkspace ? `You're viewing ${activeWorkspace.name}. Everything your team builds will start here.` : 'A clearer way to bring your people, projects, and ideas together.'}</p>
                         </div>
                         {!hasWorkspace && !workspacesLoading && !workspaceLoadError && (
@@ -581,7 +597,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                         <ProjectOverviewCard workspaceID={activeWorkspace?.id}
                             onOpen={() => goToPage('projects')} />
 
-                        <OverviewTaskCards preferences={preferences} onOpenTasks={() => goToPage('my-tasks')} />
+                        <OverviewTaskCards preferences={preferences} workspaceID={activeWorkspace?.id} onOpenTasks={() => goToPage('my-tasks')} />
                     </div>
 
                         </>
