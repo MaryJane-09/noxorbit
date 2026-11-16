@@ -79,7 +79,8 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
     try {
       await callback()
       setNotice(successMessage)
-      reload()
+      // Every mounted Goals view (including Home) refreshes from one event.
+      // Keep the existing cards visible while the new data is fetched.
       window.dispatchEvent(new Event('noxorbit:goals-changed'))
     } catch (err) {
       setError(err.message || 'Could not update your goals.')
