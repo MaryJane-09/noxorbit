@@ -150,3 +150,16 @@ func(h *Handler) Milestone(w http.ResponseWriter,r *http.Request){
     w.WriteHeader(204)
 }
 var _ Store=(*Repository)(nil)
+
+func(h *Handler) Activity(w http.ResponseWriter,r *http.Request){
+    if r.Method!=http.MethodGet{
+        w.Header().Set("Allow","GET")
+        reject(w,405,"Method not allowed")
+        return
+    }
+    user,ok:=auth.UserIDFromContext(r.Context())
+    if !ok{reject(w,401,"Not logged in");return}
+    events,err:=h.store.ListActivity(r.Context(),user)
+    if dbError(w,err){return}
+    reply(w,200,events)
+}
