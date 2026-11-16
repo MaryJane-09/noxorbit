@@ -38,7 +38,7 @@
 .personal-home-alert{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid rgba(230,127,143,.4);border-radius:11px;color:#ffd6d9}
 .personal-home-alert button{margin-left:auto;cursor:pointer}
 .personal-home-scope{font-size:12px;color:#cbb6d1;line-height:1.7}
-.home-page[data-theme="light"] .personal-home-heading h1 span{color:#7b4d29;-webkit-text-fill-color:#7b4d29;background:none}
+.home-page[data-theme="light"] .personal-home-heading h1 span{color:#b67c2b;background:linear-gradient(105deg,#a96b23,#dfab50 50%,#a46a20);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .home-page[data-theme="light"] .personal-home-heading>div>p:last-child,.home-page[data-theme="light"] .personal-home-scope{color:#63516a}
 .home-page[data-theme="light"] .personal-home-metric,.home-page[data-theme="light"] .personal-home-panel{background:#fffdfb;border-color:#dacee0;box-shadow:0 6px 24px rgba(56,32,63,.05);color:#33253d}
 .home-page[data-theme="light"] .personal-home-metric>span:nth-child(2),.home-page[data-theme="light"] .personal-home-metric small{color:#615169}
