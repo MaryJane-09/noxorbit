@@ -424,7 +424,10 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                             workspacesLoading={workspacesLoading}
                             onOpenWorkspaces={() => goToPage('workspaces')} />
                     ) : page === 'settings' ? (
-                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences} appearance={appearance} onAppearanceSaved={setAppearance}
+                        <SettingsPage user={user} avatarURL={avatarURL} preferences={preferences} onPreferencesSaved={setPreferences} appearance={appearance} onAppearanceSaved={(updated) => {
+                                setAppearance(updated)
+                                try { window.localStorage.setItem('noxorbit.appearance.hint', updated.theme) } catch { /* storage unavailable */ }
+                            }}
                             onAvatarUpdated={() => { setAvatarURL(null); setAvatarRevision((value) => value + 1) }}
                             onEmailChanged={() => { window.location.hash = ''; onLogout() }}
                             onProfileUpdated={onUserUpdated} onPasswordChanged={() => {
