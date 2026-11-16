@@ -61,6 +61,31 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
     const [submitError, setSubmitError] = useState('')
     const [open, setOpen] = useState(false)
 
+    // Action confirmations are transient; errors and destructive warnings remain visible.
+    useEffect(() => {
+        if (!sessionsMessage) return undefined
+        const timer = window.setTimeout(() => setSessionsMessage(''), 3500)
+        return () => window.clearTimeout(timer)
+    }, [sessionsMessage])
+
+    useEffect(() => {
+        if (!avatarNotice) return undefined
+        const timer = window.setTimeout(() => setAvatarNotice(''), 3500)
+        return () => window.clearTimeout(timer)
+    }, [avatarNotice])
+
+    useEffect(() => {
+        if (!emailNotice) return undefined
+        const timer = window.setTimeout(() => setEmailNotice(''), 3500)
+        return () => window.clearTimeout(timer)
+    }, [emailNotice])
+
+    useEffect(() => {
+        if (!profileMessage) return undefined
+        const timer = window.setTimeout(() => setProfileMessage(''), 3500)
+        return () => window.clearTimeout(timer)
+    }, [profileMessage])
+
     useEffect(() => {
         const controller = new AbortController()
         fetchAccountDeletionImpact({ signal: controller.signal })
@@ -286,7 +311,7 @@ export default function SettingsPage({ user, avatarURL, onAvatarUpdated, onEmail
         <header className="settings-heading">
             <p className="dashboard-eyebrow">PERSONAL SETTINGS</p>
             <h1 id="settings-heading">Settings<span>.</span></h1>
-            <p>Manage your account and review important account actions.</p>
+            
         </header>
         <nav className="settings-tabs" aria-label="Settings sections">
             <button type="button" className={tab === 'profile' ? 'settings-tab--active' : ''}
