@@ -52,7 +52,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
             <div>
                 <p className="dashboard-eyebrow"><Home size={15} aria-hidden="true" /> YOUR HOME · ALL WORKSPACES</p>
                 <h1>{greeting}, <span>{firstName}.</span></h1>
-                <p>{state.loading ? 'Bringing your work together across your spaces.' : open.length === 0 ? 'You have no unfinished assignments in active projects.' : `${open.length} open ${open.length === 1 ? 'assignment' : 'assignments'} across your active projects. ${overdue.length ? `${overdue.length} ${overdue.length === 1 ? 'needs' : 'need'} attention after the due date.` : 'Here is what to focus on next.'}`}</p>
+                <p>{state.loading ? 'Bringing your work together across your spaces.' : state.error ? 'Your task summary is temporarily unavailable.' : open.length === 0 ? 'Your active assignments are clear. See what you want to achieve next.' : `${open.length} open ${open.length === 1 ? 'assignment' : 'assignments'} across your active projects. ${overdue.length ? `${overdue.length} ${overdue.length === 1 ? 'needs' : 'need'} attention after the due date.` : 'Here is what to focus on next.'}`}</p>
             </div>
             <button className="personal-home-refresh" type="button" disabled={state.loading}
                 onClick={() => { setState((current) => ({ ...current, loading: true, error: '' })); setRevision((current) => current + 1) }}>
@@ -62,7 +62,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
 
         {state.error && <div className="personal-home-alert" role="alert">
             <span>{state.error}</span>
-            <button type="button" onClick={() => setRevision((current) => current + 1)}>Retry</button>
+            <button type="button" onClick={() => { setState((current) => ({ ...current, loading: true, error: '' })); setRevision((current) => current + 1) }}>Retry</button>
         </div>}
         <section className="personal-home-quick-actions" aria-label="Quick actions">
             <span className="dashboard-eyebrow">QUICK ACTIONS</span>
@@ -89,17 +89,17 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
             <div className="personal-home-metrics">
                 <article className="personal-home-metric">
                     <span className="personal-home-icon"><ListTodo size={21} aria-hidden="true" /></span>
-                    <span>Open assignments</span><strong>{state.loading ? '—' : open.length}</strong>
+                    <span>Open assignments</span><strong>{state.loading || state.error ? '—' : open.length}</strong>
                     <small>Across your active projects</small>
                 </article>
                 <article className="personal-home-metric">
                     <span className="personal-home-icon"><CalendarClock size={21} aria-hidden="true" /></span>
-                    <span>Due today</span><strong>{state.loading ? '—' : dueToday.length}</strong>
+                    <span>Due today</span><strong>{state.loading || state.error ? '—' : dueToday.length}</strong>
                     <small>{state.loading ? 'Checking deadlines' : overdue.length ? `${overdue.length} overdue also need attention` : 'Your calendar, your time zone'}</small>
                 </article>
                 <article className="personal-home-metric">
                     <span className="personal-home-icon"><CheckCircle2 size={21} aria-hidden="true" /></span>
-                    <span>Completed</span><strong>{state.loading ? '—' : completed}</strong>
+                    <span>Completed</span><strong>{state.loading || state.error ? '—' : completed}</strong>
                     <small>From your assigned tasks</small>
                 </article>
             </div>
@@ -118,8 +118,8 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                     : state.error ? <p role="status">Your assignments couldn't be loaded. Use Retry above to check again.</p>
                     : focus.length === 0 ? <div className="personal-home-empty">
                         <CheckCircle2 size={24} aria-hidden="true" />
-                        <p>No unfinished assignments in your active projects. You can explore your workspaces or check all assigned tasks.</p>
-                        <button type="button" onClick={() => onNavigate('my-tasks')}>View my tasks</button>
+                        <p>Nothing needs immediate attention from your assigned tasks. This is a good time to work toward a goal.</p>
+                        <button type="button" onClick={() => onNavigate('goals')}>Review my goals</button>
                     </div>
                         : <div className="personal-home-focus-list">{focus.map((task) =>
                             <div className="personal-home-focus-item" key={task.id}>
