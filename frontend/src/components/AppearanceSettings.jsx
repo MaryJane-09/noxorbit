@@ -24,13 +24,12 @@ export default function AppearanceSettings({ appearance, onSaved }) {
             if (controller.signal.aborted) return
             setSaved(value)
             setDraft(value)
-            onSaved(value)
             setError('')
         }).catch((err) => {
             if (!controller.signal.aborted) setError(err.message || 'Unable to load appearance preferences.')
         }).finally(() => { if (!controller.signal.aborted) setLoading(false) })
         return () => controller.abort()
-    }, [onSaved])
+    }, [])
 
     const changed = saved && (saved.theme !== draft.theme || saved.reduced_motion !== draft.reduced_motion)
 
