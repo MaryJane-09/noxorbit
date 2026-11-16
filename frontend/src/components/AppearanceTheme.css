@@ -1,444 +1,338 @@
-/* Signed-in appearance variations. The original dark CSS is unchanged.
-   These overrides apply only when Light (or System->Light) is resolved.
-   The auth flow keeps its cinematic dark appearance. */
+/* Noxorbit light appearance. The approved dark styles in their component
+   stylesheets remain unchanged. Only the authenticated dashboard is themed.
+   Palette: porcelain, dusk-lavender, deep plum, controlled bronze accents. */
 .home-page[data-theme="light"] {
-  --dash-bg:#f6f1eb;
-  --dash-sidebar:#eae1e9;
-  --dash-panel:#fffaf4;
-  --dash-muted:#63516c;
-  --dash-line:rgba(89,54,100,.22);
-  --dash-gold:#87571e;
-  --dash-gold-soft:#81541c;
-  --dash-gold-rich:#996329;
-  --ivory:#30203c;
-  --muted:#60516a;
-  --muted-strong:#3d2b48;
-  --surface:#fffaf5;
-  --plum:#eee5ed;
-  --obsidian:#f6f1eb;
-  color:#30203c;
-  background:#f6f1eb;
+  --dash-bg:#f7f5f3;
+  --dash-sidebar:#eae4ec;
+  --dash-panel:#ffffff;
+  --dash-muted:#5a4b64;
+  --dash-line:#d9cedb;
+  --dash-gold:#835326;
+  --dash-gold-soft:#8a5a2c;
+  --dash-gold-rich:#995c25;
+  --ivory:#2d203a;
+  --muted:#63556d;
+  --muted-strong:#45354f;
+  --obsidian:#f7f5f3;
+  --surface:#ffffff;
+  --light-plum:#34223f;
+  --light-muted:#65576d;
+  --light-border:#dacee0;
+  color:#30233d;
+  background:#f7f5f3;
 }
-.home-page[data-theme="light"] .dashboard-area{
-  background:radial-gradient(ellipse 65% 45% at 95% 0%,rgba(216,185,215,.33),transparent 80%),#f6f1eb;
-  color:#30203c;
+.home-page[data-theme="light"] .dashboard-area {
+  background:linear-gradient(165deg,#f8f6f4 0%,#f3f0f1 100%);
+  color:#30233d;
 }
-.home-page[data-theme="light"] .dashboard-sidebar{
-  background:linear-gradient(165deg,#f0e7ef,#e7dce9 70%,#e4d9e7);
-  border-right-color:rgba(90,59,103,.23);
-}
-.home-page[data-theme="light"] .dashboard-brand-copy small{color:#795823}
-.home-page[data-theme="light"] .dashboard-sidebar-label{color:#65516b}
-.home-page[data-theme="light"] .dashboard-workspace-indicator-body{background:linear-gradient(125deg,#f8f0e5,#ede2eb);border-color:rgba(125,84,44,.35)}
-.home-page[data-theme="light"] .dashboard-workspace-indicator-body strong,
-.home-page[data-theme="light"] .dashboard-profile-info strong{color:#35243d}
-.home-page[data-theme="light"] .dashboard-workspace-indicator-body small,
-.home-page[data-theme="light"] .dashboard-profile-info span{color:#62506a}
-.home-page[data-theme="light"] .dashboard-nav-item{color:#65546b}
-.home-page[data-theme="light"] .dashboard-nav-item--active{
-  background:linear-gradient(90deg,rgba(180,125,65,.20),rgba(121,74,120,.08));
-  border-color:rgba(136,91,44,.4);color:#66421e;
-}
-.home-page[data-theme="light"] .dashboard-nav-item:hover:not(.dashboard-nav-item--active){background:rgba(112,73,119,.09);color:#392944}
-.home-page[data-theme="light"] .dashboard-signout{color:#65516c}
-.home-page[data-theme="light"] .dashboard-signout:hover:not(:disabled){color:#704821;background:rgba(166,114,57,.13)}
-.home-page[data-theme="light"] .dashboard-profile,
-.home-page[data-theme="light"] .dashboard-sidebar-bottom{border-color:rgba(90,59,103,.19)}
-.home-page[data-theme="light"] .dashboard-sidebar-toggle-label,
-.home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle{color:#614b6b}
-.home-page[data-theme="light"] .dashboard-topbar{
-  background:rgba(252,248,244,.96);
-  border-bottom:1px solid rgba(101,65,102,.19);
-}
-.home-page[data-theme="light"] .dashboard-topbar-account,
-.home-page[data-theme="light"] .dashboard-topbar strong,
-.home-page[data-theme="light"] .dashboard-topbar-breadcrumb{color:#594364}
-.home-page[data-theme="light"] .dashboard-main{color:#34263e}
-.home-page[data-theme="light"] .dashboard-eyebrow{color:#805224}
-.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3,h4){color:#34243e}
-.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3) span{color:#946023}
-.home-page[data-theme="light"] .dashboard-main :is(p,small){color:#64526d}
-.home-page[data-theme="light"] .dashboard-main :is(strong,label){color:#3d2c46}
-.home-page[data-theme="light"] .dashboard-main :is(button,select,input,textarea){color:inherit}
+.home-page[data-theme="light"] .dashboard-main {color:#30233d;}
+.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3,h4){color:#30213b;}
+.home-page[data-theme="light"] .dashboard-main :is(p,small){color:#574a61;}
+.home-page[data-theme="light"] .dashboard-main .dashboard-eyebrow{color:#754925;}
+.home-page[data-theme="light"] .dashboard-main :is(h1,h2,h3) span:not(.tasks-priority){color:#805023;}
 .home-page[data-theme="light"] .dashboard-main :is(input,textarea,select):not([type="checkbox"]):not([type="radio"]){
-  background:#fffdf9;color:#352540;border-color:rgba(115,79,118,.34);
+  background:#fff;color:#34233d;border-color:#bfadbf;
 }
-.home-page[data-theme="light"] .dashboard-main :is(input,textarea)::placeholder{color:#86768a}
+.home-page[data-theme="light"] .dashboard-main :is(input,textarea)::placeholder{color:#76677b;}
 
-/* Reusable cards and surfaces across Overview / Workspaces / Projects. */
+/* Navigation is one continuous surface, including its anchored footer. */
+.home-page[data-theme="light"] .dashboard-sidebar{
+  background:linear-gradient(175deg,#efe9f0,#e8e0eb);
+  border-color:#cfc1d1;
+}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom {
+  background:#e8e0eb;
+  border-top:1px solid #c9bacb;
+}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile{
+  border-color:#c9bacb;
+}
+.home-page[data-theme="light"] .dashboard-sidebar-label,
+.home-page[data-theme="light"] .dashboard-sidebar-toggle-label,
+.home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle,
+.home-page[data-theme="light"] .dashboard-nav-item {color:#57465e;}
+.home-page[data-theme="light"] .dashboard-nav-item:hover:not(.dashboard-nav-item--active){
+  color:#302039;background:#dfd2e2;
+}
+.home-page[data-theme="light"] .dashboard-nav-item--active,
+.home-page[data-theme="light"] .dashboard-nav-item--active:hover {
+  color:#34213f;
+  border-color:#bbabc1;
+  background:#ded0e1;
+}
+.home-page[data-theme="light"] .dashboard-nav-active-mark{
+  background:#956b39;box-shadow:none;
+}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body{
+  border-color:#cbb9ca;
+  background:#f4eef4;
+}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body strong,
+.home-page[data-theme="light"] .dashboard-profile-info strong{color:#35263e;}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body small,
+.home-page[data-theme="light"] .dashboard-profile-info span,
+.home-page[data-theme="light"] .dashboard-signout{color:#57495f;}
+.home-page[data-theme="light"] .dashboard-signout:hover{
+  color:#32223b;background:#dcd0e0;border-color:#beafc2;
+}
+.home-page[data-theme="light"] .dashboard-brand img{
+  filter:brightness(.78) saturate(.85) contrast(1.16);
+}
+.home-page[data-theme="light"] .dashboard-brand-copy strong {
+  background:none;
+  -webkit-text-fill-color:#805021;
+  color:#805021;
+  filter:none;text-shadow:none;
+}
+.home-page[data-theme="light"] .dashboard-brand-copy small{
+  color:#5f4a3b;font-weight:800;
+}
+.home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle:hover{
+  background:#dcd0df;color:#372842;
+}
+.home-page[data-theme="light"] .dashboard-topbar{
+  background:#fcfaf9;border-color:#ded4de;
+}
+.home-page[data-theme="light"] .dashboard-breadcrumbs,
+.home-page[data-theme="light"] .dashboard-topbar-account{color:#66556d;}
+.home-page[data-theme="light"] .dashboard-breadcrumbs strong{color:#382844;}
+
+/* Cards share a porcelain surface, fine plum lines and restrained shadows. */
 .home-page[data-theme="light"] :is(
- .dashboard-empty-card,.dashboard-overview-data-card,.dashboard-deadline-details,
- .dashboard-deadline-group,.dashboard-deadline-group-toggle,.dashboard-workspace-card,
- .workspace-manager-card,.workspace-manager-card--active,
- .workspace-manager-empty,.workspace-manager-help,.projects-card,.projects-message,
- .my-tasks-item,.my-tasks-message,.activity-event,.activity-message,
- .recycle-item,.recycle-message,.tasks-column,.tasks-card,.tasks-notice,
- .project-members,.settings-account,.settings-danger,.notification-settings-note,
- .user-preferences-note,.user-preferences-preview,.appearance-theme-choice,
- .appearance-motion-choice,.dashboard-workspace-dialog,.tasks-dialog
- ){
-  background:#fffaf5;
-  border-color:rgba(115,80,116,.22);
-  color:#3d2a46;
-  box-shadow:0 7px 24px rgba(74,51,71,.05);
+  .dashboard-empty-card,.dashboard-overview-data-card,.dashboard-deadline-details,
+  .dashboard-deadline-group,.workspace-manager-card,.workspace-manager-empty,
+  .workspace-manager-help,.projects-card,.projects-message,
+  .my-tasks-item,.my-tasks-message,.activity-event,.activity-message,
+  .recycle-item,.recycle-message,.tasks-column,.tasks-card,.tasks-notice,
+  .project-members,.settings-account,.settings-danger,
+  .notification-settings-note,.user-preferences-note,.user-preferences-preview,
+  .appearance-theme-choice,.appearance-motion-choice,.dashboard-workspace-dialog,.tasks-dialog
+){
+  background:#fffdfb;
+  border-color:#dbd0dd;
+  color:#30233d;
+  box-shadow:0 7px 25px rgba(63,36,64,.045);
 }
-.home-page[data-theme="light"] :is(
- .dashboard-empty-card,.dashboard-deadline-details,.workspace-manager-card,
- .projects-card,.my-tasks-item,.activity-event,.recycle-item,.tasks-column,.tasks-card,
- .project-members,.settings-account,.settings-danger
- ) :is(h1,h2,h3,strong){color:#32233c}
-.home-page[data-theme="light"] :is(.tasks-description,.tasks-meta,.tasks-empty,
- .projects-card>p,.projects-card-date,.workspace-manager-meta,
- .workspace-manager-section-top p,.my-tasks-description,.activity-event small,
- .recycle-item p,.project-members-heading p,.project-members-person-name small,
- .settings-help,.settings-account-row,.appearance-description){color:#685770}
-.home-page[data-theme="light"] .projects-page-tabs,
-.home-page[data-theme="light"] .my-tasks-filters button,
-.home-page[data-theme="light"] .tasks-status-label select,
-.home-page[data-theme="light"] .project-members-person,
-.home-page[data-theme="light"] .notification-settings-row,
-.home-page[data-theme="light"] .project-members-confirm,
-.home-page[data-theme="light"] .dashboard-deadline-group-toggle {
-  background:#f5edf3;border-color:rgba(107,72,112,.23);color:#493650;
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-card,.projects-card,.my-tasks-item,.activity-event,.tasks-card,
+  .settings-account,.project-members
+) :is(h1,h2,h3,strong){color:#30213b;}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .projects-card>p,.projects-card-date,.workspace-manager-meta,.workspace-manager-section-top p,
+  .my-tasks-description,.tasks-description,.tasks-meta,.project-members-heading p,
+  .settings-help,.recycle-item p
+){color:#5b4d66;}
+
+/* Overview: no dark banner or washed-out metrics on the light surface. */
+.home-page[data-theme="light"] .dashboard-active-summary{
+  background:linear-gradient(115deg,#e8dce8,#f4e9ef);
+  border:1px solid #c7b6ca;
+  color:#31223d;
+  box-shadow:0 9px 30px rgba(62,37,66,.05);
 }
-.home-page[data-theme="light"] :is(.projects-page-tabs button,.my-tasks-filters button,
- .settings-tabs button,.project-members-count,.project-members-remove,
- .tasks-actions button,.workspace-manager-edit,.activity-refresh,.recycle-refresh){
-  color:#65466d;border-color:rgba(107,74,111,.25);
+.home-page[data-theme="light"] .dashboard-active-summary-icon{
+  background:#f8f2eb;color:#805428;border-color:#c8af91;
 }
-.home-page[data-theme="light"] :is(.projects-page-tabs button.is-active,.my-tasks-filters button.is-active,
- .settings-tabs button.settings-tab--active){
-  color:#70451d;background:#f1e3d1;border-color:rgba(142,94,42,.42);
+.home-page[data-theme="light"] .dashboard-active-summary .dashboard-eyebrow{
+  color:#6e4b2c;
 }
-.home-page[data-theme="light"] :is(.dashboard-feature-action,.appearance-save button,
- .notification-settings-actions button,.user-preferences-actions button,
- .project-members-add button,.workspace-manager-open,.projects-create){
-  color:#2f2433;background:linear-gradient(115deg,#edc58d,#d9a96a);
-  border-color:rgba(140,91,42,.38);
+.home-page[data-theme="light"] .dashboard-main .dashboard-active-summary h2{color:#30213d;}
+.home-page[data-theme="light"] .dashboard-main .dashboard-active-summary p{color:#5b4a61;}
+.home-page[data-theme="light"] .dashboard-active-summary-action{
+  background:#fffdfb;color:#382740;border-color:#b9a6bc;
 }
-.home-page[data-theme="light"] :is(.tasks-priority--high,.tasks-priority--urgent,
- .tasks-priority--low,.dashboard-deadline-badge,.dashboard-data-tag,
- .dashboard-eyebrow){color:#81512b}
-.home-page[data-theme="light"] .settings-heading h1{color:#32253d}
-.home-page[data-theme="light"] .settings-heading>p:not(.dashboard-eyebrow){color:#64536b}
-.home-page[data-theme="light"] .settings-section-title,
-.home-page[data-theme="light"] .settings-section-title h2{color:#3d2d48}
-.home-page[data-theme="light"] .settings-tabs button{background:#f9f2ed;color:#5b4864}
-.home-page[data-theme="light"] .settings-tabs button.settings-tab--active{background:#f2e2ce;color:#704a22}
-.home-page[data-theme="light"] :is(.settings-account-row strong,.settings-edit-form label,
- .user-preferences form>label,.notification-settings-row strong,
- .appearance-theme-options legend,.appearance-theme-choice strong,
- .appearance-motion-choice strong){color:#382744}
+.home-page[data-theme="light"] .dashboard-active-summary-action:hover{background:#e9ddeb;}
+.home-page[data-theme="light"] .dashboard-welcome h1 span{
+  color:#805025;
+  background:none;-webkit-text-fill-color:#805025;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-data-value{
+  color:#774820;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-data-value span,
+.home-page[data-theme="light"] .dashboard-main .dashboard-empty-card p{color:#574a62;}
+.home-page[data-theme="light"] .dashboard-data-tag,
+.home-page[data-theme="light"] .dashboard-section-heading>span{color:#69516b;}
+.home-page[data-theme="light"] .dashboard-card-link{
+  color:#50345d;
+}
+.home-page[data-theme="light"] .dashboard-card-link:hover{color:#765021;}
+
+/* The primary action is plum, not another gold rectangle. */
+.home-page[data-theme="light"] .dashboard-main :is(
+  .dashboard-feature-action,.projects-create,.workspace-manager-create,
+  .workspace-manager-open,.appearance-save button:not(:disabled),
+  .notification-settings-actions button:not(:disabled),
+  .user-preferences-actions button:not(:disabled),
+  .project-members-add button:not(:disabled)
+){
+  background:linear-gradient(135deg,#51335e,#34213e);
+  border:1px solid #452b51;
+  color:#fff9fc;
+  box-shadow:0 6px 15px rgba(50,31,61,.16);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .dashboard-feature-action,.projects-create,.workspace-manager-create,
+  .workspace-manager-open,.appearance-save button:not(:disabled),
+  .notification-settings-actions button:not(:disabled),
+  .user-preferences-actions button:not(:disabled),
+  .project-members-add button:not(:disabled)
+):hover:not(:disabled) {
+  background:linear-gradient(135deg,#634270,#3d284b);
+  color:#fff;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .projects-card-actions button,.workspace-manager-edit,
+  .my-tasks-refresh,.activity-refresh,.recycle-refresh,
+  .projects-page-tabs button,.my-tasks-filters button,.tasks-actions button,
+  .settings-tabs button,.settings-cancel,.dashboard-card-link
+){
+  color:#483451;border-color:#cbbaca;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .projects-card-actions button,.workspace-manager-edit,.my-tasks-refresh,
+  .activity-refresh,.recycle-refresh,.tasks-actions button
+) {
+  background:#f8f4f7;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .projects-card-actions button,.workspace-manager-edit,.my-tasks-refresh,
+  .activity-refresh,.recycle-refresh,.tasks-actions button
+):hover:not(:disabled){background:#e9dfe9;border-color:#ad99b1;}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .projects-page-tabs,.my-tasks-filters button,.settings-tabs button
+){background:#f6f1f5;}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .projects-page-tabs button.is-active,.my-tasks-filters button.is-active,
+  .settings-tabs button.settings-tab--active
+){
+  background:#e5d7e7;color:#38243f;border-color:#b7a4bd;
+}
+.home-page[data-theme="light"] .dashboard-main :is(button,select,input,textarea):disabled {
+  opacity:.68;
+}
+.home-page[data-theme="light"] .dashboard-main :is(.appearance-save button,.notification-settings-actions button,
+  .user-preferences-actions button):disabled {
+  background:#ded2e0;color:#53415a;border-color:#c9bacd;box-shadow:none;
+}
+
+/* Status and metadata use readable ink; gold is an accent, not body text. */
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-count,.workspace-manager-active,.projects-card-status
+){
+  color:#67431f;background:#f2e5d3;border-color:#d0b590;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .my-tasks-location,.activity-workspace-label,.projects-card-date,
+  .projects-page-workspace,.workspace-manager-meta
+){color:#6b4b32;}
+.home-page[data-theme="light"] .my-tasks-summary,
+.home-page[data-theme="light"] .my-tasks-summary span,
+.home-page[data-theme="light"] .my-tasks-meta,
+.home-page[data-theme="light"] .my-tasks-meta>span:not(.tasks-priority):not(.my-tasks-due-indicator){
+  color:#584963;
+}
+.home-page[data-theme="light"] .my-tasks-summary strong{color:#30213b;}
+.home-page[data-theme="light"] .my-tasks-meta .tasks-priority{
+  background:#e7dce8;color:#463151;
+}
+.home-page[data-theme="light"] .my-tasks-meta .tasks-priority--high{
+  background:#f3dfd0;color:#80471e;
+}
+.home-page[data-theme="light"] .my-tasks-meta .tasks-priority--urgent{
+  background:#f0d8de;color:#87304a;
+}
+.home-page[data-theme="light"] .my-tasks-meta .tasks-priority--low{
+  background:#dcece2;color:#26623e;
+}
+.home-page[data-theme="light"] .my-tasks-meta .my-tasks-due-indicator--overdue,
+.home-page[data-theme="light"] .my-tasks-meta .my-tasks-due-indicator--today,
+.home-page[data-theme="light"] .dashboard-deadline-badge--overdue,
+.home-page[data-theme="light"] .dashboard-deadline-badge--today {
+  background:#f0d9de;color:#8c2947;
+}
+.home-page[data-theme="light"] .my-tasks-meta .my-tasks-due-indicator--tomorrow,
+.home-page[data-theme="light"] .my-tasks-meta .my-tasks-due-indicator--soon,
+.home-page[data-theme="light"] .dashboard-deadline-badge--tomorrow,
+.home-page[data-theme="light"] .dashboard-deadline-badge--soon{
+  background:#f4e6cf;color:#79471c;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--overdue,
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--today{color:#912e49;}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--tomorrow{color:#82501f;}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-summary .dashboard-deadline-reminder strong{color:inherit;}
+.home-page[data-theme="light"] .my-tasks-control label{color:#4f3e57;}
+
+/* Activity history: names and timestamps were unreadable in the first pass. */
+.home-page[data-theme="light"] .activity-event-content p,
+.home-page[data-theme="light"] .activity-event-content .activity-event-detail,
+.home-page[data-theme="light"] .activity-event time{color:#5c4c65;}
+.home-page[data-theme="light"] .activity-event-content p strong,
+.home-page[data-theme="light"] .activity-entity-name{color:#35243f;}
+.home-page[data-theme="light"] .activity-event-icon{
+  background:#f2e7da;border-color:#d6bfa7;color:#815023;
+}
+
+/* Settings, membership, and notification center. */
+.home-page[data-theme="light"] .settings-heading h1,
+.home-page[data-theme="light"] .settings-section-title h2{color:#33243e;}
+.home-page[data-theme="light"] :is(.settings-help,.settings-account-row,
+ .appearance-description,.appearance-theme-choice small,.appearance-motion-choice small,
+ .notification-settings-row small,.user-preferences-preview small){color:#5f506a;}
+.home-page[data-theme="light"] :is(.settings-account-row strong,.appearance-theme-choice strong,
+ .appearance-motion-choice strong,.notification-settings-row strong,
+ .user-preferences form>label,.appearance-theme-options legend){color:#35243f;}
 .home-page[data-theme="light"] .appearance-theme-choice--selected{
- background:#f1e0ca;border-color:#9a6e34;box-shadow:inset 0 0 0 1px rgba(147,99,46,.2);
+  background:#e7dbe9;border-color:#9b83a4;box-shadow:inset 0 0 0 1px #c4b3ca;
 }
-.home-page[data-theme="light"] .appearance-theme-choice small,
-.home-page[data-theme="light"] .appearance-motion-choice small{color:#66566c}
-.home-page[data-theme="light"] .user-preferences-preview{background:#f2e9ee}
-.home-page[data-theme="light"] .user-preferences-preview :is(strong,span){color:#694923}
-.home-page[data-theme="light"] .user-preferences-preview small{color:#66566c}
-.home-page[data-theme="light"] .notification-settings-row input,
-.home-page[data-theme="light"] .appearance-motion-choice input,
-.home-page[data-theme="light"] .appearance-theme-choice input{accent-color:#996625}
-.home-page[data-theme="light"] .notification-settings-note,
-.home-page[data-theme="light"] .user-preferences-note{background:#f4ebef}
-.home-page[data-theme="light"] .notification-settings-note,
-.home-page[data-theme="light"] .user-preferences-note,
-.home-page[data-theme="light"] .appearance-description{color:#65546d}
-
-/* Project member management needs its own light treatment for the form. */
-.home-page[data-theme="light"] .project-members-person{background:#f8f0f4}
-.home-page[data-theme="light"] .project-members-person-name strong{color:#352540}
+.home-page[data-theme="light"] :is(.appearance-theme-choice input,
+ .appearance-motion-choice input,.notification-settings-row input){accent-color:#674377;}
+.home-page[data-theme="light"] .user-preferences-preview{background:#f7f1f6;}
+.home-page[data-theme="light"] .user-preferences-preview span{color:#553b61;}
+.home-page[data-theme="light"] .project-members-person{background:#f7f1f6;border-color:#e0d4e0;}
+.home-page[data-theme="light"] .project-members-person-name strong{color:#35243f;}
 .home-page[data-theme="light"] .project-members-role select,
-.home-page[data-theme="light"] .project-members-add select{background:#fffaf5;color:#352540;border-color:rgba(110,79,111,.3)}
-.home-page[data-theme="light"] .project-members-add label{color:#4f3a59}
+.home-page[data-theme="light"] .project-members-add select{background:#fff;color:#35243f;}
+.home-page[data-theme="light"] .project-members-heading p,
+.home-page[data-theme="light"] .project-members-person-name small{color:#5d4f66;}
 .home-page[data-theme="light"] .project-members-success,
-.home-page[data-theme="light"] .settings-success{color:#256745}
-.home-page[data-theme="light"] .project-members-confirm p,
-.home-page[data-theme="light"] .project-members-confirm strong{color:#543347}
-.home-page[data-theme="light"] .project-members-confirm-remove{background:#a23e59;color:#fff}
-
-/* Notification popover lives in the header, outside dashboard-main. */
-.home-page[data-theme="light"] .notification-bell{
- background:#f4e9f0;color:#62446d;border-color:rgba(117,79,118,.3);
-}
+.home-page[data-theme="light"] .settings-success{color:#27613f;}
+.home-page[data-theme="light"] .notification-bell{background:#efe5ef;color:#503558;border-color:#c8b5cb;}
 .home-page[data-theme="light"] .notification-panel{
- background:#fffaf6;color:#382744;border-color:rgba(107,73,110,.25);
- box-shadow:0 20px 50px rgba(49,31,49,.18);
+  background:#fffdfb;color:#34233e;border-color:#cdbed0;
+  box-shadow:0 20px 50px rgba(49,31,49,.16);
 }
 .home-page[data-theme="light"] .notification-panel-header,
 .home-page[data-theme="light"] .notification-panel-actions,
 .home-page[data-theme="light"] .notification-panel-footnote,
-.home-page[data-theme="light"] .notification-item{border-color:rgba(105,74,107,.15)}
-.home-page[data-theme="light"] .notification-panel-header strong,
-.home-page[data-theme="light"] .notification-item strong{color:#352540}
-.home-page[data-theme="light"] .notification-panel :is(small,p,.notification-panel-actions){color:#66556a}
-.home-page[data-theme="light"] .notification-panel button{color:#754822}
-.home-page[data-theme="light"] .notification-item--unread{background:#f6e8d7}
-.home-page[data-theme="light"] .notification-unread-count{background:#a96f2d;color:#fff}
+.home-page[data-theme="light"] .notification-item{border-color:#e3d9e3;}
+.home-page[data-theme="light"] .notification-panel :is(strong,p,small){color:#4a3853;}
+.home-page[data-theme="light"] .notification-panel button{color:#54365d;}
+.home-page[data-theme="light"] .notification-item--unread{background:#f1e9f3;}
 
-/* Light theme applies to both closed and open dialogs. */
+/* All dialogs should keep the same surface and text contrast. */
 .home-page[data-theme="light"] :is(dialog,.dashboard-dialog,.tasks-delete-dialog){
- background:#fffaf6;color:#342740;border-color:rgba(102,70,106,.32);
+  background:#fffdfb;color:#30213d;border-color:#cbbccd;
 }
-.home-page[data-theme="light"] :is(dialog,.dashboard-dialog) :is(h2,h3,strong,label){color:#3d2c45}
+.home-page[data-theme="light"] :is(dialog,.dashboard-dialog) :is(h2,h3,strong,label){color:#34253e;}
 .home-page[data-theme="light"] :is(dialog,.dashboard-dialog) :is(input,textarea,select){
- background:#fffdf9;color:#3c2d45;border-color:rgba(102,70,106,.32);
+  background:#fff;color:#30213d;border-color:#c9baca;
 }
-.home-page[data-theme="light"] :is(.tasks-priority--urgent,.settings-deletion-error,.dashboard-form-error){color:#97354e}
 
-/* Keep explicit reduced-motion choices and OS accessibility preferences effective.
-   Nothing hides content: only movement is reduced. */
+/* Respect both explicit user preference and accessibility settings. */
 .home-page[data-motion="reduced"] *,
 .home-page[data-motion="reduced"] *::before,
-.home-page[data-motion="reduced"] *::after{
- animation-duration:.01ms !important;
- animation-iteration-count:1 !important;
- transition-duration:.01ms !important;
- scroll-behavior:auto !important;
+.home-page[data-motion="reduced"] *::after {
+  animation-duration:.01ms !important;animation-iteration-count:1 !important;
+  transition-duration:.01ms !important;scroll-behavior:auto !important;
 }
-@media (prefers-reduced-motion: reduce) {
- .home-page *, .home-page *::before, .home-page *::after{
-  animation-duration:.01ms !important;
-  animation-iteration-count:1 !important;
-  transition-duration:.01ms !important;
-  scroll-behavior:auto !important;
- }
+@media (prefers-reduced-motion:reduce) {
+  .home-page *, .home-page *::before, .home-page *::after{
+    animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important;
+  }
 }
-@media (max-width:900px) {
- .home-page[data-theme="light"] .dashboard-sidebar{background:#ece1e9}
- .home-page[data-theme="light"] .dashboard-mobile-scrim{background:rgba(36,24,43,.35)}
+@media (max-width:900px){
+  .home-page[data-theme="light"] .dashboard-sidebar{background:#e9e1ea;}
+  .home-page[data-theme="light"] .dashboard-mobile-scrim{background:rgba(42,27,49,.37);}
 }
-
-/* Light theme contrast correction: Nov 2026 screenshots */
-/* Use deep plum for text, burnished bronze for accents, and ivory surfaces.
-   Broad first-pass light overrides must not bleach the text or keep dark panels. */
-.home-page[data-theme="light"]{
-  --light-ink:#30243d;
-  --light-secondary:#55445f;
-  --light-accent:#77501f;
-  --light-line:#d4c2d1;
-  --light-surface:#fffaf6;
-}
-.home-page[data-theme="light"] .dashboard-sidebar{
-  background:linear-gradient(170deg,#eee5ed 0%,#e7dce8 100%);
-}
-.home-page[data-theme="light"] .dashboard-sidebar-bottom{
-  background:linear-gradient(180deg,#e8dde8,#e5d9e6);
-  border-top:1px solid #d2bfcd;
-  color:var(--light-ink);
-}
-.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile{
-  border-top-color:#c7b6c7;
-}
-.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile-info strong,
-.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-signout{color:#352941}
-.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile-info span{color:#62526a}
-.home-page[data-theme="light"] .dashboard-brand img{
-  filter:brightness(.83) saturate(.8) contrast(1.18);
-}
-.home-page[data-theme="light"] .dashboard-brand-copy strong{
-  background:none;
-  color:#9a6727;
-  -webkit-text-fill-color:#9a6727;
-  text-shadow:none;
-  filter:none;
-}
-.home-page[data-theme="light"] .dashboard-brand-copy small{
-  color:#76542e;
-  font-weight:800;
-}
-.home-page[data-theme="light"] .dashboard-nav-active-mark{
-  background:#91622c;
-  box-shadow:none;
-}
-.home-page[data-theme="light"] .dashboard-nav-item--active,
-.home-page[data-theme="light"] .dashboard-nav-item--active:hover{
-  color:#5a391d;
-  border:1px solid #bb9a77;
-  background:#f0e1d2;
-}
-.home-page[data-theme="light"] .dashboard-nav-item:focus-visible{
-  outline-color:#86602e;
-}
-.home-page[data-theme="light"] .dashboard-sidebar-toggle-label,
-.home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle,
-.home-page[data-theme="light"] .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle{color:#59475f}
-
-/* Overviews: the dark workspace banner was never recolored. */
-.home-page[data-theme="light"] .dashboard-active-summary{
-  background:linear-gradient(112deg,#eee1ec 0%,#f6ece9 100%);
-  border:1px solid #c7b3c7;
-  box-shadow:0 8px 24px rgba(58,36,62,.06);
-}
-.home-page[data-theme="light"] .dashboard-active-summary-icon{
-  background:#e9d9c2;
-  border-color:#c8aa79;
-  color:#795021;
-}
-.home-page[data-theme="light"] .dashboard-active-summary-details .dashboard-eyebrow{color:#735026}
-.home-page[data-theme="light"] .dashboard-main .dashboard-active-summary-details h2{color:#362640}
-.home-page[data-theme="light"] .dashboard-main .dashboard-active-summary-details > p:last-child{color:#594964}
-.home-page[data-theme="light"] .dashboard-active-summary-action{
-  color:#62401f;
-  border:1px solid #ae8964;
-  background:#fff9f0;
-}
-.home-page[data-theme="light"] .dashboard-active-summary-action:hover{background:#f0ddc4}
-.home-page[data-theme="light"] .dashboard-main .dashboard-welcome h1 span{
-  background:none;
-  color:#916027;
-  -webkit-text-fill-color:#916027;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-data-value{
-  color:#74491c;
-  -webkit-text-fill-color:#74491c;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-data-value span{
-  color:#57445d;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-data-tag{color:#805522}
-.home-page[data-theme="light"] .dashboard-main .dashboard-section-heading > span{color:#63516d}
-.home-page[data-theme="light"] .dashboard-main .dashboard-empty-card p{color:#5d4c67}
-.home-page[data-theme="light"] .dashboard-main .dashboard-card-link{
-  color:#684321;
-  font-weight:800;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-card-link:hover{color:#3c2851}
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--overdue,
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--today{
-  color:#982d46;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--tomorrow{color:#815119}
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--upcoming{color:#534366}
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-summary .dashboard-deadline-reminder strong{
-  color:inherit;
-}
-
-/* Buttons: neutral actions are readable, while primary actions use bronze.
-   Avoid the earlier broad inherited-color rule washing out labels. */
-.home-page[data-theme="light"] .dashboard-main :is(
- .workspace-manager-open,.projects-card-actions button,.projects-card-actions button:hover,
- .workspace-manager-edit,.workspace-manager-card-footer button,
- .my-tasks-refresh,.activity-refresh,.recycle-refresh,
- .dashboard-card-link,.projects-page-tabs button,.my-tasks-filters button,
- .tasks-actions button,.tasks-back,.projects-back,
- .settings-tabs button,.settings-cancel
- ){
-  color:#503957;
-}
-.home-page[data-theme="light"] .dashboard-main :is(
- .workspace-manager-open,.dashboard-feature-action,.projects-create,
- .appearance-save button:not(:disabled),.notification-settings-actions button:not(:disabled),
- .user-preferences-actions button:not(:disabled),.project-members-add button:not(:disabled)
- ){
-  color:#302335;
-  border-color:#ad8550;
-  background:linear-gradient(115deg,#e6bc82,#d3a061);
-  box-shadow:0 3px 10px rgba(110,68,39,.10);
-}
-.home-page[data-theme="light"] .dashboard-main :is(
- .workspace-manager-open,.dashboard-feature-action,.projects-create,
- .appearance-save button:not(:disabled),.notification-settings-actions button:not(:disabled),
- .user-preferences-actions button:not(:disabled),.project-members-add button:not(:disabled)
- ):hover{background:linear-gradient(115deg,#efca95,#d9a96e)}
-.home-page[data-theme="light"] .dashboard-main :is(button,select,input,textarea):disabled{
-  opacity:.66;
-}
-.home-page[data-theme="light"] .dashboard-main :is(.projects-card-actions button,.workspace-manager-edit,
- .projects-page-tabs button,.my-tasks-filters button,.my-tasks-refresh,.activity-refresh,
- .recycle-refresh,.tasks-actions button){
-  border-color:#cbb8c9;
-  background:#fbf5f0;
-}
-.home-page[data-theme="light"] .dashboard-main :is(.projects-card-actions button,.workspace-manager-edit,
- .my-tasks-refresh,.activity-refresh,.recycle-refresh,.tasks-actions button):hover:not(:disabled){
-  background:#eee3ec;
-  border-color:#a88ca8;
-}
-.home-page[data-theme="light"] .dashboard-main .projects-page-tabs button.is-active,
-.home-page[data-theme="light"] .dashboard-main .my-tasks-filters button.is-active{
-  background:#ead7bd;
-  color:#623e20;
-  border-color:#b6966a;
-}
-
-/* Project and workspace details: the old gold was tuned for dark backgrounds. */
-.home-page[data-theme="light"] .dashboard-main :is(
- .projects-card-date,.projects-card-status,.workspace-manager-active,
- .workspace-manager-count,.my-tasks-location,.activity-workspace-label
- ){color:#755021}
-.home-page[data-theme="light"] .dashboard-main :is(
- .projects-card-status,.workspace-manager-active,.workspace-manager-count
- ){
-  border-color:#d2b58e;
-  background:#f3e5d1;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-summary,
-.home-page[data-theme="light"] .dashboard-main .my-tasks-summary span{
-  color:#55435f;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-summary strong{color:#342640}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta,
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta > span:not(.tasks-priority):not(.my-tasks-due-indicator){
-  color:#594968;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority{
-  background:#e4d4e5;
-  color:#50365b;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority--high{
-  background:#f4d9c8;
-  color:#85451e;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority--low{
-  background:#d5e9db;
-  color:#27613c;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority--urgent{
-  background:#f2d4d9;
-  color:#942b46;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--overdue,
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--today{
-  background:#f3d6dc;
-  color:#8e2342;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--tomorrow,
-.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--soon{
-  background:#f3e5ca;
-  color:#744719;
-}
-.home-page[data-theme="light"] .dashboard-main .my-tasks-control label{color:#47334f}
-
-/* Activity, where pale entity titles and timestamps were almost invisible. */
-.home-page[data-theme="light"] .dashboard-main .activity-event-content p,
-.home-page[data-theme="light"] .dashboard-main .activity-event-content .activity-event-detail{
-  color:#594661;
-}
-.home-page[data-theme="light"] .dashboard-main .activity-event-content p strong{color:#3c2945}
-.home-page[data-theme="light"] .dashboard-main .activity-entity-name{color:#382641}
-.home-page[data-theme="light"] .dashboard-main .activity-event time{color:#614e69}
-.home-page[data-theme="light"] .dashboard-main .activity-event-icon{
-  background:#f1e2cd;
-  border-color:#c8a979;
-  color:#84541f;
-}
-.home-page[data-theme="light"] .dashboard-main .activity-limit-note{color:#62506a}
-
-/* Card counters, secondary timestamps and notices should never be pale on ivory. */
-.home-page[data-theme="light"] .dashboard-main :is(.projects-page-workspace,.workspace-manager-meta,
- .workspace-manager-section-top p,.projects-card>p,.projects-card-date,.recycle-notice,
- .project-members-heading p,.project-members-person-name small){color:#61516a}
-.home-page[data-theme="light"] .dashboard-main :is(.dashboard-deadline-group-date,
- .dashboard-deadline-group-count,.dashboard-deadline-task-list small){color:#58465e}
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-badge--overdue,
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-badge--today{
-  color:#952f48;background:#f5dee1;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-badge--tomorrow{
-  color:#78491b;background:#f3e4cb;
-}
-.home-page[data-theme="light"] .dashboard-main .dashboard-form-error{color:#922d48}
-
-/* The approved gold logo remains the same vector, with calmer light-mode rendering. */
