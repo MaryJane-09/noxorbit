@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowRight, CalendarDays, Check, Circle, Flag, Plus, RefreshCw, Target, Trash2, Pencil, X } from 'lucide-react'
+import { ArrowRight, CalendarDays, Check, Circle, Flag, Plus, RefreshCw, Target, Trash2, Pencil, X, Clock3 } from 'lucide-react'
 import {
-  fetchGoals, createGoal, updateGoal, deleteGoal,
+  fetchGoals, fetchGoalActivity, createGoal, updateGoal, deleteGoal,
   createGoalMilestone, setGoalMilestone, deleteGoalMilestone,
 } from '../api'
-import { formatCalendarDate } from './deadlines'
+import { formatCalendarDate, formatInstant } from './deadlines'
 import './GoalsPage.css'
 
 function goalProgress(goal) {
@@ -29,6 +29,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
   const titleRef = useRef(null)
   const confirmRef = useRef(null)
   const [pendingDelete, setPendingDelete] = useState(null)
+  const [history, setHistory] = useState({ items: [], loading: true, error: '' })
 
   useEffect(() => {
     const controller = new AbortController()
@@ -38,6 +39,21 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       .finally(() => { if (!controller.signal.aborted) setLoading(false) })
     return () => controller.abort()
   }, [revision])
+
+  useEffect(() => {
+    if (compact) return undefined
+    const controller = new AbortController()
+    fetchGoalActivity({ signal: controller.signal })
+      .then((items) => {
+        if (!controller.signal.aborted) setHistory({ items, loading: false, error: '' })
+      })
+      .catch((err) => {
+        if (!controller.signal.aborted) {
+          setHistory((current) => ({ ...current, loading: false, error: err.message || 'Could not load goal history.' }))
+        }
+      })
+    return () => controller.abort()
+  }, [compact, revision])
 
   // Refresh when users return from another tab or goals are changed elsewhere.
   useEffect(() => {
@@ -238,6 +254,34 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
           </article>
         })}
       </div>}
+
+    {!compact && <section className="goals-history" aria-labelledby="goals-history-heading">
+      <div className="goals-history-heading">
+        <span className="goals-symbol"><Clock3 size={19} aria-hidden="true" /></span>
+        <div><h2 id="goals-history-heading">Recent goal activity</h2>
+          <p>Private to your account. Workspace members cannot see this history.</p>
+        </div>
+      </div>
+      {history.loading ? <p role="status" className="goals-muted">Loading your goal history…</p>
+        : history.error ? <p role="alert" className="goals-history-error">{history.error}. Make sure migration 017 has been applied.</p>
+        : history.items.length === 0 ? <p className="goals-muted">Goal and milestone changes will appear here.</p>
+        : <ol className="goals-history-list">{history.items.slice(0, 6).map((item) => {
+          const verbs = {
+            'goal.created': 'Created goal', 'goal.updated': 'Updated goal',
+            'goal.deleted': 'Deleted goal', 'milestone.added': 'Added milestone',
+            'milestone.completed': 'Completed milestone', 'milestone.reopened': 'Reopened milestone',
+            'milestone.deleted': 'Deleted milestone',
+          }
+          return <li key={item.id}>
+            <span className="goals-history-dot" aria-hidden="true" />
+            <div className="goals-history-detail">
+              <strong>{verbs[item.action] || 'Updated goal'}</strong>
+              <span>{item.milestone_title ? `${item.milestone_title} · ${item.goal_title}` : item.goal_title}</span>
+            </div>
+            <time dateTime={item.created_at}>{formatInstant(item.created_at, preferences)}</time>
+          </li>
+        })}</ol>}
+    </section>}
 
     {pendingDelete && <div className="goals-confirm-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) setPendingDelete(null) }}>
       <div className="goals-confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="goals-confirm-title" aria-describedby="goals-confirm-description">
