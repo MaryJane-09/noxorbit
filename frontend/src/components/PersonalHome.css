@@ -38,19 +38,5 @@
 .personal-home-alert{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid rgba(230,127,143,.4);border-radius:11px;color:#ffd6d9}
 .personal-home-alert button{margin-left:auto;cursor:pointer}
 .personal-home-scope{font-size:12px;color:#cbb6d1;line-height:1.7}
-.home-page[data-theme="light"] .personal-home-heading h1 span{color:#b67c2b;background:linear-gradient(105deg,#a96b23,#dfab50 50%,#a46a20);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.home-page[data-theme="light"] .personal-home-heading>div>p:last-child,.home-page[data-theme="light"] .personal-home-scope{color:#63516a}
-.home-page[data-theme="light"] .personal-home-metric,.home-page[data-theme="light"] .personal-home-panel{background:#fffdfb;border-color:#dacee0;box-shadow:0 6px 24px rgba(56,32,63,.05);color:#33253d}
-.home-page[data-theme="light"] .personal-home-metric>span:nth-child(2),.home-page[data-theme="light"] .personal-home-metric small{color:#615169}
-.home-page[data-theme="light"] .personal-home-metric strong{color:#53365b}
-.home-page[data-theme="light"] .personal-home-icon{color:#6e4a77;border-color:#d2bfd2;background:#f3eaf3}
-.home-page[data-theme="light"] .personal-home-focus-item,.home-page[data-theme="light"] .personal-home-space{background:#faf6f9;color:#3a2942;border-color:#e4dae5}
-.home-page[data-theme="light"] .personal-home-focus-item strong,.home-page[data-theme="light"] .personal-home-space strong{color:#37253e}
-.home-page[data-theme="light"] .personal-home-focus-item small,.home-page[data-theme="light"] .personal-home-space small{color:#60506a}
-.home-page[data-theme="light"] .personal-home-focus-symbol{color:#744d2a;background:#f3e7d9}
-.home-page[data-theme="light"] .personal-home-overdue{color:#8e2843;background:#f3dce0}
-.home-page[data-theme="light"] .personal-home-text-action{color:#573760}
-.home-page[data-theme="light"] .personal-home-refresh{color:#433149;background:#f9f4f8;border-color:#c9b6ca}
-.home-page[data-theme="light"] .personal-home-empty{color:#58465d;border-color:#c9b9cb}
 @media(max-width:950px){.personal-home-content{grid-template-columns:1fr}}
 @media(max-width:680px){.personal-home-metrics{grid-template-columns:1fr}.personal-home-metric{padding:18px}.personal-home-panel{padding:17px}}
