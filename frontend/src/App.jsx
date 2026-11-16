@@ -11,7 +11,9 @@ const DEFAULT_APPEARANCE = { theme: "dark", reduced_motion: false };
 
 async function loadSignedInAppearance() {
   try {
-    return await fetchAppearancePreferences();
+    const appearance = await fetchAppearancePreferences();
+    try { window.localStorage.setItem("noxorbit.appearance.hint", appearance.theme); } catch { /* storage unavailable */ }
+    return appearance;
   } catch (error) {
     // Never display a placeholder dark dashboard while a theme is loading.
     // If loading genuinely fails, keep the safe dark default.
@@ -25,6 +27,14 @@ function App() {
   const [view, setView] = useState(() => window.location.hash.startsWith("#invite/") ? "login" : "register");
   const [session, setSession] = useState(null);
   const [checking, setChecking] = useState(true);
+  const [loadingTheme] = useState(() => {
+    try {
+      const hint = window.localStorage.getItem("noxorbit.appearance.hint");
+      if (hint === "light") return "light";
+      if (hint === "system") return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    } catch { /* use dark loading surface */ }
+    return "dark";
+  });
 
   useEffect(() => {
     let active = true;
@@ -65,7 +75,8 @@ function App() {
   }
 
   return (
-    <div className={`app-shell${user ? " app-shell--dashboard" : ""}`}>
+    <div className={`app-shell${user ? " app-shell--dashboard" : ""}${checking ? " app-shell--checking" : ""}`}
+      data-loading-theme={loadingTheme}>
       {!checking && !user && <>
         <div className="app-background" />
         {!introDone && <Intro onComplete={() => setIntroDone(true)} />}
