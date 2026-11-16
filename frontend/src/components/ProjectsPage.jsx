@@ -203,7 +203,7 @@ export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpe
                 <div className="projects-message">
                     <Layers3 size={28} aria-hidden="true" />
                     <h2>Create or choose a workspace first.</h2>
-                    <p>Projects belong to workspaces so teams can build together.</p>
+                    <p>Create a workspace first.</p>
                     <button type="button" className="dashboard-feature-action" onClick={onOpenWorkspaces}>
                         View workspaces <ArrowRight size={17} aria-hidden="true" />
                     </button>
@@ -268,7 +268,7 @@ export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpe
                                         </span>
                                     </div>
                                     <h2>{project.name}</h2>
-                                    <p>{project.description || 'No description yet.'}</p>
+                                    <p>{project.description || ''}</p>
                                     <div className="projects-card-bottom">
                                         <span className="projects-card-date">
                                             <CalendarDays size={14} aria-hidden="true" />
@@ -312,7 +312,7 @@ export default function ProjectsPage({ activeWorkspace, workspacesLoading, onOpe
                 </div>
                 <p className="dashboard-eyebrow">SHARED WORK, CLEAR DIRECTION</p>
                 <h2 id="projects-dialog-title">{editor?.id ? 'Edit project.' : 'Create a project.'}</h2>
-                <p className="dashboard-dialog-description">Projects live inside your selected workspace.</p>
+                <p className="dashboard-dialog-description"></p>
                 <form className="dashboard-workspace-form" onSubmit={save}>
                     <label htmlFor="projects-name">Project name</label>
                     <input id="projects-name" ref={nameRef} value={name} autoComplete="off"
