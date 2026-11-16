@@ -782,3 +782,136 @@
 ) {
   color:#84501b;
 }
+
+
+/* Light theme control states — shared contrast policy.
+   Gold actions: saturated champagne/amber with deep-plum lettering.
+   Lavender actions: muted plum surfaces with dark lettering even on hover.
+   Keep primary submit buttons plum; never change the Dark theme or branding. */
+.home-page[data-theme="light"] {
+  --light-action-gold:#dbab61;
+  --light-action-gold-hover:#c99244;
+  --light-action-gold-border:#ac793b;
+  --light-action-gold-text:#30213d;
+  --light-action-lavender:#e7dbe9;
+  --light-action-lavender-hover:#d6c2dc;
+  --light-action-lavender-border:#b49dbb;
+  --light-action-lavender-text:#392545;
+}
+/* Existing workspace and project entry controls were left weak by the
+   previous generic 'plum primary' rule. These are purposeful warm-gold CTAs. */
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-open,
+  .projects-card-actions button:first-child,
+  .workspace-manager-card-footer .workspace-manager-open,
+  .personal-home-empty button,
+  .dashboard-empty-card .dashboard-feature-action
+):not(:disabled) {
+  background:linear-gradient(120deg,#efc988 0%,#dbab61 55%,#c99244 100%);
+  border:1px solid var(--light-action-gold-border);
+  color:var(--light-action-gold-text);
+  box-shadow:inset 0 1px 0 rgba(255,252,236,.68),0 3px 9px rgba(114,71,30,.13);
+  opacity:1;
+  text-shadow:none;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-open,
+  .projects-card-actions button:first-child,
+  .workspace-manager-card-footer .workspace-manager-open,
+  .personal-home-empty button,
+  .dashboard-empty-card .dashboard-feature-action
+):hover:not(:disabled) {
+  background:linear-gradient(120deg,#e6b86c 0%,#d39b4e 60%,#bd8237 100%);
+  border-color:#99662c;
+  color:#2d1c37;
+  filter:none;
+  box-shadow:inset 0 1px 0 rgba(255,249,230,.4),0 5px 13px rgba(114,71,30,.18);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-open,
+  .projects-card-actions button:first-child,
+  .personal-home-empty button,
+  .dashboard-empty-card .dashboard-feature-action
+):active:not(:disabled){
+  background:#bd843f;
+  color:#26182e;
+}
+/* Lavender buttons and tabs must not fade to off-white on hover. */
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-edit,
+  .workspace-manager-secondary-actions button:not(.workspace-manager-open),
+  .projects-card-actions button:not(:first-child),
+  .my-tasks-refresh,.activity-refresh,.recycle-refresh,
+  .tasks-actions button,.personal-home-refresh,
+  .settings-tabs button:not(.settings-tab--active),
+  .my-tasks-filters button:not(.is-active),
+  .projects-page-tabs button:not(.is-active),
+  .dashboard-dialog-cancel,.settings-cancel
+):not(:disabled) {
+  background:var(--light-action-lavender);
+  border:1px solid var(--light-action-lavender-border);
+  color:var(--light-action-lavender-text);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+  opacity:1;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .workspace-manager-edit,
+  .workspace-manager-secondary-actions button:not(.workspace-manager-open),
+  .projects-card-actions button:not(:first-child),
+  .my-tasks-refresh,.activity-refresh,.recycle-refresh,
+  .tasks-actions button,.personal-home-refresh,
+  .settings-tabs button:not(.settings-tab--active),
+  .my-tasks-filters button:not(.is-active),
+  .projects-page-tabs button:not(.is-active),
+  .dashboard-dialog-cancel,.settings-cancel
+):hover:not(:disabled) {
+  background:var(--light-action-lavender-hover);
+  border-color:#997da3;
+  color:#30203d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 2px 7px rgba(66,36,76,.09);
+  filter:none;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .settings-tabs button.settings-tab--active,
+  .my-tasks-filters button.is-active,
+  .projects-page-tabs button.is-active
+) {
+  background:#d5c0da;
+  color:#35203f;
+  border-color:#9c7ba6;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .settings-tabs button.settings-tab--active,
+  .my-tasks-filters button.is-active,
+  .projects-page-tabs button.is-active
+):hover:not(:disabled){
+  background:#cab1d2;
+  color:#2c1839;
+  border-color:#866593;
+}
+/* Form actions share the same stable neutral hover state. */
+.home-page[data-theme="light"] .dashboard-main :is(
+  .settings-avatar-actions .settings-avatar-upload,
+  .settings-avatar-actions button,
+  .settings-email-heading button,
+  .workspace-invite-link .dashboard-dialog-cancel
+) {
+  background:#eee3ef;
+  color:#432b50;
+  border-color:#b8a0c0;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+  .settings-avatar-actions .settings-avatar-upload,
+  .settings-avatar-actions button,
+  .settings-email-heading button,
+  .workspace-invite-link .dashboard-dialog-cancel
+):hover:not(:disabled) {
+  background:#d7c4df;
+  color:#32203e;
+  border-color:#9679a2;
+}
+/* Disabled is visually distinct but readable, not invisible. */
+.home-page[data-theme="light"] .dashboard-main :is(button):disabled {
+  filter:none;
+  color:#5f5066;
+}
