@@ -78,7 +78,7 @@ function workspaceIDFromHash() {
 }
 
 function pageFromHash() {
-    if (window.location.hash.startsWith('#overview/')) return 'overview'
+    if (window.location.hash === '#overview' || window.location.hash.startsWith('#overview/')) return 'overview'
     if (window.location.hash.startsWith('#invite/')) return 'invite'
     if (window.location.hash === '#home') return 'home'
     if (window.location.hash === '#workspaces') return 'workspaces'
@@ -169,7 +169,12 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
     }, [])
 
     function goToPage(destination) {
-        window.location.hash = destination
+        // Overview belongs to the selected workspace; keep it in the URL
+        // so both hashchange and refresh restore the right destination.
+        const target = destination === 'overview' && activeWorkspace
+            ? `overview/${activeWorkspace.id}`
+            : destination
+        window.location.hash = target
         setPage(destination)
         setMenuOpen(false)
         window.scrollTo(0, 0)
@@ -353,7 +358,7 @@ export default function Home({ user, onLogout, onUserUpdated, initialAppearance 
                     </a>
                     <div className="dashboard-nav-section-separator" aria-hidden="true" />
                     <p className="dashboard-sidebar-label">WORKSPACE</p>
-                    <a href="#overview" aria-label="Overview" title={sidebarCollapsed ? "Overview" : undefined} className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
+                    <a href={activeWorkspace ? `#overview/${activeWorkspace.id}` : "#overview"} aria-label="Overview" title={sidebarCollapsed ? "Overview" : undefined} className={`dashboard-nav-item${page === 'overview' ? ' dashboard-nav-item--active' : ''}`}
                         aria-current={page === 'overview' ? 'page' : undefined}
                         onClick={() => goToPage('overview')}>
                         <LayoutDashboard size={19} aria-hidden="true" />
