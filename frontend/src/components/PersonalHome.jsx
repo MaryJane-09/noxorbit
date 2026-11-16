@@ -52,7 +52,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
             <div>
                 <p className="dashboard-eyebrow"><Home size={15} aria-hidden="true" /> YOUR HOME · ALL WORKSPACES</p>
                 <h1>{greeting}, <span>{firstName}.</span></h1>
-                <p>{state.loading ? 'Bringing your work together across your spaces.' : state.error ? 'Your task summary is temporarily unavailable.' : open.length === 0 ? 'Your active assignments are clear. See what you want to achieve next.' : `${open.length} open ${open.length === 1 ? 'assignment' : 'assignments'} across your active projects. ${overdue.length ? `${overdue.length} ${overdue.length === 1 ? 'needs' : 'need'} attention after the due date.` : 'Here is what to focus on next.'}`}</p>
+                <p>{state.loading ? 'Loading your work…' : state.error ? 'Your task summary is temporarily unavailable.' : open.length === 0 ? 'No open assignments.' : `${open.length} open ${open.length === 1 ? 'assignment' : 'assignments'} across your active projects. ${overdue.length ? `${overdue.length} ${overdue.length === 1 ? 'needs' : 'need'} attention after the due date.` : ''}`}</p>
             </div>
             <button className="personal-home-refresh" type="button" disabled={state.loading}
                 onClick={() => { setState((current) => ({ ...current, loading: true, error: '' })); setRevision((current) => current + 1) }}>
@@ -118,7 +118,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                     : state.error ? <p role="status">Your assignments couldn't be loaded. Use Retry above to check again.</p>
                     : focus.length === 0 ? <div className="personal-home-empty">
                         <CheckCircle2 size={24} aria-hidden="true" />
-                        <p>Nothing needs immediate attention from your assigned tasks. This is a good time to work toward a goal.</p>
+                        <p>No urgent tasks.</p>
                         <button type="button" onClick={() => onNavigate('goals')}>Review my goals</button>
                     </div>
                         : <div className="personal-home-focus-list">{focus.map((task) =>
@@ -146,7 +146,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                 {workspacesLoading ? <p role="status">Loading workspaces…</p>
                     : workspacesError ? <p role="alert">{workspacesError}</p>
                         : workspaces.length === 0 ? <div className="personal-home-empty">
-                            <p>Your first workspace is where projects and collaboration begin.</p>
+                            <p>Create a workspace to begin.</p>
                             <button type="button" onClick={onCreateWorkspace}>Create workspace</button>
                         </div>
                             : <div className="personal-home-space-list">{workspaces.slice(0, 5).map((workspace) =>
