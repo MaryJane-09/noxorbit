@@ -67,3 +67,37 @@
   background:rgba(114,83,158,.23);
   border-color:rgba(160,124,209,.32);
 }
+
+
+/* Personal Home quick actions use the existing Dark theme's plum/gold system. */
+.personal-home-quick-actions{display:grid;gap:12px}
+.personal-home-quick-actions>.dashboard-eyebrow{margin:0}
+.personal-home-quick-links{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.personal-home-quick-links button{
+  min-height:42px;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  border:1px solid rgba(238,195,149,.29);
+  border-radius:10px;padding:10px 16px;
+  background:rgba(237,192,148,.065);color:#edd7f0;
+  font:inherit;font-size:13px;font-weight:750;cursor:pointer;
+}
+.personal-home-quick-links button:hover:not(:disabled){
+  background:rgba(237,192,148,.13);border-color:rgba(238,195,149,.52);
+}
+.personal-home-quick-links button.personal-home-quick-primary{
+  background:linear-gradient(115deg,#f7dda5,#e7ba72);
+  border-color:#eac78e;color:#2a2033;
+  box-shadow:0 4px 12px rgba(206,151,71,.14);
+}
+.personal-home-quick-links button.personal-home-quick-primary:hover{
+  background:linear-gradient(115deg,#ffe8b7,#eac184);
+}
+.personal-home-quick-links button:disabled{opacity:.48;cursor:not-allowed}
+.personal-home-quick-links button:focus-visible,.personal-home-empty button:focus-visible{
+  outline:2px solid #f8d697;outline-offset:3px;
+}
+@media(max-width:520px){
+  .personal-home-quick-links{display:grid;grid-template-columns:1fr 1fr}
+  .personal-home-quick-links button{padding:10px}
+  .personal-home-quick-links button.personal-home-quick-primary{grid-column:1/-1}
+}
