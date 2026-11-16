@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowRight, CalendarClock, CheckCircle2, FolderKanban, Home, Layers3, ListTodo, RefreshCw } from 'lucide-react'
+import { ArrowRight, CalendarClock, CheckCircle2, FolderKanban, Home, Layers3, ListTodo, Plus, RefreshCw } from 'lucide-react'
 import { fetchMyTasks } from '../api'
 import { calendarToday, deadlineLabel, formatCalendarDate } from './deadlines'
 import './PersonalHome.css'
@@ -16,7 +16,7 @@ function summary(tasks, today) {
 
 // Personal Home includes assignments from every workspace. It is deliberately
 // independent of the workspace currently highlighted in the sidebar.
-export default function PersonalHome({ user, workspaces, workspacesLoading, workspacesError, preferences, onNavigate, onOpenWorkspace }) {
+export default function PersonalHome({ user, workspaces, workspacesLoading, workspacesError, preferences, onNavigate, onOpenWorkspace, onCreateWorkspace }) {
     const [state, setState] = useState({ tasks: [], loading: true, error: '' })
     const [revision, setRevision] = useState(0)
     useEffect(() => {
@@ -63,6 +63,23 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
             <span>{state.error}</span>
             <button type="button" onClick={() => setRevision((current) => current + 1)}>Retry</button>
         </div>}
+        <section className="personal-home-quick-actions" aria-label="Quick actions">
+            <span className="dashboard-eyebrow">QUICK ACTIONS</span>
+            <div className="personal-home-quick-links">
+                <button type="button" className="personal-home-quick-primary"
+                    onClick={onCreateWorkspace}>
+                    <Plus size={17} aria-hidden="true" /> New workspace
+                </button>
+                <button type="button" onClick={() => onNavigate('my-tasks')}>
+                    <ListTodo size={17} aria-hidden="true" /> My tasks
+                </button>
+                <button type="button" disabled={!workspaces.length || workspacesLoading}
+                    title={!workspaces.length ? 'Create a workspace first' : undefined}
+                    onClick={() => onNavigate('projects')}>
+                    <FolderKanban size={17} aria-hidden="true" /> Projects
+                </button>
+            </div>
+        </section>
         <section aria-labelledby="personal-home-glance-heading">
             <div className="personal-home-section-title">
                 <div><p className="dashboard-eyebrow">YOUR DAY AT A GLANCE</p>
@@ -97,9 +114,10 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                         All my tasks <ArrowRight size={16} aria-hidden="true" /></button>
                 </div>
                 {state.loading ? <p role="status">Loading your assignments…</p>
+                    : state.error ? <p role="status">Your assignments couldn't be loaded. Use Retry above to check again.</p>
                     : focus.length === 0 ? <div className="personal-home-empty">
                         <CheckCircle2 size={24} aria-hidden="true" />
-                        <p>You're all caught up on assigned work in active projects.</p>
+                        <p>No unfinished assignments in your active projects. You can explore your workspaces or check all assigned tasks.</p>
                         <button type="button" onClick={() => onNavigate('my-tasks')}>View my tasks</button>
                     </div>
                         : <div className="personal-home-focus-list">{focus.map((task) =>
@@ -127,8 +145,8 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                 {workspacesLoading ? <p role="status">Loading workspaces…</p>
                     : workspacesError ? <p role="alert">{workspacesError}</p>
                         : workspaces.length === 0 ? <div className="personal-home-empty">
-                            <p>Create a workspace to collaborate on projects and tasks.</p>
-                            <button type="button" onClick={() => onNavigate('workspaces')}>Set up a workspace</button>
+                            <p>Your first workspace is where projects and collaboration begin.</p>
+                            <button type="button" onClick={onCreateWorkspace}>Create workspace</button>
                         </div>
                             : <div className="personal-home-space-list">{workspaces.slice(0, 5).map((workspace) =>
                                 <button className="personal-home-space" key={workspace.id} type="button"
