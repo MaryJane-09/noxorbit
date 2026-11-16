@@ -13,7 +13,7 @@ export default function OverviewTaskCards({ onOpenTasks, preferences, workspaceI
         const controller = new AbortController()
         fetchMyTasks({ signal: controller.signal })
             .then((items) => {
-                if (!controller.signal.aborted) setState({ items: workspaceID ? items.filter((task) => task.workspace_id === workspaceID) : items, loading: false, error: '', today: calendarToday(new Date(), preferences?.time_zone) })
+                if (!controller.signal.aborted) setState({ items: workspaceID ? items.filter((task) => task.workspace_id === workspaceID) : [], loading: false, error: '', today: calendarToday(new Date(), preferences?.time_zone) })
             })
             .catch((error) => {
                 if (!controller.signal.aborted) setState({
