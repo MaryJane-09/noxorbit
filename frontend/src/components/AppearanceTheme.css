@@ -209,3 +209,236 @@
  .home-page[data-theme="light"] .dashboard-sidebar{background:#ece1e9}
  .home-page[data-theme="light"] .dashboard-mobile-scrim{background:rgba(36,24,43,.35)}
 }
+
+/* Light theme contrast correction: Nov 2026 screenshots */
+/* Use deep plum for text, burnished bronze for accents, and ivory surfaces.
+   Broad first-pass light overrides must not bleach the text or keep dark panels. */
+.home-page[data-theme="light"]{
+  --light-ink:#30243d;
+  --light-secondary:#55445f;
+  --light-accent:#77501f;
+  --light-line:#d4c2d1;
+  --light-surface:#fffaf6;
+}
+.home-page[data-theme="light"] .dashboard-sidebar{
+  background:linear-gradient(170deg,#eee5ed 0%,#e7dce8 100%);
+}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom{
+  background:linear-gradient(180deg,#e8dde8,#e5d9e6);
+  border-top:1px solid #d2bfcd;
+  color:var(--light-ink);
+}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile{
+  border-top-color:#c7b6c7;
+}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile-info strong,
+.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-signout{color:#352941}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom .dashboard-profile-info span{color:#62526a}
+.home-page[data-theme="light"] .dashboard-brand img{
+  filter:brightness(.83) saturate(.8) contrast(1.18);
+}
+.home-page[data-theme="light"] .dashboard-brand-copy strong{
+  background:none;
+  color:#9a6727;
+  -webkit-text-fill-color:#9a6727;
+  text-shadow:none;
+  filter:none;
+}
+.home-page[data-theme="light"] .dashboard-brand-copy small{
+  color:#76542e;
+  font-weight:800;
+}
+.home-page[data-theme="light"] .dashboard-nav-active-mark{
+  background:#91622c;
+  box-shadow:none;
+}
+.home-page[data-theme="light"] .dashboard-nav-item--active,
+.home-page[data-theme="light"] .dashboard-nav-item--active:hover{
+  color:#5a391d;
+  border:1px solid #bb9a77;
+  background:#f0e1d2;
+}
+.home-page[data-theme="light"] .dashboard-nav-item:focus-visible{
+  outline-color:#86602e;
+}
+.home-page[data-theme="light"] .dashboard-sidebar-toggle-label,
+.home-page[data-theme="light"] .dashboard-desktop-sidebar-toggle,
+.home-page[data-theme="light"] .home-page--sidebar-collapsed .dashboard-desktop-sidebar-toggle{color:#59475f}
+
+/* Overviews: the dark workspace banner was never recolored. */
+.home-page[data-theme="light"] .dashboard-active-summary{
+  background:linear-gradient(112deg,#eee1ec 0%,#f6ece9 100%);
+  border:1px solid #c7b3c7;
+  box-shadow:0 8px 24px rgba(58,36,62,.06);
+}
+.home-page[data-theme="light"] .dashboard-active-summary-icon{
+  background:#e9d9c2;
+  border-color:#c8aa79;
+  color:#795021;
+}
+.home-page[data-theme="light"] .dashboard-active-summary-details .dashboard-eyebrow{color:#735026}
+.home-page[data-theme="light"] .dashboard-main .dashboard-active-summary-details h2{color:#362640}
+.home-page[data-theme="light"] .dashboard-main .dashboard-active-summary-details > p:last-child{color:#594964}
+.home-page[data-theme="light"] .dashboard-active-summary-action{
+  color:#62401f;
+  border:1px solid #ae8964;
+  background:#fff9f0;
+}
+.home-page[data-theme="light"] .dashboard-active-summary-action:hover{background:#f0ddc4}
+.home-page[data-theme="light"] .dashboard-main .dashboard-welcome h1 span{
+  background:none;
+  color:#916027;
+  -webkit-text-fill-color:#916027;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-data-value{
+  color:#74491c;
+  -webkit-text-fill-color:#74491c;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-data-value span{
+  color:#57445d;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-data-tag{color:#805522}
+.home-page[data-theme="light"] .dashboard-main .dashboard-section-heading > span{color:#63516d}
+.home-page[data-theme="light"] .dashboard-main .dashboard-empty-card p{color:#5d4c67}
+.home-page[data-theme="light"] .dashboard-main .dashboard-card-link{
+  color:#684321;
+  font-weight:800;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-card-link:hover{color:#3c2851}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--overdue,
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--today{
+  color:#982d46;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--tomorrow{color:#815119}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-reminder--upcoming{color:#534366}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-summary .dashboard-deadline-reminder strong{
+  color:inherit;
+}
+
+/* Buttons: neutral actions are readable, while primary actions use bronze.
+   Avoid the earlier broad inherited-color rule washing out labels. */
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-manager-open,.projects-card-actions button,.projects-card-actions button:hover,
+ .workspace-manager-edit,.workspace-manager-card-footer button,
+ .my-tasks-refresh,.activity-refresh,.recycle-refresh,
+ .dashboard-card-link,.projects-page-tabs button,.my-tasks-filters button,
+ .tasks-actions button,.tasks-back,.projects-back,
+ .settings-tabs button,.settings-cancel
+ ){
+  color:#503957;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-manager-open,.dashboard-feature-action,.projects-create,
+ .appearance-save button:not(:disabled),.notification-settings-actions button:not(:disabled),
+ .user-preferences-actions button:not(:disabled),.project-members-add button:not(:disabled)
+ ){
+  color:#302335;
+  border-color:#ad8550;
+  background:linear-gradient(115deg,#e6bc82,#d3a061);
+  box-shadow:0 3px 10px rgba(110,68,39,.10);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-manager-open,.dashboard-feature-action,.projects-create,
+ .appearance-save button:not(:disabled),.notification-settings-actions button:not(:disabled),
+ .user-preferences-actions button:not(:disabled),.project-members-add button:not(:disabled)
+ ):hover{background:linear-gradient(115deg,#efca95,#d9a96e)}
+.home-page[data-theme="light"] .dashboard-main :is(button,select,input,textarea):disabled{
+  opacity:.66;
+}
+.home-page[data-theme="light"] .dashboard-main :is(.projects-card-actions button,.workspace-manager-edit,
+ .projects-page-tabs button,.my-tasks-filters button,.my-tasks-refresh,.activity-refresh,
+ .recycle-refresh,.tasks-actions button){
+  border-color:#cbb8c9;
+  background:#fbf5f0;
+}
+.home-page[data-theme="light"] .dashboard-main :is(.projects-card-actions button,.workspace-manager-edit,
+ .my-tasks-refresh,.activity-refresh,.recycle-refresh,.tasks-actions button):hover:not(:disabled){
+  background:#eee3ec;
+  border-color:#a88ca8;
+}
+.home-page[data-theme="light"] .dashboard-main .projects-page-tabs button.is-active,
+.home-page[data-theme="light"] .dashboard-main .my-tasks-filters button.is-active{
+  background:#ead7bd;
+  color:#623e20;
+  border-color:#b6966a;
+}
+
+/* Project and workspace details: the old gold was tuned for dark backgrounds. */
+.home-page[data-theme="light"] .dashboard-main :is(
+ .projects-card-date,.projects-card-status,.workspace-manager-active,
+ .workspace-manager-count,.my-tasks-location,.activity-workspace-label
+ ){color:#755021}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .projects-card-status,.workspace-manager-active,.workspace-manager-count
+ ){
+  border-color:#d2b58e;
+  background:#f3e5d1;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-summary,
+.home-page[data-theme="light"] .dashboard-main .my-tasks-summary span{
+  color:#55435f;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-summary strong{color:#342640}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta,
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta > span:not(.tasks-priority):not(.my-tasks-due-indicator){
+  color:#594968;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority{
+  background:#e4d4e5;
+  color:#50365b;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority--high{
+  background:#f4d9c8;
+  color:#85451e;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority--low{
+  background:#d5e9db;
+  color:#27613c;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .tasks-priority--urgent{
+  background:#f2d4d9;
+  color:#942b46;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--overdue,
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--today{
+  background:#f3d6dc;
+  color:#8e2342;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--tomorrow,
+.home-page[data-theme="light"] .dashboard-main .my-tasks-meta .my-tasks-due-indicator--soon{
+  background:#f3e5ca;
+  color:#744719;
+}
+.home-page[data-theme="light"] .dashboard-main .my-tasks-control label{color:#47334f}
+
+/* Activity, where pale entity titles and timestamps were almost invisible. */
+.home-page[data-theme="light"] .dashboard-main .activity-event-content p,
+.home-page[data-theme="light"] .dashboard-main .activity-event-content .activity-event-detail{
+  color:#594661;
+}
+.home-page[data-theme="light"] .dashboard-main .activity-event-content p strong{color:#3c2945}
+.home-page[data-theme="light"] .dashboard-main .activity-entity-name{color:#382641}
+.home-page[data-theme="light"] .dashboard-main .activity-event time{color:#614e69}
+.home-page[data-theme="light"] .dashboard-main .activity-event-icon{
+  background:#f1e2cd;
+  border-color:#c8a979;
+  color:#84541f;
+}
+.home-page[data-theme="light"] .dashboard-main .activity-limit-note{color:#62506a}
+
+/* Card counters, secondary timestamps and notices should never be pale on ivory. */
+.home-page[data-theme="light"] .dashboard-main :is(.projects-page-workspace,.workspace-manager-meta,
+ .workspace-manager-section-top p,.projects-card>p,.projects-card-date,.recycle-notice,
+ .project-members-heading p,.project-members-person-name small){color:#61516a}
+.home-page[data-theme="light"] .dashboard-main :is(.dashboard-deadline-group-date,
+ .dashboard-deadline-group-count,.dashboard-deadline-task-list small){color:#58465e}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-badge--overdue,
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-badge--today{
+  color:#952f48;background:#f5dee1;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-deadline-badge--tomorrow{
+  color:#78491b;background:#f3e4cb;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-form-error{color:#922d48}
+
+/* The approved gold logo remains the same vector, with calmer light-mode rendering. */
