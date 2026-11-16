@@ -1638,3 +1638,38 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Phone refinements: preserve desktop styling and keep navigation usable. */
+@media (max-width: 900px) {
+    .dashboard-sidebar {
+        z-index: 6;
+        max-width: 100%;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    .dashboard-menu-toggle,
+    .dashboard-sidebar-close { min-width: 44px; min-height: 44px; }
+    .dashboard-main { min-width: 0; }
+}
+@media (max-width: 480px) {
+    .dashboard-main { padding: 22px 14px calc(42px + env(safe-area-inset-bottom, 0px)); }
+    .dashboard-topbar { padding-inline: 14px; gap: 8px; }
+    .dashboard-workspace-dialog {
+        width: calc(100vw - 24px);
+        max-width: calc(100vw - 24px);
+        padding: 20px 16px;
+        max-height: calc(100dvh - 24px);
+        border-radius: 16px;
+    }
+    .dashboard-dialog-actions { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .dashboard-dialog-actions > button,
+    .dashboard-dialog-actions > .dashboard-dialog-submit {
+        width: 100%;
+        min-height: 44px;
+        min-width: 0;
+        margin: 0;
+    }
+    .dashboard-notice { flex-wrap: wrap; overflow-wrap: anywhere; }
+    .dashboard-notice button { min-height: 44px; }
+}
