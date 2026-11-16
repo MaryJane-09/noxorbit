@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowRight, CalendarDays, Check, Circle, Flag, Plus, RefreshCw, Target, Trash2, Pencil, X } from 'lucide-react'
 import {
   fetchGoals, createGoal, updateGoal, deleteGoal,
@@ -26,6 +26,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
   const [description, setDescription] = useState('')
   const [targetDate, setTargetDate] = useState('')
   const [milestoneDrafts, setMilestoneDrafts] = useState({})
+  const titleRef = useRef(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -36,7 +37,25 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
     return () => controller.abort()
   }, [revision])
 
-  function reload() { setRevision((value) => value + 1) }
+  // Refresh when users return from another tab or goals are changed elsewhere.
+  useEffect(() => {
+    const update = () => setRevision((value) => value + 1)
+    const onFocus = () => { if (!document.hidden) update() }
+    window.addEventListener('noxorbit:goals-changed', update)
+    window.addEventListener('focus', onFocus)
+    return () => {
+      window.removeEventListener('noxorbit:goals-changed', update)
+      window.removeEventListener('focus', onFocus)
+    }
+  }, [])
+  useEffect(() => {
+    if (formOpen && !compact) titleRef.current?.focus()
+  }, [formOpen, editorID, compact])
+
+  function reload() {
+    setLoading(true)
+    setRevision((value) => value + 1)
+  }
   function clearForm() {
     setTitle('')
     setDescription('')
@@ -61,6 +80,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       await callback()
       setNotice(successMessage)
       reload()
+      window.dispatchEvent(new Event('noxorbit:goals-changed'))
     } catch (err) {
       setError(err.message || 'Could not update your goals.')
     } finally { setBusy(false) }
@@ -103,7 +123,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
       <button type="button" className="goals-inline-action" onClick={onOpenGoals}>View goals <ArrowRight size={16} /></button>
     </div> : <div className="goals-page-toolbar">
       <span>{loading ? 'Loading goals…' : `${goals.length} personal ${goals.length === 1 ? 'goal' : 'goals'}`}</span>
-      <button type="button" className="goals-primary" onClick={() => { clearForm(); setFormOpen(true) }} disabled={busy}>
+      <button type="button" className="goals-primary" onClick={() => { clearForm(); setFormOpen(true) }} disabled={busy || formOpen}>
         <Plus size={17} /> New goal
       </button>
     </div>}
@@ -111,12 +131,12 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
     {error && <div className="goals-alert" role="alert">{error} <button type="button" onClick={reload}>Retry</button></div>}
     {!compact && notice && <p className="goals-notice" role="status">{notice}</p>}
 
-    {!compact && formOpen && <form className="goals-form" onSubmit={save}>
+    {!compact && formOpen && <form className="goals-form" onSubmit={save} aria-label={editorID ? 'Edit your goal' : 'Create a personal goal'}>
       <div className="goals-form-heading"><h2>{editorID ? 'Edit goal' : 'Create a goal'}</h2>
         <button type="button" className="goals-icon-button" onClick={clearForm} aria-label="Close goal form"><X size={17} /></button>
       </div>
       <label htmlFor="goal-name">Goal title</label>
-      <input id="goal-name" value={title} maxLength={120} required
+      <input id="goal-name" ref={titleRef} value={title} maxLength={120} required
         onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Complete my AI learning foundations" />
       <label htmlFor="goal-description">Description (optional)</label>
       <textarea id="goal-description" value={description} maxLength={1000}
@@ -130,7 +150,8 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
     </form>}
 
     {loading ? <p className="goals-loading" role="status">Loading your goals…</p>
-      : visibleGoals.length === 0 ? <div className="goals-empty">
+      : error && goals.length === 0 ? null
+      : visibleGoals.length === 0 && (compact || !formOpen) ? <div className="goals-empty">
         <span className="goals-symbol"><Flag size={22} aria-hidden="true" /></span>
         <h3>{error ? 'Goals are unavailable' : 'A goal starts with a direction.'}</h3>
         <p>{error ? 'Check the connection and try again.' : 'Create a personal goal, then add milestones. Your progress will update as you finish them.'}</p>
@@ -174,8 +195,7 @@ export default function GoalsPage({ preferences, compact = false, onOpenGoals })
                   </div>)}
                 </div>
                 <form className="goals-add-milestone" onSubmit={(e) => addMilestone(e,goal.id)}>
-                  <label className="sr-only" htmlFor={`goal-milestone-${goal.id}`}>New milestone for {goal.title}</label>
-                  <input id={`goal-milestone-${goal.id}`} placeholder="Add a milestone" maxLength={160}
+                  <input id={`goal-milestone-${goal.id}`} aria-label={`New milestone for ${goal.title}`} className="goals-milestone-input" placeholder="Add a milestone" maxLength={160}
                     value={milestoneDrafts[goal.id] || ''}
                     onChange={(e) => setMilestoneDrafts((current) => ({ ...current, [goal.id]: e.target.value }))} />
                   <button type="submit" disabled={busy || !(milestoneDrafts[goal.id] || '').trim()}><Plus size={16} /> Add</button>
