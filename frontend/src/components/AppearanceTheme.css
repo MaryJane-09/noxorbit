@@ -575,3 +575,142 @@
   color:#50365b;
   border-color:#c4b0c8;
 }
+
+
+/* Light-theme form surfaces. Dark components use intentionally translucent
+   plum panels; without overrides those become opaque grey on light pages.
+   These selectors apply only to the signed-in Light theme. */
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-member-row,.workspace-invite-history,.workspace-invite-tools,
+ .workspace-invite-entry,.workspace-manager-help,
+ .dashboard-workspace-form,.workspace-member-confirm,
+ .settings-avatar-editor,.settings-email-change,
+ .settings-session-row,.settings-review-section
+){
+ color:#32243f;
+ border-color:#d7c8da;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-member-row,.workspace-invite-history,.workspace-invite-tools
+){
+ background:#fffdfa;
+ border:1px solid #d8cadd;
+ box-shadow:0 5px 20px rgba(52,32,62,.045);
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-member-row{
+ background:#f4edf6;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-member-row strong,
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-history,.workspace-invite-tools
+) :is(h2,h3,strong){
+ color:#34223f;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-member-row span{
+ color:#7c522a;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-invite-entry{
+ background:transparent;
+ border:0;
+ border-bottom:1px solid #e3d7e4;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-invite-entry:last-child{
+ border-bottom:0;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-invite-entry :is(strong,span){
+ color:#544261;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-history,.workspace-invite-tools
+) :is(p,.dashboard-form-hint,small){
+ color:#5b4b65;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-email>label,.workspace-invite-link>label,
+ .dashboard-workspace-form>label,.settings-delete-form>label:not(.settings-check),
+ .settings-check
+){
+ color:#3f304b;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-invite-email{
+ border-bottom-color:#dfd3df;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-link input,.dashboard-workspace-form input,
+ .dashboard-workspace-form select,.settings-edit-form input,
+ .settings-delete-form input:not([type="checkbox"]),
+ .tasks-dialog textarea,.projects-dialog textarea
+){
+ background:#ffffff;
+ color:#332440;
+ border:1px solid #c3b1c7;
+ box-shadow:inset 0 1px 1px rgba(55,35,58,.025);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-link input,.dashboard-workspace-form input,
+ .tasks-dialog textarea,.projects-dialog textarea
+)::placeholder{
+ color:#786b80;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-link input,.dashboard-workspace-form input,
+ .dashboard-workspace-form select,.settings-edit-form input
+):focus-visible{
+ border-color:#805c91;
+ outline:2px solid #86649a;
+ outline-offset:2px;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-tools,.workspace-invite-history
+) .dashboard-feature-action:not(:disabled){
+ color:#fffafc;
+ background:linear-gradient(120deg,#5b3b69,#372344);
+ border:1px solid #493152;
+ box-shadow:0 5px 13px rgba(53,31,66,.12);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-tools,.workspace-invite-history
+) .dashboard-feature-action:hover:not(:disabled){
+ background:linear-gradient(120deg,#6b4a78,#44304f);
+ color:#fff;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .workspace-invite-tools,.workspace-invite-history
+) .dashboard-feature-action:disabled{
+ background:#e4d8e6;
+ border-color:#c5b4cb;
+ color:#66566c;
+ opacity:1;
+ box-shadow:none;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-member-remove{
+ background:#fff6f7;
+ color:#96364d;
+ border:1px solid #d6aeb8;
+}
+.home-page[data-theme="light"] .dashboard-main .workspace-member-remove:hover:not(:disabled){
+ background:#f5e4e9;
+}
+.home-page[data-theme="light"] :is(
+ .dashboard-workspace-dialog,.tasks-dialog,.projects-dialog,
+ .workspace-member-confirm
+){
+ background:#fffdfb;
+ color:#34253f;
+ border-color:#d1c1d5;
+}
+.home-page[data-theme="light"] :is(
+ .dashboard-workspace-dialog,.tasks-dialog,.projects-dialog
+) :is(.dashboard-dialog-description,.dashboard-form-hint){
+ color:#60516b;
+}
+.home-page[data-theme="light"] :is(
+ .dashboard-workspace-dialog,.tasks-dialog,.projects-dialog
+) .dashboard-dialog-cancel{
+ background:#f6eff6;
+ color:#513b5b;
+ border:1px solid #bfacca;
+}
+.home-page[data-theme="light"] .dashboard-main .dashboard-form-error{
+ color:#922e48;
+}
