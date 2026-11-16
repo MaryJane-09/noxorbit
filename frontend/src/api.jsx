@@ -549,3 +549,9 @@ export function setGoalMilestone(goalID, milestoneID, completed) {
 export function deleteGoalMilestone(goalID, milestoneID) {
   return goalsNoContent(`${goalURL(goalID)}/milestones/${encodeURIComponent(milestoneID)}`, 'DELETE');
 }
+
+export async function fetchGoalActivity({ signal } = {}) {
+  const events = await projectRequest(`${API}/api/v1/goals/activity`, { signal });
+  if (!Array.isArray(events)) throw new Error('Invalid goal activity response.');
+  return events;
+}
