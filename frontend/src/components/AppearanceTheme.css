@@ -336,3 +336,183 @@
   .home-page[data-theme="light"] .dashboard-sidebar{background:#e9e1ea;}
   .home-page[data-theme="light"] .dashboard-mobile-scrim{background:rgba(42,27,49,.37);}
 }
+
+
+/* Light-theme refinement: shared surfaces and actions.
+   The approved imagery, layout, navigation and Dark theme are untouched.
+   Purposeful visual hierarchy uses plum for actions, gold for highlights. */
+.home-page[data-theme="light"] {
+  --light-ink: #2c203c;
+  --light-secondary: #594b65;
+  --light-plum: #4c315c;
+  --light-plum-hover: #61416f;
+  --light-gold: #93602c;
+  --light-gold-soft: #f3e6d4;
+  --light-porcelain: #fffdfa;
+  --light-edge: #d8cada;
+  --light-focus: #744b89;
+}
+.home-page[data-theme="light"] .dashboard-area {
+  background: radial-gradient(ellipse 75% 36% at 95% 0%,rgba(212,191,220,.25),transparent 75%),
+    linear-gradient(155deg,#f8f6f5,#f2eff2);
+}
+.home-page[data-theme="light"] .dashboard-sidebar{
+  background:linear-gradient(165deg,#eee8f0 0%,#e5dce9 100%);
+}
+.home-page[data-theme="light"] .dashboard-sidebar-bottom{
+  background:linear-gradient(180deg,#e7deea,#e4dbe8);
+}
+.home-page[data-theme="light"] .dashboard-brand img{
+  filter: brightness(.89) saturate(.97) contrast(1.14)
+    drop-shadow(0 1px 1px rgba(94,58,30,.12));
+}
+.home-page[data-theme="light"] .dashboard-brand-copy strong{
+  color:#825122;-webkit-text-fill-color:#825122;
+  letter-spacing:.085em;
+}
+.home-page[data-theme="light"] .dashboard-brand-copy small{
+  color:#65472e;letter-spacing:.065em;
+}
+.home-page[data-theme="light"] .dashboard-workspace-indicator-body{
+  background:#f5eef4;border-color:#c9b7cf;
+}
+.home-page[data-theme="light"] .dashboard-nav-item--active{
+  background:linear-gradient(105deg,#e5d8e8,#eee3ed);
+  border-color:#aa91b4;
+  box-shadow:inset 3px 0 0 #84558b;
+}
+.home-page[data-theme="light"] .dashboard-nav-active-mark{
+  background:#8e6030;box-shadow:0 0 0 2px rgba(146,96,48,.10);
+}
+.home-page[data-theme="light"] :is(
+ .personal-home-metric,.personal-home-panel,.dashboard-empty-card,
+ .dashboard-overview-data-card,.workspace-manager-card,.projects-card,
+ .my-tasks-item,.activity-event,.recycle-item,.tasks-column,.tasks-card,
+ .project-members,.settings-account,.settings-danger
+){
+ background:var(--light-porcelain);
+ border:1px solid var(--light-edge);
+ box-shadow:0 1px 0 rgba(255,255,255,.9) inset,
+   0 11px 26px rgba(60,39,67,.055);
+}
+.home-page[data-theme="light"] :is(
+ .personal-home-metric,.personal-home-panel,.dashboard-empty-card,
+ .workspace-manager-card,.projects-card,.my-tasks-item,.activity-event,
+ .tasks-column,.tasks-card
+):hover{
+ border-color:#c2b0c8;
+ box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 14px 30px rgba(60,39,67,.075);
+}
+.home-page[data-theme="light"] :is(
+ .personal-home-metric>span:nth-child(2),.personal-home-metric small,
+ .personal-home-focus-item small,.personal-home-space small,
+ .my-tasks-meta,.workspace-manager-meta,.projects-card-date,
+ .activity-event time
+){color:var(--light-secondary);}
+.home-page[data-theme="light"] :is(
+ .personal-home-metric strong,.dashboard-data-value,
+ .my-tasks-summary strong
+){color:var(--light-plum);}
+.home-page[data-theme="light"] :is(
+ .personal-home-icon,.dashboard-tile-icon,.workspace-manager-card-icon,
+ .projects-card-icon,.activity-event-icon,.dashboard-workspace-icon
+){
+ background:linear-gradient(135deg,#f7eee2,#eee2cf);
+ color:#775027;
+ border:1px solid #dfc7a8;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .dashboard-feature-action,.projects-create,.workspace-manager-create,
+ .workspace-manager-open,.appearance-save button:not(:disabled),
+ .notification-settings-actions button:not(:disabled),
+ .user-preferences-actions button:not(:disabled),
+ .project-members-add button:not(:disabled),
+ .settings-edit-actions button:not(:disabled)
+){
+ background:linear-gradient(120deg,#5b3b69 0%,#372344 100%);
+ color:#fffafc;
+ border:1px solid #493152;
+ box-shadow:0 3px 0 rgba(46,27,55,.15),0 7px 15px rgba(53,31,66,.12);
+ text-shadow:none;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .dashboard-feature-action,.projects-create,.workspace-manager-create,
+ .workspace-manager-open,.appearance-save button:not(:disabled),
+ .notification-settings-actions button:not(:disabled),
+ .user-preferences-actions button:not(:disabled),
+ .project-members-add button:not(:disabled),
+ .settings-edit-actions button:not(:disabled)
+):hover:not(:disabled){
+ background:linear-gradient(120deg,#6b4a78,#44304f);
+ color:#fff;
+ box-shadow:0 3px 0 rgba(46,27,55,.16),0 9px 19px rgba(53,31,66,.16);
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .projects-card-actions button,.workspace-manager-edit,
+ .my-tasks-refresh,.activity-refresh,.recycle-refresh,
+ .tasks-actions button,.personal-home-refresh,
+ .settings-tabs button,.my-tasks-filters button,.project-members-remove
+){
+ background:#faf7fa;color:#46324f;border:1px solid #cbbbd0;
+ box-shadow:0 1px 0 #fff inset;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .projects-card-actions button,.workspace-manager-edit,
+ .my-tasks-refresh,.activity-refresh,.recycle-refresh,
+ .tasks-actions button,.personal-home-refresh,
+ .project-members-remove
+):hover:not(:disabled){
+ background:#ece3ef;color:#362440;border-color:#ac93b5;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .projects-card-actions button:first-child,.workspace-manager-card-footer button:first-child
+){
+ background:#eadfee;border-color:#ad95b6;color:#3f2c49;
+ font-weight:800;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .projects-card-actions button:first-child,.workspace-manager-card-footer button:first-child
+):hover:not(:disabled){background:#e0d0e5;border-color:#97769f;}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .settings-tabs button.settings-tab--active,.my-tasks-filters button.is-active,
+ .projects-page-tabs button.is-active
+){
+ background:#e6d7e9;border-color:#a98db1;color:#3f294d;
+ box-shadow:inset 0 -2px 0 #895d92;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ button,input,textarea,select,a
+):focus-visible{
+ outline:2px solid var(--light-focus);outline-offset:3px;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ button:disabled
+){cursor:not-allowed;}
+.home-page[data-theme="light"] :is(.notification-bell,.dashboard-desktop-sidebar-toggle):focus-visible{
+ outline:2px solid var(--light-focus);outline-offset:3px;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .my-tasks-meta .my-tasks-due-indicator--overdue,.my-tasks-meta .my-tasks-due-indicator--today,
+ .dashboard-deadline-badge--overdue,.dashboard-deadline-badge--today
+){
+ color:#83233e;background:#f5dfe3;border:1px solid #dfb7c0;
+}
+.home-page[data-theme="light"] .dashboard-main :is(
+ .personal-home-overdue,.tasks-due-indicator--overdue,.tasks-due-indicator--today
+){color:#842b45;background:#f4dfe5;}
+.home-page[data-theme="light"] .dashboard-main .activity-entity-name{
+ color:#382542;font-weight:800;
+}
+.home-page[data-theme="light"] .dashboard-main .activity-event-content p{
+ color:#54445e;
+}
+.home-page[data-theme="light"] .dashboard-main .personal-home-scope{
+ color:#63536a;
+}
+@media (prefers-reduced-motion:no-preference){
+ .home-page[data-theme="light"]:not([data-motion="reduced"]) :is(
+ .personal-home-metric,.personal-home-panel,.workspace-manager-card,.projects-card,
+ .my-tasks-item,.activity-event
+ ){transition:box-shadow 160ms ease,border-color 160ms ease;}
+}
