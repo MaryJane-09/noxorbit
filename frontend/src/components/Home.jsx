@@ -22,7 +22,7 @@ import {
     Users,
     X,
 } from 'lucide-react'
-import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar, fetchUserPreferences, fetchAppearancePreferences } from '../api'
+import { API, createWorkspace, fetchWorkspaces, updateWorkspace, loadMyAvatar, fetchUserPreferences } from '../api'
 import WorkspacesPage from './WorkspacesPage'
 import InvitationPage from './InvitationPage'
 import MyTasksPage from './MyTasksPage'
@@ -81,21 +81,14 @@ function pageFromHash() {
     return 'overview'
 }
 
-export default function Home({ user, onLogout, onUserUpdated }) {
-    const [appearance, setAppearance] = useState({ theme: 'dark', reduced_motion: false })
+export default function Home({ user, onLogout, onUserUpdated, initialAppearance }) {
+    const [appearance, setAppearance] = useState(() => initialAppearance || { theme: 'dark', reduced_motion: false })
     const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
     useEffect(() => {
         const media = window.matchMedia('(prefers-color-scheme: dark)')
         const update = () => setSystemDark(media.matches)
         media.addEventListener('change', update)
         return () => media.removeEventListener('change', update)
-    }, [])
-    useEffect(() => {
-        const controller = new AbortController()
-        fetchAppearancePreferences({ signal: controller.signal })
-            .then((value) => { if (!controller.signal.aborted) setAppearance(value) })
-            .catch((error) => { if (!controller.signal.aborted) console.error('Appearance unavailable:', error) })
-        return () => controller.abort()
     }, [])
     const resolvedTheme = appearance.theme === 'system' ? (systemDark ? 'dark' : 'light') : appearance.theme
     const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES)
