@@ -886,3 +886,39 @@ to explain earlier database installations.
 
 Date format and time zone preferences remain available at
 `/api/v1/preferences`.
+
+
+## Personal Goals — migration 016
+
+All endpoints require authentication. The session chooses the owner;
+request bodies do not accept a `user_id`.
+
+- `GET /api/v1/goals`: list the current account's goals and nested milestones.
+- `POST /api/v1/goals`: create a goal, returning `201`.
+- `PATCH /api/v1/goals/{goal_id}`: update all editable goal fields, returning `204`.
+- `DELETE /api/v1/goals/{goal_id}`: delete a goal and its milestones, returning `204`.
+- `POST /api/v1/goals/{goal_id}/milestones`: create a milestone, returning `201`.
+- `PATCH /api/v1/goals/{goal_id}/milestones/{milestone_id}`: set completion, returning `204`.
+- `DELETE /api/v1/goals/{goal_id}/milestones/{milestone_id}`: remove a milestone, returning `204`.
+
+Goal creation and update JSON:
+
+```json
+{"title":"Finish AI foundations","description":"Complete the core math topics","target_date":"2027-02-01"}
+```
+
+Use `null` for an unset target date. Milestone creation takes
+`{"title":"Complete linear algebra"}`; milestone completion takes
+`{"completed":true}` or `{"completed":false}`.
+
+Titles are required (goal maximum 120 characters, milestone maximum 160);
+goal descriptions are limited to 1000 characters. Unknown fields, trailing
+JSON, or malformed date strings are rejected. Missing and inaccessible goals
+or milestones both return `404`. Successful deletes and updates return
+`204 No Content`, not JSON.
+
+Progress is always computed by the frontend as
+`completed_milestones / all_milestones` (0% when no milestones exist).
+Goals do not yet create tasks or automatically complete milestones based on
+task status. This first phase supports **personal** goals only, not workspace
+goals.
