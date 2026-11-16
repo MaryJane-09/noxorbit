@@ -45,7 +45,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                 <p>One place to see your priorities and pick up where you left off.</p>
             </div>
             <button className="personal-home-refresh" type="button" disabled={state.loading}
-                onClick={() => setRevision((current) => current + 1)}>
+                onClick={() => { setState((current) => ({ ...current, loading: true, error: '' })); setRevision((current) => current + 1) }}>
                 <RefreshCw size={17} aria-hidden="true" /> Refresh
             </button>
         </header>
