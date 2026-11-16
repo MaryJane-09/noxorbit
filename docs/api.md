@@ -876,25 +876,13 @@ No background email notifications or language translation are provided.
 Run migration 014 *after* 013 before updating the running Go server.
 
 
-## Personal Appearance — migration 015
+## Retired appearance endpoint
 
-Use `GET /api/v1/appearance` to read the authenticated user's
-appearance preferences and `PUT /api/v1/appearance` to save both fields:
-```json
-{"theme":"system","reduced_motion":true}
-```
+The former `/api/v1/appearance` GET and PUT endpoint was removed
+when Noxorbit returned to its single approved Dark theme. Clients
+should not call it. There is no theme switcher or appearance preference
+screen. The historical migration 015 remains in the repository only
+to explain earlier database installations.
 
-The allowed theme values are `dark`, `light`, `system`.
-`reduced_motion` must be a JSON boolean. Unknown fields, null values,
-missing fields, and invalid themes are rejected. The authenticated
-session, not a request-supplied ID, selects the account. Defaults are
-`dark` and `false` until a preference row is saved.
-
-These controls affect only the logged-in app. The original dark theme
-is unchanged, Light uses an ivory/plum/gold variation, and System
-follows live operating-system color scheme changes. OS motion
-accessibility preferences are respected even if reduced_motion=false.
-
-**Deployment:** Run `015_appearance_preferences.sql` after 014
-before deploying the updated backend. This is independent of
-`/api/v1/preferences` (calendar preferences) and its JSON payload.
+Date format and time zone preferences remain available at
+`/api/v1/preferences`.
