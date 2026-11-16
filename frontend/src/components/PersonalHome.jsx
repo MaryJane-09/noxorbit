@@ -31,18 +31,27 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
     const { open, completed, dueToday, overdue } = summary(state.tasks, today)
     const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 }
     const focus = [...open].sort((a, b) => {
+        // Overdue deadlines first; then current/nearest due date, then
+        // urgency. Tasks without a due date remain available, but appear last.
         const aDue = a.due_date || '9999-12-31'
         const bDue = b.due_date || '9999-12-31'
-        return aDue.localeCompare(bDue) || (priorityOrder[a.priority] ?? 4) - (priorityOrder[b.priority] ?? 4)
-    }).slice(0, 4)
+        return aDue.localeCompare(bDue)
+            || (priorityOrder[a.priority] ?? 4) - (priorityOrder[b.priority] ?? 4)
+            || a.title.localeCompare(b.title)
+    }).slice(0, 3)
     const firstName = (user.name || '').trim().split(/\s+/)[0] || 'there'
+    const hour = Number(new Intl.DateTimeFormat('en-GB', {
+        timeZone: preferences?.time_zone || 'Africa/Lagos',
+        hour: 'numeric', hourCycle: 'h23',
+    }).format(new Date()))
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
 
     return <div className="personal-home">
         <header className="personal-home-heading">
             <div>
                 <p className="dashboard-eyebrow"><Home size={15} aria-hidden="true" /> YOUR HOME · ALL WORKSPACES</p>
-                <h1>Welcome back, <span>{firstName}.</span></h1>
-                <p>One place to see your priorities and pick up where you left off.</p>
+                <h1>{greeting}, <span>{firstName}.</span></h1>
+                <p>{state.loading ? 'Bringing your work together across your spaces.' : open.length === 0 ? 'You have no unfinished assignments in active projects.' : `${open.length} open ${open.length === 1 ? 'assignment' : 'assignments'} across your active projects. ${overdue.length ? `${overdue.length} ${overdue.length === 1 ? 'needs' : 'need'} attention after the due date.` : 'Here is what to focus on next.'}`}</p>
             </div>
             <button className="personal-home-refresh" type="button" disabled={state.loading}
                 onClick={() => { setState((current) => ({ ...current, loading: true, error: '' })); setRevision((current) => current + 1) }}>
@@ -81,8 +90,8 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
         <div className="personal-home-content">
             <section className="personal-home-panel" aria-labelledby="personal-home-focus-heading">
                 <div className="personal-home-panel-heading"><div>
-                    <p className="dashboard-eyebrow">KEEP MOVING FORWARD</p>
-                    <h2 id="personal-home-focus-heading">Up next</h2>
+                    <p className="dashboard-eyebrow">A CLEAR PLACE TO START</p>
+                    <h2 id="personal-home-focus-heading">Today's focus</h2>
                     </div>
                     <button className="personal-home-text-action" type="button" onClick={() => onNavigate('my-tasks')}>
                         All my tasks <ArrowRight size={16} aria-hidden="true" /></button>
@@ -90,7 +99,7 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                 {state.loading ? <p role="status">Loading your assignments…</p>
                     : focus.length === 0 ? <div className="personal-home-empty">
                         <CheckCircle2 size={24} aria-hidden="true" />
-                        <p>No unfinished assignments in active projects right now.</p>
+                        <p>You're all caught up on assigned work in active projects.</p>
                         <button type="button" onClick={() => onNavigate('my-tasks')}>View my tasks</button>
                     </div>
                         : <div className="personal-home-focus-list">{focus.map((task) =>
@@ -100,8 +109,10 @@ export default function PersonalHome({ user, workspaces, workspacesLoading, work
                                     <small>{task.workspace_name} · {task.project_name}</small>
                                     {task.due_date && <small>Due {formatCalendarDate(task.due_date, preferences?.date_format)}</small>}
                                 </div>
-                                {deadlineLabel(task.due_date, today)?.kind === 'overdue' &&
-                                    <span className="personal-home-overdue">Overdue</span>}
+                                {task.due_date && ['overdue','today','tomorrow'].includes(deadlineLabel(task.due_date, today)?.kind) &&
+                                    <span className={`personal-home-deadline personal-home-deadline--${deadlineLabel(task.due_date, today).kind}`}>
+                                        {deadlineLabel(task.due_date, today).label}
+                                    </span>}
                             </div>)}</div>}
             </section>
 
