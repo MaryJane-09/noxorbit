@@ -421,9 +421,9 @@
  .personal-home-icon,.dashboard-tile-icon,.workspace-manager-card-icon,
  .projects-card-icon,.activity-event-icon,.dashboard-workspace-icon
 ){
- background:linear-gradient(135deg,#f7eee2,#eee2cf);
- color:#775027;
- border:1px solid #dfc7a8;
+ background:linear-gradient(145deg,#52365c,#32233f);
+ color:#f1c87e;
+ border:1px solid #80618a;
  box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
 }
 .home-page[data-theme="light"] .dashboard-main :is(
