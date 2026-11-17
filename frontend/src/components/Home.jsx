@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import {
     ArrowRight,
+    ArrowLeft,
     CheckCheck,
     CalendarDays,
     ChevronRight,
@@ -107,6 +108,8 @@ export default function Home({ user, onLogout, onUserUpdated }) {
     const [avatarRevision, setAvatarRevision] = useState(0)
     const [guideOpen, setGuideOpen] = useState(false)
     const [menuOpen, setMenuOpen] = useState(false)
+    const navigationTrail = useRef([window.location.hash || '#home'])
+    const [canGoBack, setCanGoBack] = useState(false)
     const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
         try { return window.localStorage.getItem('noxorbit.sidebar.collapsed') === 'true' }
         catch { return false }
@@ -153,6 +156,13 @@ export default function Home({ user, onLogout, onUserUpdated }) {
 
     useEffect(() => {
         const handleHashChange = () => {
+            const next = window.location.hash || '#home'
+            const trail = navigationTrail.current
+            if (next !== trail[trail.length - 1]) {
+                if (trail.length > 1 && next === trail[trail.length - 2]) trail.pop()
+                else trail.push(next)
+                setCanGoBack(trail.length > 1)
+            }
             setPage(pageFromHash())
             const workspaceID = workspaceIDFromHash()
             if (workspaceID) setSelectedWorkspaceId(workspaceID)
@@ -160,6 +170,17 @@ export default function Home({ user, onLogout, onUserUpdated }) {
         window.addEventListener('hashchange', handleHashChange)
         return () => window.removeEventListener('hashchange', handleHashChange)
     }, [])
+
+    function goBack() {
+        const trail = navigationTrail.current
+        if (trail.length > 1) {
+            window.location.hash = trail[trail.length - 2]
+        } else {
+            window.location.hash = 'home'
+        }
+        setMenuOpen(false)
+        window.scrollTo(0, 0)
+    }
 
     function goToPage(destination) {
         // Overview belongs to the selected workspace; keep it in the URL
@@ -425,6 +446,9 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <button className="dashboard-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation" aria-expanded={menuOpen}>
                             <Menu size={22} />
                         </button>
+                        {(canGoBack || page !== 'home') && <button className="dashboard-mobile-back" type="button" onClick={goBack} aria-label="Go back" title="Back">
+                            <ArrowLeft size={20} aria-hidden="true" />
+                        </button>}
                         <span>{page === 'home' || page === 'my-tasks' || page === 'goals' ? 'PERSONAL' : activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
                         <strong>{page === 'home' ? 'Home' : page === 'goals' ? 'My goals' : page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
