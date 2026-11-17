@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { LoaderCircle, Users, Trash2, X } from 'lucide-react'
+import { LoaderCircle, Users, Trash2, X, Plus } from 'lucide-react'
 import { createWorkspaceInvite, fetchWorkspaceMembers, fetchWorkspaceInvites, removeWorkspaceMember, revokeWorkspaceInvite, sendWorkspaceEmailInvite } from '../api'
 
 export default function WorkspaceMembers({ workspace }) {
@@ -10,6 +10,8 @@ export default function WorkspaceMembers({ workspace }) {
     const [working, setWorking] = useState(false)
     const [actionError, setActionError] = useState('')
     const confirmRef = useRef(null)
+    const inviteDialogRef = useRef(null)
+    const [inviteOpen, setInviteOpen] = useState(false)
     const [invite, setInvite] = useState({ creating: false, link: '', error: '', copied: false })
     const [recipientEmail, setRecipientEmail] = useState('')
     const [sendingEmail, setSendingEmail] = useState(false)
@@ -44,6 +46,20 @@ export default function WorkspaceMembers({ workspace }) {
         if (confirm && dialog && !dialog.open) dialog.showModal()
         if (!confirm && dialog?.open) dialog.close()
     }, [confirm])
+
+    function openInvite() {
+        setEmailError('')
+        setEmailNotice('')
+        setInvite((current) => ({ ...current, error: '' }))
+        setInviteOpen(true)
+        inviteDialogRef.current?.showModal()
+    }
+
+    function closeInvite() {
+        if (sendingEmail || invite.creating) return
+        inviteDialogRef.current?.close()
+        setInviteOpen(false)
+    }
 
     async function runConfirmed(event) {
         event.preventDefault()
@@ -113,7 +129,7 @@ export default function WorkspaceMembers({ workspace }) {
             <div className="workspace-manager-section-top">
                 <div>
                     <h2><Users size={19} aria-hidden="true" /> Members of {workspace.name}</h2>
-                    <p>Only people who belong to this workspace appear here.</p>
+
                 </div>
                 {state.id === workspace.id && !state.error &&
                     <span className="workspace-manager-count">{state.members.length} members</span>}
@@ -138,26 +154,27 @@ export default function WorkspaceMembers({ workspace }) {
                         </div>
                     ))}
                 </div>}
-            {workspace.role === 'owner' && <section className="workspace-invite-history" aria-label="Invitation history">
-                <h3>Invitation history</h3>
-                {invites.error && <p className="dashboard-form-error" role="alert">{invites.error}</p>}
-                {invites.items.length === 0 && !invites.error && <p className="dashboard-form-hint">No invitations yet.</p>}
-                {invites.items.map((item) => {
-                    const expired = new Date(item.expires_at).getTime() <= invites.checkedAt
-                    const used = item.use_count >= item.max_uses
-                    const revoked = Boolean(item.revoked_at)
-                    const status = revoked ? 'Revoked' : used ? 'Used' : expired ? 'Expired' : 'Active'
-                    return <div key={item.id} className="workspace-invite-entry">
-                        <div><strong>{item.kind === 'email' ? (item.invited_email || 'Email invitation') : 'Invitation link'}</strong>
-                            <span>{status} · {item.use_count}/{item.max_uses} uses · Expires {new Date(item.expires_at).toLocaleDateString()}</span></div>
-                        {!revoked && !used && !expired && <button type="button" className="workspace-member-remove"
-                            onClick={() => setConfirm({ type: 'invite', id: item.id, label: 'this invitation' })}>
-                            Revoke
-                        </button>}
-                    </div>
-                })}
-            </section>}
-            {workspace.role === 'owner' && <div className="workspace-invite-tools">
+            {workspace.role === 'owner' && (
+                <button type="button" className="workspace-member-invite-button" onClick={openInvite}>
+                    <Plus size={17} aria-hidden="true" /> Invite members
+                </button>
+            )}
+            <dialog ref={inviteDialogRef} className="dashboard-workspace-dialog workspace-invite-dialog"
+                aria-labelledby="workspace-invite-dialog-title"
+                onCancel={(event) => { if (sendingEmail || invite.creating) event.preventDefault() }}
+                onClose={() => setInviteOpen(false)}>
+                <div className="dashboard-dialog-header">
+                    <span className="dashboard-dialog-icon"><Users size={22} aria-hidden="true" /></span>
+                    <button type="button" className="dashboard-dialog-close" onClick={closeInvite}
+                        aria-label="Close invitation dialog" disabled={sendingEmail || invite.creating}>
+                        <X size={20} />
+                    </button>
+                </div>
+                <p className="dashboard-eyebrow">WORKSPACE INVITATIONS</p>
+                <h2 id="workspace-invite-dialog-title">Invite to {workspace.name}</h2>
+                <p className="dashboard-dialog-description">Invite a teammate by email or share a one-use link.</p>
+                {inviteOpen && <>
+                <div className="workspace-invite-tools">
                 <h3>Invite a teammate</h3>
                 <form className="workspace-invite-email" onSubmit={sendEmail}>
                     <label htmlFor="workspace-email-recipient">Invite by email</label>
@@ -183,9 +200,34 @@ export default function WorkspaceMembers({ workspace }) {
                     <button type="button" className="dashboard-dialog-cancel" onClick={copyLink}>
                         {invite.copied ? 'Copied' : 'Copy link'}
                     </button>
-                </div>}
+                    </div>
                 {invite.error && <p className="dashboard-form-error" role="alert">{invite.error}</p>}
             </div>}
+
+                    <details className="workspace-invite-history-disclosure">
+                        <summary>Invitation history</summary>
+                        <section className="workspace-invite-history" aria-label="Invitation history">
+                <h3>Invitation history</h3>
+                {invites.error && <p className="dashboard-form-error" role="alert">{invites.error}</p>}
+                {invites.items.length === 0 && !invites.error && <p className="dashboard-form-hint">No invitations yet.</p>}
+                {invites.items.map((item) => {
+                    const expired = new Date(item.expires_at).getTime() <= invites.checkedAt
+                    const used = item.use_count >= item.max_uses
+                    const revoked = Boolean(item.revoked_at)
+                    const status = revoked ? 'Revoked' : used ? 'Used' : expired ? 'Expired' : 'Active'
+                    return <div key={item.id} className="workspace-invite-entry">
+                        <div><strong>{item.kind === 'email' ? (item.invited_email || 'Email invitation') : 'Invitation link'}</strong>
+                            <span>{status} · {item.use_count}/{item.max_uses} uses · Expires {new Date(item.expires_at).toLocaleDateString()}</span></div>
+                        {!revoked && !used && !expired && <button type="button" className="workspace-member-remove"
+                            onClick={() => setConfirm({ type: 'invite', id: item.id, label: 'this invitation' })}>
+                            Revoke
+                        </button>}
+                    </div>
+                })}
+                        </section>
+                    </details>
+                </>}
+            </dialog>
             <dialog ref={confirmRef} className="dashboard-workspace-dialog workspace-member-confirm"
                 aria-labelledby="member-confirm-heading"
                 onCancel={(event) => { if (working) event.preventDefault(); else cancelAction() }}
