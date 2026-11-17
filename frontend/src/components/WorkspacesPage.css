@@ -311,3 +311,93 @@
         width: 100%;
     }
 }
+
+/* Compact member dropdown: always stays under its own workspace card. */
+.workspace-manager-grid .workspace-manager-entry--expanded {
+    grid-column: auto;
+    display: flex;
+    flex-direction: column;
+}
+.workspace-manager-grid .workspace-manager-entry--expanded > .workspace-manager-card {
+    flex: none;
+}
+.workspace-manager-grid .workspace-manager-entry > .workspace-manager-members-expanded {
+    width: 100%;
+    grid-column: auto;
+}
+.workspace-manager-grid .workspace-manager-members-expanded > .workspace-manager-section {
+    padding: 14px;
+    border-radius: 14px;
+}
+.workspace-manager-grid .workspace-manager-members-expanded .workspace-manager-section-top {
+    margin-bottom: 9px;
+}
+.workspace-manager-grid .workspace-manager-members-expanded .workspace-manager-section-top h2 {
+    font-size: 16px;
+}
+.workspace-manager-grid .workspace-manager-members-expanded .workspace-manager-section-top p {
+    display: none;
+}
+.workspace-manager-grid .workspace-manager-members-expanded .workspace-member-row {
+    padding: 11px;
+}
+.workspace-manager-grid .workspace-manager-members-expanded .workspace-member-row strong {
+    font-size: 13px;
+}
+.workspace-manager-grid .workspace-manager-members-expanded .workspace-member-row span {
+    font-size: 12px;
+}
+.workspace-member-invite-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 13px;
+    border: 1px solid rgba(250, 213, 163, .58);
+    border-radius: 10px;
+    background: rgba(242, 194, 127, .11);
+    color: #ffe0a6;
+    font-weight: 750;
+    cursor: pointer;
+}
+.workspace-member-invite-button:hover {
+    background: rgba(242, 194, 127, .22);
+}
+.workspace-invite-dialog {
+    width: min(540px, calc(100vw - 28px));
+    max-height: min(88dvh, 800px);
+    overflow-y: auto;
+}
+.workspace-invite-dialog .workspace-invite-tools {
+    margin-top: 16px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+.workspace-invite-dialog .workspace-invite-email {
+    margin-top: 0;
+}
+.workspace-invite-history-disclosure {
+    margin-top: 22px;
+    border-top: 1px solid rgba(244, 198, 151, .2);
+    padding-top: 14px;
+}
+.workspace-invite-history-disclosure > summary {
+    cursor: pointer;
+    color: #f2d6b1;
+    font-weight: 750;
+    padding: 8px 0;
+}
+.workspace-invite-history-disclosure .workspace-invite-history {
+    margin-top: 8px;
+    padding: 12px;
+}
+@media (max-width: 600px) {
+    .workspace-invite-dialog .workspace-invite-link > input,
+    .workspace-invite-dialog .workspace-invite-link > button {
+        width: 100%;
+        flex-basis: 100%;
+    }
+}
