@@ -476,3 +476,29 @@
         max-width: 100%;
     }
 }
+
+/* Final workspace refinements: restrained cards and an integrated member list. */
+.workspace-manager-card-top { margin-bottom: 18px; }
+.workspace-manager-card-footer { margin-top: 19px; padding-top: 15px; }
+.workspace-manager-grid .workspace-manager-entry--expanded {
+    gap: 0;
+}
+.workspace-manager-grid .workspace-manager-entry--expanded > .workspace-manager-card {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-color: rgba(239, 194, 153, .16);
+}
+.workspace-manager-grid .workspace-manager-entry--expanded > .workspace-manager-members-expanded > .workspace-manager-section {
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    background: linear-gradient(180deg, #23172c, #1c1425);
+}
+.workspace-invite-dialog .workspace-invite-secondary-heading {
+    color: #dec9df;
+    font-size: 14px;
+    font-weight: 700;
+}
+.workspace-invite-dialog .workspace-invite-secondary-heading ~ .dashboard-form-hint {
+    font-size: 12px;
+}
