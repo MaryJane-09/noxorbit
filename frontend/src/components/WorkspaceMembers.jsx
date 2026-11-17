@@ -175,7 +175,6 @@ export default function WorkspaceMembers({ workspace }) {
                 <p className="dashboard-dialog-description">Invite a teammate by email or share a one-use link.</p>
                 {inviteOpen && <>
                 <div className="workspace-invite-tools">
-                <h3>Invite a teammate</h3>
                 <form className="workspace-invite-email" onSubmit={sendEmail}>
                     <label htmlFor="workspace-email-recipient">Invite by email</label>
                     <div className="workspace-invite-link">
@@ -200,14 +199,13 @@ export default function WorkspaceMembers({ workspace }) {
                     <button type="button" className="dashboard-dialog-cancel" onClick={copyLink}>
                         {invite.copied ? 'Copied' : 'Copy link'}
                     </button>
-                    </div>
+                </div>}
                 {invite.error && <p className="dashboard-form-error" role="alert">{invite.error}</p>}
-            </div>}
+                </div>
 
                     <details className="workspace-invite-history-disclosure">
                         <summary>Invitation history</summary>
                         <section className="workspace-invite-history" aria-label="Invitation history">
-                <h3>Invitation history</h3>
                 {invites.error && <p className="dashboard-form-error" role="alert">{invites.error}</p>}
                 {invites.items.length === 0 && !invites.error && <p className="dashboard-form-hint">No invitations yet.</p>}
                 {invites.items.map((item) => {
