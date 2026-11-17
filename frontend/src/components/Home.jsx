@@ -446,9 +446,7 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                         <button className="dashboard-menu-toggle" type="button" onClick={() => setMenuOpen(true)} aria-label="Open navigation" aria-expanded={menuOpen}>
                             <Menu size={22} />
                         </button>
-                        {(canGoBack || page !== 'home') && <button className="dashboard-mobile-back" type="button" onClick={goBack} aria-label="Go back" title="Back">
-                            <ArrowLeft size={20} aria-hidden="true" />
-                        </button>}
+
                         <span>{page === 'home' || page === 'my-tasks' || page === 'goals' ? 'PERSONAL' : activeWorkspace ? activeWorkspace.name : 'YOUR SPACE'}</span>
                         <ChevronRight size={16} aria-hidden="true" />
                         <strong>{page === 'home' ? 'Home' : page === 'goals' ? 'My goals' : page === 'workspaces' ? 'Workspaces' : page === 'projects' ? 'Projects' : page === 'invite' ? 'Invitation' : page === 'my-tasks' ? 'My tasks' : page === 'recycle-bin' ? 'Recycle bin' : page === 'activity' ? 'Activity' : page === 'settings' ? 'Settings' : 'Overview'}</strong>
@@ -461,6 +459,9 @@ export default function Home({ user, onLogout, onUserUpdated }) {
                 </header>
 
                 <main className="dashboard-main" id={page === 'home' ? 'dashboard-home' : page === 'goals' ? 'dashboard-goals' : page === 'overview' ? 'dashboard-overview' : page === 'workspaces' ? 'dashboard-workspaces' : page === 'my-tasks' ? 'dashboard-my-tasks' : page === 'recycle-bin' ? 'dashboard-recycle-bin' : page === 'activity' ? 'dashboard-activity' : page === 'settings' ? 'dashboard-settings' : 'dashboard-projects'}>
+                    {(canGoBack || page !== 'home') && <button className="dashboard-mobile-back dashboard-mobile-back--content" type="button" onClick={goBack} aria-label="Go back">
+                        <ArrowLeft size={18} aria-hidden="true" /> <span>Back</span>
+                    </button>}
                     {page === 'home' ? (
                         <PersonalHome user={user} workspaces={workspaces} workspacesLoading={workspacesLoading}
                             workspacesError={workspaceLoadError} preferences={preferences}
