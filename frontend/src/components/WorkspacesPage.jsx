@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import {
     ArrowRight,
     Check,
@@ -135,7 +135,7 @@ export default function WorkspacesPage({
                         {workspaces.map((space) => {
                             const isActive = activeWorkspace?.id === space.id
                             return (
-                                <Fragment key={space.id}>
+                                <div key={space.id} className={`workspace-manager-entry${membersWorkspaceID === space.id ? ' workspace-manager-entry--expanded' : ''}`}>
                                 <article
                                     className={`workspace-manager-card${isActive ? ' workspace-manager-card--active' : ''}`}>
                                     <div className="workspace-manager-card-top">
@@ -173,7 +173,7 @@ export default function WorkspacesPage({
                                         <WorkspaceMembers workspace={space} />
                                     </div>
                                 )}
-                                </Fragment>
+                                </div>
                             )
                         })}
                     </div>
