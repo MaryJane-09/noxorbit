@@ -401,3 +401,78 @@
         flex-basis: 100%;
     }
 }
+
+/* Each workspace keeps its own height; an expanded list never stretches its neighbor. */
+.workspace-manager-grid {
+    align-items: start;
+}
+.workspace-manager-grid > .workspace-manager-entry {
+    align-self: start;
+}
+.workspace-manager-entry > .workspace-manager-card {
+    flex: none;
+}
+
+/* Invite dialog: full-width email field, action on the next line to the left. */
+.workspace-invite-dialog .workspace-invite-email .workspace-invite-link {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+.workspace-invite-dialog .workspace-invite-email .workspace-invite-link input {
+    flex: none;
+    width: 100%;
+    min-height: 46px;
+}
+.workspace-invite-dialog .workspace-invite-email .dashboard-feature-action {
+    align-self: flex-start;
+    flex: none;
+    margin: 0;
+}
+
+/* Keep the dialog's scroll area inside its rounded frame, only when content needs it. */
+.workspace-invite-dialog {
+    box-sizing: border-box;
+    max-height: calc(100dvh - 48px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(239, 194, 153, .42) transparent;
+}
+.workspace-invite-dialog::-webkit-scrollbar { width: 5px; }
+.workspace-invite-dialog::-webkit-scrollbar-thumb {
+    background: rgba(239, 194, 153, .42);
+    border-radius: 6px;
+}
+.workspace-invite-dialog .dashboard-dialog-header { margin-bottom: 12px; }
+.workspace-invite-dialog .dashboard-dialog-description {
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+.workspace-invite-dialog .workspace-invite-tools { margin-top: 0; }
+.workspace-invite-dialog .workspace-invite-email {
+    margin-bottom: 18px;
+    padding-bottom: 17px;
+}
+.workspace-invite-dialog .workspace-invite-tools h3 {
+    margin-bottom: 6px;
+}
+.workspace-invite-dialog .workspace-invite-tools .dashboard-form-hint {
+    margin: 5px 0 12px;
+    line-height: 1.5;
+}
+.workspace-invite-dialog .workspace-invite-history-disclosure {
+    margin-top: 18px;
+    padding-top: 8px;
+}
+@media (max-width: 600px) {
+    .workspace-invite-dialog {
+        max-height: calc(100dvh - 28px);
+    }
+    .workspace-invite-dialog .workspace-invite-email .dashboard-feature-action {
+        align-self: flex-start;
+        width: auto;
+        max-width: 100%;
+    }
+}
