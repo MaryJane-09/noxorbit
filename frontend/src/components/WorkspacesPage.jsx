@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import {
     ArrowRight,
     Check,
@@ -135,7 +135,8 @@ export default function WorkspacesPage({
                         {workspaces.map((space) => {
                             const isActive = activeWorkspace?.id === space.id
                             return (
-                                <article key={space.id}
+                                <Fragment key={space.id}>
+                                <article
                                     className={`workspace-manager-card${isActive ? ' workspace-manager-card--active' : ''}`}>
                                     <div className="workspace-manager-card-top">
                                         <span className="workspace-manager-card-icon"><Layers3 size={23} aria-hidden="true" /></span>
@@ -152,6 +153,8 @@ export default function WorkspacesPage({
                                         </button>
                                         <div className="workspace-manager-secondary-actions">
                                             <button type="button" className="workspace-manager-edit"
+                                                aria-expanded={membersWorkspaceID === space.id}
+                                                aria-controls={`workspace-members-${space.id}`}
                                                 onClick={() => setMembersWorkspaceID((current) => current === space.id ? null : space.id)}>
                                                 {membersWorkspaceID === space.id ? 'Hide members' : 'View members'}
                                             </button>
@@ -165,15 +168,17 @@ export default function WorkspacesPage({
                                         </div>
                                     </div>
                                 </article>
+                                {membersWorkspaceID === space.id && (
+                                    <div className="workspace-manager-members-expanded" id={`workspace-members-${space.id}`}>
+                                        <WorkspaceMembers workspace={space} />
+                                    </div>
+                                )}
+                                </Fragment>
                             )
                         })}
                     </div>
                 )}
             </section>
-
-            {membersWorkspaceID && workspaces.some((space) => space.id === membersWorkspaceID) && (
-                <WorkspaceMembers key={membersWorkspaceID} workspace={workspaces.find((space) => space.id === membersWorkspaceID)} />
-            )}
 
             <div className="workspace-manager-help">
                 <ShieldCheck size={19} aria-hidden="true" />
