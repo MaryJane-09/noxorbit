@@ -83,3 +83,20 @@
     .tasks-status-label select { min-height: 44px; }
     .tasks-meta { overflow-wrap: anywhere; }
 }
+
+/* Phone menus expand inside the card rather than floating below other cards. */
+@media (max-width: 620px) {
+    .tasks-card-top { flex-wrap: wrap; }
+    .tasks-card-menu { margin-left: auto; }
+    .tasks-card-menu[open] { flex: 0 0 100%; width: 100%; }
+    .tasks-card-menu[open] > summary { margin-left: auto; }
+    .tasks-card-menu-items {
+        position: static;
+        width: 100%;
+        margin-top: 7px;
+        box-shadow: none;
+    }
+    .tasks-card-menu-items button {
+        min-height: 44px;
+    }
+}
