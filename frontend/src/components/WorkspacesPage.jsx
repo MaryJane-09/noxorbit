@@ -6,7 +6,6 @@ import {
     LoaderCircle,
     Pencil,
     Plus,
-    ShieldCheck,
     X,
 } from 'lucide-react'
 import WorkspaceMembers from './WorkspaceMembers'
@@ -93,7 +92,7 @@ export default function WorkspacesPage({
                 <div className="workspace-manager-section-top">
                     <div>
                         <h2 id="workspace-manager-title">Your workspaces</h2>
-                        <p>Only workspaces you belong to appear here.</p>
+                        
                     </div>
                     {!loading && !loadError && (
                         <span className="workspace-manager-count">
@@ -179,11 +178,6 @@ export default function WorkspacesPage({
                     </div>
                 )}
             </section>
-
-            <div className="workspace-manager-help">
-                <ShieldCheck size={19} aria-hidden="true" />
-                <p>Workspace owners can manage invitations and members from View members. Projects and tasks are available in their dedicated sections.</p>
-            </div>
 
             <dialog ref={editDialogRef} className="dashboard-workspace-dialog"
                 aria-labelledby="workspace-manager-edit-title"
