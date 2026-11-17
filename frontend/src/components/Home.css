@@ -1751,3 +1751,30 @@
     .dashboard-menu-toggle { margin-right: 0; flex: 0 0 44px; }
     .dashboard-mobile-back { flex: 0 0 40px; width: 40px; height: 44px; }
 }
+
+/* A separate mobile back control leaves the top bar to navigation and account tools. */
+@media (max-width: 900px) {
+    .dashboard-main > .dashboard-mobile-back--content {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 7px;
+        width: auto;
+        min-width: 0;
+        min-height: 44px;
+        padding: 8px 11px;
+        margin: -12px 0 15px;
+        border: 1px solid transparent;
+        border-radius: 9px;
+        color: #f3d3a0;
+        background: transparent;
+        font-size: 13px;
+        font-weight: 750;
+    }
+    .dashboard-main > .dashboard-mobile-back--content:hover {
+        background: rgba(230, 194, 143, .09);
+    }
+}
+@media (max-width: 480px) {
+    .dashboard-main > .dashboard-mobile-back--content { margin: -7px 0 12px; }
+}
