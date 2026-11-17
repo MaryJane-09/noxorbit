@@ -246,3 +246,30 @@
     .workspace-manager-secondary-actions { width: 100%; }
     .workspace-manager-secondary-actions > button { flex: 1 1 auto; }
 }
+
+/* Expanded members belong to the selected workspace, not the end of the directory. */
+.workspace-manager-members-expanded {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
+.workspace-manager-members-expanded > .workspace-manager-section {
+    margin-top: 0;
+    padding: 20px;
+    border: 1px solid rgba(239, 194, 153, .26);
+    border-radius: 17px;
+    background: rgba(39, 24, 46, .55);
+}
+@media (max-width: 680px) {
+    .workspace-manager-members-expanded > .workspace-manager-section {
+        padding: 16px 12px;
+    }
+    .workspace-manager-members-expanded .workspace-invite-tools,
+    .workspace-manager-members-expanded .workspace-invite-history {
+        padding: 14px 12px;
+    }
+    .workspace-manager-members-expanded input,
+    .workspace-manager-members-expanded button {
+        max-width: 100%;
+    }
+    .workspace-manager-members-expanded button { min-height: 44px; }
+}
