@@ -273,3 +273,41 @@
     }
     .workspace-manager-members-expanded button { min-height: 44px; }
 }
+
+/* Keep a workspace's member tools visually attached to that workspace.
+   Desktop opens a roomy side-by-side management area; mobile stacks below its card. */
+.workspace-manager-entry {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 16px;
+}
+.workspace-manager-entry > .workspace-manager-card {
+    width: 100%;
+    flex: 1 0 auto;
+}
+.workspace-manager-entry--expanded {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(260px, 310px) minmax(0, 1fr);
+    align-items: start;
+}
+.workspace-manager-entry--expanded > .workspace-manager-card {
+    flex: none;
+}
+.workspace-manager-entry--expanded > .workspace-manager-members-expanded {
+    grid-column: auto;
+}
+.workspace-manager-entry--expanded .workspace-manager-members-expanded > .workspace-manager-section {
+    height: auto;
+}
+@media (max-width: 850px) {
+    .workspace-manager-entry--expanded {
+        display: flex;
+        flex-direction: column;
+    }
+    .workspace-manager-entry--expanded > .workspace-manager-card,
+    .workspace-manager-entry--expanded > .workspace-manager-members-expanded {
+        width: 100%;
+    }
+}
