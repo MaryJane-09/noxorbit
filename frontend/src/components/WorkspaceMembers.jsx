@@ -18,6 +18,11 @@ export default function WorkspaceMembers({ workspace }) {
     const [emailNotice, setEmailNotice] = useState('')
     const [emailError, setEmailError] = useState('')
     useEffect(() => {
+        if (!emailNotice) return undefined
+        const timer = window.setTimeout(() => setEmailNotice(''), 3500)
+        return () => window.clearTimeout(timer)
+    }, [emailNotice])
+    useEffect(() => {
         const controller = new AbortController()
         fetchWorkspaceMembers(workspace.id, { signal: controller.signal })
             .then((members) => {
@@ -92,8 +97,9 @@ export default function WorkspaceMembers({ workspace }) {
         setEmailError('')
         setEmailNotice('')
         try {
-            await sendWorkspaceEmailInvite(workspace.id, recipientEmail.trim())
-            setEmailNotice('Invitation email sent.')
+            const address = recipientEmail.trim()
+            await sendWorkspaceEmailInvite(workspace.id, address)
+            setEmailNotice(`Invitation sent to ${address}.`)
             setRecipientEmail('')
             setReload((value) => value + 1)
         } catch (err) {
@@ -172,7 +178,7 @@ export default function WorkspaceMembers({ workspace }) {
                 </div>
                 <p className="dashboard-eyebrow">WORKSPACE INVITATIONS</p>
                 <h2 id="workspace-invite-dialog-title">Invite to {workspace.name}</h2>
-                <p className="dashboard-dialog-description">Invite a teammate by email or share a one-use link.</p>
+                <p className="dashboard-dialog-description">Invite someone to this workspace.</p>
                 {inviteOpen && <>
                 <div className="workspace-invite-tools">
                 <form className="workspace-invite-email" onSubmit={sendEmail}>
@@ -189,7 +195,7 @@ export default function WorkspaceMembers({ workspace }) {
                     {emailNotice && <p role="status" className="dashboard-form-hint">{emailNotice}</p>}
                     {emailError && <p role="alert" className="dashboard-form-error">{emailError}</p>}
                 </form>
-                <h3>Or share an invitation link</h3>
+                <h3 className="workspace-invite-secondary-heading">Or share an invitation link</h3>
                 <p className="dashboard-form-hint">Create a link valid for seven days and one new member. Send it privately to the person you want to invite.</p>
                 <button type="button" className="dashboard-feature-action" disabled={invite.creating}
                     onClick={generateLink}>{invite.creating ? 'Generating…' : 'Generate invitation link'}</button>
