@@ -1724,3 +1724,30 @@
     .dashboard-avatar--small { width: 30px; height: 30px; flex-shrink: 0; }
     .dashboard-sidebar-top { padding-top: 14px; padding-bottom: 14px; }
 }
+
+/* Compact back navigation is part of the mobile header, not the desktop rail. */
+.dashboard-mobile-back { display: none; }
+@media (max-width: 900px) {
+    .dashboard-mobile-back {
+        display: inline-grid;
+        place-items: center;
+        flex: 0 0 44px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid var(--dash-line);
+        border-radius: 10px;
+        background: rgba(230, 194, 143, .06);
+        color: #f3d3a0;
+        cursor: pointer;
+    }
+    .dashboard-mobile-back:focus-visible {
+        outline: 2px solid var(--dash-gold-soft);
+        outline-offset: 2px;
+    }
+}
+@media (max-width: 480px) {
+    .dashboard-breadcrumbs { gap: 5px; }
+    .dashboard-menu-toggle { margin-right: 0; flex: 0 0 44px; }
+    .dashboard-mobile-back { flex: 0 0 40px; width: 40px; height: 44px; }
+}
